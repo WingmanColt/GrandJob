@@ -1,0 +1,48 @@
+﻿@page
+
+@inject IMessageService _messageService
+@inject UserManager<User> _userManager
+@inject IConfiguration _config
+
+@model EnableMessengerModel
+@{
+    ViewData["Title"] = "Включи съобщенията";
+    ViewData["Sidebar"] = "sidebar_minimize";
+    Layout = "Layout/_Email";
+
+    var context = HttpContext.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+}
+}
+
+<div class="content content-full">
+    <div class="page-inner page-inner-fill">
+        <div class="page-with-aside mail-wrapper bg-white">
+
+            <partial name="Partials/_aSideMenu" />
+
+            <div class="page-content mail-content">
+                <div class="inbox-head">
+                    <h3>@ViewData["Title"]</h3>
+
+                    @await Html.PartialAsync("Partials/_searchForm")
+
+                </div>
+                <div class="inbox-body">
+                    <div class="email-list">
+
+                        <h1>Включете съобщенията сега:  <a asp-controller="Message" asp-action="Enabling" asp-route-returnUrl="@returnUrl" style="text-decoration:none; color:#00ff21;" title="Включване"><span class="fas fa-power-off" style="font-size:22px;"></span></a></h1>
+
+
+                    </div>
+                </div>
+                <div class="mail-option">
+                    <div class="email-filters-left ml-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

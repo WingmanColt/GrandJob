@@ -1,0 +1,249 @@
+/*Modal*/
+
+a.nostyle {
+	color: inherit;
+	text-decoration: none;
+	padding: 0;
+	margin: 0;
+}
+
+.close {
+	float: right;
+	font-size: 40px;
+	font-weight: 800;
+}
+
+	.close:hover,
+	.close:focus {
+		color: rgba(255,0,0,0.9);
+		text-decoration: none;
+		cursor: pointer;
+	}
+.modal-header {
+	width: 100%;
+	min-height: 70px;
+	background: rgba(250,250,250,0.5);
+}
+.modal-footer {
+	max-width: 450px;
+	max-height: 70px;
+	background: rgba(250,250,250,0.5);
+}
+.modal-window {
+	width: 100%;
+	max-width: 450px;
+	min-height: 550px;
+	background: rgba(250,250,250,0.5);
+	z-index: 10000;
+}
+
+
+.modal-window .modal-body .form-group {
+	text-align: left;
+	margin-top: 1rem
+}
+
+.modal-window .modal-body form {
+	padding: 0 !important
+}
+
+.modal-window .modal-body .alerter-container {
+	margin: 1rem 0
+}
+
+.modal-window .industries-search-select__control {
+	padding: .3rem 0;
+	border: none;
+	box-shadow: 0 0 1em rgba(0, 0, 0, .1)
+}
+
+.modal-window .industries-search-select__dropdown-indicator {
+	background: url(/static/media/location-icon.23a9d6b9.svg) no-repeat;
+	width: 2.5em;
+	height: 100%;
+	background-position: 50%
+}
+
+	.modal-window .industries-search-select__clear-indicator,
+	.modal-window .industries-search-select__dropdown-indicator svg,
+	.modal-window .industries-search-select__indicator-separator {
+		display: none
+	}
+
+.modal-window .modal-video .form-group {
+	margin: 0 !important
+}
+
+.modal-window .modal-video .input-group {
+	margin-bottom: .8rem
+}
+
+.modal-window div.coverphoto {
+	width: 100%;
+	height: 100%;
+	background: url('http://farm8.staticflickr.com/7149/6484148411_baf8d2e934_z.jpg');
+	background-position: center center;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	border-bottom: 1px solid rgba(0,0,0,0.1);
+	box-shadow: inset 0px 3px 20px rgba(255,255,255,0.3), 1px 0px 2px rgba(255,255,255,0.7);
+	z-index: 99;
+}
+
+
+	.modal-window .image-wrapper {
+		width: 50%;
+		height: 50%;
+		max-width: 25%;
+		max-height: 20%;
+		flex-shrink: 0;
+		display: flex;
+		border-radius: 10px;
+		background-color: hsla(0, 0%, 100%, .9);
+		padding: .8rem;
+		position: absolute;
+		top: 5px;
+		left: 12px;
+		border-radius: 100%;
+	}
+		.modal-window .image-wrapper img {
+			max-width: 100%;
+			max-height: 100%
+		}
+
+	.modal-window div.center {
+		align-content:center;
+		min-height: 150px;
+		width: 100%;
+	}
+.modal-body div.center h5.name {
+	text-align: end;
+	font-size: 17px;
+	font-weight: 600;
+	color: rgba(250,250,250,0.9);
+	padding: 5px 55px;
+	margin: -20px 20px 0px 0px;
+}
+
+.modal-body div.center h5.speciality {
+	text-align: end;
+	font-size: 16px;
+	font-weight: 600;
+	color: rgba(250,250,250,0.9);
+	margin: 0px 75px 0px 0px;
+}
+
+.modal-window div.left, div.right {
+	float: left;
+	width: 50%;
+	height: 350px;
+}
+.modal-window div.right {
+	border-left: 1px solid rgba(100,100,100,0.5);
+	margin-left: -1px;
+	border-bottom-right-radius: 5px;
+}
+div.followers, .modal-body div.following {
+	margin: 15px 0px 0px 35px;
+	font-weight: 300;
+	font-size: 16px;
+	color:rgba(250,250,250,0.8);
+}
+
+div.follow_count {
+	font-weight: 400;
+	font-size: 20px;
+	color: rgba(250,250,250,0.8);
+}
+
+
+.modal-body div.right h3.location {
+	font-size: 15px;
+	font-weight: 300;
+	color: rgba(250,250,250,0.8);
+	padding: 0;
+	margin: -5px 10px 10px 30px;
+}
+
+.modal-body ul.contact_information {
+	margin-top: 20px;
+	padding-left: 30px;
+	list-style-type: none;
+}
+
+	.modal-body ul.contact_information li {
+		height: 25px;
+		width: 180px;
+		line-height: 25px;
+		font-weight: 300;
+		font-size: 15px;
+		color: rgba(250,250,250,0.8);
+		padding: 5px 0px;
+		border-bottom: 1px solid rgba(0,0,0,0.1);
+		cursor: default;
+	}
+
+		.modal-body ul.contact_information li:before {
+			content: "";
+			width: 25px;
+			height: 25px;
+			display: block;
+			float: left;
+			margin-right: 5px;
+		}
+
+
+		.modal-body ul.contact_information li.work:before {
+			background-image: url('http://schulzmarcel.de/x/icons/case_24.png');
+		}
+
+		.modal-body ul.contact_information li.website:before {
+			background-image: url('http://schulzmarcel.de/x/icons/globe_24.png');
+		}
+
+		.modal-body ul.contact_information li.mail:before {
+			background-image: url('http://schulzmarcel.de/x/icons/paper_plane_24.png');
+		}
+
+		.modal-body ul.contact_information li.phone:before {
+			background-image: url('http://schulzmarcel.de/x/icons/phone_24.png');
+		}
+
+		.modal-body ul.contact_information li.resume:before {
+			background-image: url('http://schulzmarcel.de/x/icons/inbox_24.png');
+		}
+
+@media only screen and (max-width:991px) {
+	.modal-body div.center h5.name {
+		font-size: 17px;
+		font-weight: 600;
+		color: rgba(250,250,250,0.9);
+		margin: 10px 220px 0px -60px;
+	}
+
+	.modal-body div.center h5.speciality {
+		text-align: end;
+		font-size: 14px;
+		font-weight: 600;
+		color: rgba(250,250,250,0.9);
+		margin: -30px 0px -15px 0px;
+	}
+
+
+	.modal-window .image-wrapper {
+		height: 25%;
+		width: 25%;
+		max-width: 50%;
+		max-height: 50%;
+		top: 3px;
+		left: 155px;
+	}
+
+	.btn-message {
+		float:left;
+	}
+
+	.btn-report {
+		float:right;
+	}
+}

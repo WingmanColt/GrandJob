@@ -1,0 +1,32 @@
+﻿@page
+@model ExternalLoginErrorModel
+@{
+    ViewData["Title"] = "Възникна грешка";
+    Layout = "_Layout.cshtml";
+}
+
+
+<div class="wrapper not-found">
+    <h2 class="animated fadeIn text-danger">За съжаление, не можахме да решим проблема ви !</h2>
+    <div class="desc animated fadeIn"><br />Неуспешно потвърждаване. <br />Този линк е изтекъл, изпратете потвърждение отново.</div>
+
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-back-home mt-4 animated fadeInUp">
+        <span class="btn-label mr-2">
+            <i class="flaticon-home"></i>
+        </span>
+        Върни се назад
+    </a>
+    <br>
+
+<form asp-page-handler="SendVerificationEmail" method="post">
+    <button type="submit" class="btn btn-outline-success btn-back-home mt-4 animated fadeInUp">
+        <span class="btn-label mr-2">
+            <i class="fas fa-envelope"></i>
+        </span>
+        Изпрати емайл за потвърждение
+    </button>
+</form>
+        
+</div>
+
+

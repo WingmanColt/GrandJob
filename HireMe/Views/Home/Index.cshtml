@@ -1,0 +1,50 @@
+﻿@inject SignInManager<User> _signInManager
+@{
+    ViewData["Title"] = "Начало";
+    Layout = "_MasterLayout";
+    bool isMobile = MobileDetector.IsMobile(Context);
+}
+<link href="~/customCSS/Base/Index.min.css" rel="stylesheet">
+
+<div id="root">
+    <div class="app" style="background-color: rgb(255, 255, 255);">
+
+        <div class="desktop-only">
+            <div id="page-navbar-bg" class="header header-bg round-bottom-edges fixed-top contract-header">
+            </div>
+
+            <div id="page-navbar-menu" class="header fixed-top round-bottom-edges contract-header" style="background-color: transparent;">
+                <!-- Menu Area -->
+                <partial name="../Home/customPartials/_MenuPartialHome" />
+            </div>
+        </div>
+
+        <div class="mobile-only">
+            <!-- Menu Area -->
+            <partial name="../Home/customPartials/_MobileMenuPartial" />
+        </div>
+        @if (_signInManager.IsSignedIn(User))
+        {
+            @await Component.InvokeAsync("_Activity")
+        }
+
+        @* <span class="icon home-curved-line">
+                <svg width="309" height="296" viewBox="0 0 309 296"><path fill="#0064C8" fill-opacity="0.5" fill-rule="evenodd" d="M277.5-180C166.393-180 76-89.607 76 21.5S166.393 223 277.5 223 479 132.607 479 21.5 388.607-180 277.5-180M276 296C123.812 296 0 172.188 0 20s123.812-276 276-276c152.186 0 276 123.812 276 276S428.186 296 276 296"></path></svg>
+            </span>
+        *@
+        <!-- Content Area -->
+        <div class="page-content scroll-holder" style="background-color: #f4f7fa;">
+
+            <partial name="Partials/_BannerPartial" />
+
+            <partial name="Partials/_CandidatesPartial" />
+
+            <partial name="Partials/_ChoicePartial" />
+
+            <partial name="Partials/_ListingPartial" />
+        </div>
+
+        <!-- Footer Area -->
+        <partial name="../Home/customPartials/_FooterPartial" />
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿@inject IMessageService _messageService
+@inject UserManager<User> _userManager
+
+@{
+    String pageName = ViewContext.RouteData.Values["page"].ToString();
+    var Sort = ViewData["Sort"];
+    // var unreadedCount = _messageService.GetMessagesByState<MessageViewModel>(userId, MessageStates.Read, false);
+    // var importantCount = _messageService.GetMessagesByState<MessageViewModel>(userId, MessageStates.Important, true);
+    // var staredCount = _messageService.GetMessagesByState<MessageViewModel>(userId, MessageStates.Stared, true);
+    // var reportCount = _messageService.GetMessagesByState<MessageViewModel>(userId, MessageStates.Report, true);
+}
+
+<div class="page-aside">
+    <div class="aside-header">
+        <div class="title">Съобщения</div>
+        <br>
+        <div class="mobile-only">
+            <a class="btn btn-outline-primary btn-block toggle-email-nav" id="aSideBtn" data-toggle="collapse" href="#email-app-nav" role="button" aria-expanded="false" aria-controls="email-nav">
+                <span class="btn-label">
+                    <i class="fa fa-bars"></i>
+                </span>
+                Меню
+            </a>
+        </div>
+        <br>
+
+        <a asp-page="Compose" class="btn btn-outline-danger btn-block fw-mediumbold">Ново съобщение</a>
+
+    </div>
+    <form method="get" asp-page="Index" id="aSideMenu">
+        <div class="collapse aside-nav" id="email-app-nav">
+
+            <ul class="nav">
+                <li class="@(pageName == "/Messenger" ? "active" : "")">
+                    <input type="submit" asp-for="@Sort" value="Входящи"/><i class="flaticon-inbox"></i>
+                    @*<span class="badge badge-primary float-right">@unreadedCount</span>*@
+
+                </li>
+                <li class="@(pageName == "/Messenger?Sort=Изпратени" ? "active" : "")">
+                        <input type="submit" asp-for="@Sort" value="Изпратени"/><i class="flaticon-envelope-1"></i>                    
+                </li>
+                <li class="@(pageName == "/Messenger?Sort=Важни" ? "active" : "")">
+                        <input type="submit" asp-for="@Sort" value="Важни"/><i class="flaticon-exclamation"></i>
+                </li>
+                <li class="@(pageName == "/Messenger?Sort=Закачени" ? "active" : "")">
+                        <input type="submit" asp-for="@Sort" value="Закачени"/><i class="flaticon-envelope-3"></i>
+                </li>
+
+            </ul>
+
+            <span class="label">Други</span>
+            <ul class="nav nav-pills nav-stacked">
+                <li class="@(pageName == "/Messenger?Sort=Докладвани" ? "active" : "")">
+                        <input type="submit" asp-for="@Sort" value="Докладвани" /> <i class="flaticon-signs-1"></i> 
+                </li>
+                <li class="@(pageName == "/Messenger?Sort=Кошче" ? "active" : "")">
+                        <input type="submit" asp-for="@Sort" value="Кошче"  /><i class="flaticon-interface-5"></i> 
+                </li>
+            </ul>
+
+            <div class="aside-compose"></div>
+        </div>
+        </form>
+</div>
+

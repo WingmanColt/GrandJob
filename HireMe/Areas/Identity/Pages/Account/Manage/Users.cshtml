@@ -1,0 +1,123 @@
+﻿@page
+@model UsersModel
+
+@{
+    ViewData["Title"] = "Всички потребители";
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+
+}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">@ViewData["Title"]</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row">
+
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <form method="get">
+                            <small>Роля:<input type="submit" asp-for="Role" value="Всички" class="font-weight-bold" /> <input type="submit" asp-for="Role" value="Администратори" class="text-danger font-weight-bold" /> <input type="submit" asp-for="Role" value="Модератори" class="text-success font-weight-bold" /><input type="submit" asp-for="Role" value="Работодатели" class="text-letblue font-weight-bold" /><input type="submit" asp-for="Role" value="Персонал" class="text-purple font-weight-bold" /><input type="submit" asp-for="Role" value="Кандидати" class="text-warning font-weight-bold" /><input type="submit" asp-for="Role" value="Потребители" class="text-black-50 font-weight-bold" /></small><br>
+                            <small>Сортирай по:<input type="submit" asp-for="Sort" value="Всички" class="font-weight-bold" /> <input type="submit" asp-for="Sort" value="Потвърдени" class="font-weight-bold" /> <input type="submit" asp-for="Sort" value="Активност" class="font-weight-bold" /><input type="submit" asp-for="Sort" value="Баланс" class="font-weight-bold" /></small>
+                        </form>
+                    </div>
+                    @if (Model.List != null)
+                    {
+                        <small style="text-align: right">Страница: @Model.Pager.CurrentPage от @Model.Pager.TotalPages</small>
+
+                        <div class="card-body">
+                            <table class="table table-responsive-md table-hover table-striped mt-4">
+
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Баланс</th>
+                                        <th scope="col">Име</th>
+                                        <th scope="col">Емайл</th>
+                                        <th scope="col">Роля</th>
+                                        <th scope="col">Активност</th>
+                                        <th scope="col">Достъп</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+
+                                    @await foreach (var item in Model.List)
+                                    {
+                                    <tr>
+                                        <td>@item.Balance <b class="flaticon-coins" style="color:darkgoldenrod"></b></td>
+                                        <td>@item.FirstName @item.LastName</td>
+                                        <td>@item.Email</td>
+                                        <td> <span class="badge" style="color:@item.Role.GetDescription()">@item.Role.GetDisplayName()</span></td>
+                                        <td>@item.ActivityOn.ToString("MM MMMM")</td>
+                                        <td class="dropdown hidden-caret">
+                                            <a href="#" class="btn btn-light btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-h"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a asp-controller="Jobs" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Success" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                        <span class="fas fa-check-circle"></span> Одобряване
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+
+                                        </td>
+                                    </tr>
+
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                        <div class="card-action">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @await Html.PartialAsync("../Partials/_PaginationPartial", Model.Pager)
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header" style="text-align:center">
+                                        <b>Няма намерени потребители.</b>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,165 @@
+﻿@import url(//fonts.googleapis.com/icon?family=Material+Icons);
+
+
+.customMenu {
+    background-color: white;
+    position: fixed;
+    margin: auto;
+    box-shadow: 2px 2px 25px #707070;
+    z-index: 101;
+    bottom: 0;
+    width: 100%
+}
+    .customMenu .item {
+        width: 19vw;
+        height: 14vw;
+        position: relative;
+        float: left;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+    }
+
+
+        .customMenu .item #tooltip {
+            transform: scale(0);
+            display: block;
+            height: 35px;
+            background: #E95950;
+            color: #fff;
+            -webkit-filter: drop-shadow(0px 0px 5px rgba(233, 89, 80, 0.6));
+            filter: drop-shadow(0px 0px 5px rgba(233, 89, 80, 0.6));
+            position: fixed;
+            bottom: 50px;
+            border-radius: 7px;
+            z-index: 101;
+        }
+
+.popUp {
+    transform-origin: center 50px;
+    animation: notificationPopUp 400ms both;
+}
+
+.popIn {
+    transform-origin: center 50px;
+    animation: notificationPopIn 300ms both;
+}
+
+
+.customMenu .item #tooltip:after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: #E95950;
+    position: absolute;
+    top: 15px;
+    left: 25px;
+    border-radius: 3px;
+    transform: skew(-50deg, 45deg);
+    z-index: -1;
+}
+
+.item-tooltip {
+    display: inline-block;
+    color: #fff;
+    font-family: sans-serif;
+    font-weight: 600;
+    padding: 8px 5px;
+    margin-right: 0px;
+}
+
+
+    .item-tooltip:first-child {
+        margin-left: 8px;
+    }
+
+    .item-tooltip:last-child {
+        margin-right: 8px;
+    }
+
+
+#home {
+    background-image: url("https://d30y9cdsu7xlg0.cloudfront.net/png/771236-200.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 45%;
+}
+
+#search {
+    background-image: url("https://d30y9cdsu7xlg0.cloudfront.net/png/771235-200.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 45%;
+}
+
+#cam {
+    background-image: url("https://d30y9cdsu7xlg0.cloudfront.net/png/771239-200.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 45%;
+}
+
+.notifications {
+   /* background-image: url("https://d30y9cdsu7xlg0.cloudfront.net/png/771240-200.png");*/
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 45%;
+}
+
+    .notifications::after {
+        /*Little dot indicating a new notification*/
+        content: "";
+        width: 6px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: red;
+        position: absolute;
+        bottom: 0;
+        opacity: 0.7;
+    }
+
+#profile {
+    background-image: url("https://d30y9cdsu7xlg0.cloudfront.net/png/771237-200.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 45%;
+}
+.popOut {
+
+        transform: scale(0)
+}
+
+    @keyframes notificationPopUp {
+        0% {
+        transform: scale(0);
+        opacity: 0
+    }
+
+    65% {
+        opacity: 1
+    }
+
+    75% {
+        transform: scale(1.1)
+    }
+
+    100% {
+        transform: scale(1)
+    }
+}
+
+@keyframes notificationPopIn {
+    0% {
+        transform: scale(1)
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0
+    }
+}

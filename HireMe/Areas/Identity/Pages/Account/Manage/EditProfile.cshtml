@@ -1,0 +1,138 @@
+﻿@page
+@inject UserManager<User> UserManager
+
+@model EditProfileModel
+@{
+    ViewData["Title"] = "Профил";
+    Layout = "Layouts/_EditProfile";
+
+    var user = await UserManager.GetUserAsync(User);
+
+}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">@ViewData["Title"]</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+
+
+                    <div class="card-header">
+                        <div class="card-title">Лични данни</div>
+                        @if (!Model.IsEmailConfirmed)
+                        {
+                    <div class="card-category">
+                        
+                        <form asp-page-handler="SendVerificationEmail" method="post">
+                             <h3><i class="fas fa-info-circle" style="color:#ff0000"></i><strong> Вашият е-майл адрес не е потвърден.
+                            <br>Ако пощата ви е празна, моля кликнете тук:</strong> </h3>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                <span class="link-collapse">към потвърждаване</span>
+                            </button>
+                        </form>
+
+                    </div>
+                        }
+                    </div>
+
+                    <form id="profile" method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+
+                            <div class="form-group form-show-validation row">
+                                <label asp-for="Input.FirstName" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
+                                <div class="col-lg-4 col-md-9 col-sm-8">
+                                    <input asp-for="Input.FirstName" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-show-validation row">
+                                <label asp-for="Input.LastName" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
+                                <div class="col-lg-4 col-md-9 col-sm-8">
+                                    <input asp-for="Input.LastName" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-show-validation row">
+                                <label asp-for="Input.Username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
+                                <div class="col-lg-4 col-md-9 col-sm-8">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="username-addon">@@</span>
+                                        </div>
+                                        <input asp-for="Input.Username" class="form-control" aria-label="username" aria-describedby="username-addon" id="username" required>
+                                    </div>
+                                    <small id="message" class="form-text text-muted text-danger"></small>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label asp-for="Input.Email" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
+                                <div class="col-lg-4 col-md-9 col-sm-8">
+                                    <input asp-for="Input.Email" class="form-control" disabled>
+                                    <small id="emailHelp" class="form-text text-muted">Вашият емайл не е публично достъпен.</small>
+                                </div>
+                            </div>
+
+                            <div class="separator-solid"></div>
+                            <div class="form-group form-show-validation row">
+                                <label asp-for="Input.Gender" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
+                                <div class="col-lg-4 col-md-9 col-sm-8 d-flex align-items-center">
+                                    <select asp-for="Input.Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control" value="@user?.Gender"></select>
+                                </div>
+                            </div>
+
+                            <div class="separator-solid"></div>
+                            <div class="form-group row">
+
+                                
+                                <div class="offset-lg-3">
+                                    <div class="input-file input-file-image">
+                                        <img class="img-upload-preview img-circle" width="100" height="100" src="@Model.Input.Picture" alt="preview">
+                                        <input asp-for="Input.FormFile" type="file" class="form-control form-control-file">
+                                        <label asp-for="Input.FormFile" class="label-input-file btn btn-default btn-round">
+                                            <span class="btn-label">
+                                                <i class="fa fa-file-image"></i>
+                                            </span>
+                                            Прикачи снимка
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            </div>
+                        <div class="card-action">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-danger">Отказ</button>
+                                    <button id="btnCheck" type="button" value='Submit' onclick="CheckAvailability()" class="btn btn-success">Актулизирай</button>
+                                    <input type='submit' style='display: none;' />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

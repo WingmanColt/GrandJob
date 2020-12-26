@@ -1,0 +1,187 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/customCSS/Login/loginPartial.min.css">
+<style>
+    .facebook {
+        background-color: #49639F;
+        color: #fff;
+    }
+
+    .google {
+        background-color: #DF4A32;
+        color: #fff;
+    }
+
+    .linkedin {
+        background-color: #0094ff;
+        color: #fff;
+    }
+</style>
+
+
+<div class="stepwizard-row setup-panel">
+    <div class="stepwizard-step">
+        <a href="#step-1" type="button" class="btn btn-primary btn-circle" style='display: none;'>1</a>
+    </div>
+    <div class="stepwizard-step">
+        <a href="#step-2" id="step2" type="button" class="btn btn-default btn-circle" disabled="disabled" style='display: none;'>2</a>
+    </div>
+</div>
+
+
+    @RenderBody()
+
+
+
+@section Scripts {
+        <script>
+            $(document).on("keydown", "input", function (e) {
+                if (e.which == 13) e.preventDefault();
+            });
+        </script>
+
+
+        <script type="text/javascript">
+            function CheckAvailability() {
+                var username = $("#txtUsername").val();
+                console.log(username);
+
+                $.ajax({
+                    url: '/UsersApi/isEmailAvaliable/',
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        __RequestVerificationToken: $("[name='__RequestVerificationToken']").val(),
+                        term: username
+                        
+                    },
+                    success: function (response) {
+                        var message = $("#message");
+                        if (response) {
+                            message.css("color", "red");
+                            message.html("Не съществува такъв потребител.");
+                        }
+                        else {
+                            $("#successButton").click();
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+
+                });
+            };
+            
+            function ClearMessage() {
+                $("#message").html("");
+            };
+        </script>
+    
+        <script type='text/javascript'>
+            @*
+            jQuery.fn.preventDoubleSubmission = function () {
+                $(this).on('submit', function (e) {
+                    var $form = $(this);
+
+                    if ($form.data('submitted') === true) {
+                        // Previously submitted - don't submit again
+                        e.preventDefault();
+                    } else {
+                        // Mark it so that the next submit can be ignored
+                        $form.data('submitted', true);
+                    }
+                });
+
+                // Keep chainability
+                return this;
+            };
+        *@
+            var i = 0;
+
+            //Your fake progress function that delays your submit
+            function fakeProgress() {
+
+                if (i == 0) {
+                    i = 1;
+
+                    // Monitors your timer / percentage
+                    var width = 10;
+                    var $this = $("#remote-control-form").preventDoubleSubmission();;
+                    var id = setInterval(frame, 10);
+
+                    //Sets an interval for your countdown
+                    function frame() {
+
+                        if (width >= 150) {
+                            clearInterval(id);
+                            i = 0;
+                            $this.submit();
+                        }
+                        else {
+                            width++;
+                            $state = $this.find('button > .state');
+                            $this.addClass('loading');
+                            $state.html('Моля изчакайте');
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                var navListItems = $('div.setup-panel div a'),
+                    allWells = $('.setup-content'),
+                    allNextBtn = $('.nextBtn'),
+                    allPrevBtn = $('.prevBtn');
+
+                allWells.hide();
+
+                navListItems.click(function (e) {
+                    e.preventDefault();
+                    var $target = $($(this).attr('href')),
+                        $item = $(this);
+
+                    if (!$item.hasClass('disabled')) {
+                        navListItems.removeClass('btn-primary').addClass('btn-default');
+                        $item.addClass('btn-primary');
+                        allWells.hide();
+                        $target.show();
+                        $target.find('input:eq(0)').focus();
+                    }
+                });
+
+                allPrevBtn.click(function () {
+                    var curStep = $(this).closest(".setup-content"),
+                        curStepBtn = curStep.attr("id"),
+                        prevStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().prev().children("a");
+
+                    prevStepWizard.removeAttr('disabled').trigger('click');
+                });
+
+                allNextBtn.click(function () {
+                    var curStep = $(this).closest(".setup-content"),
+                        curStepBtn = curStep.attr("id"),
+                        nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                        curInputs = curStep.find("input[type='text'],input[type='url']"),
+                        isValid = true;
+
+                    $(".form-group").removeClass("has-error");
+                    for (var i = 0; i < curInputs.length; i++) {
+                        if (!curInputs[i].validity.valid) {
+                            isValid = false;
+                            $(curInputs[i]).closest(".form-group").addClass("has-error");
+                        }
+                    }
+
+                    if (isValid)
+                        nextStepWizard.removeAttr('disabled').trigger('click');
+                });
+
+                $('div.setup-panel div a.btn-primary').trigger('click');
+            });
+        </script>
+
+    }

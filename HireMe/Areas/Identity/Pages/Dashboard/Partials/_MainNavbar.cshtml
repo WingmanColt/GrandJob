@@ -1,0 +1,156 @@
+﻿@inject IConfiguration _config
+@inject UserManager<User> _userManager
+@inject SignInManager<User> _signInManager
+@inject INotificationService _notifyService
+@inject IMessageService _messageService
+
+@{
+    var user = await _userManager.GetUserAsync(User);
+    string name = user?.FirstName?.Substring(0, 1) + user?.LastName?.Substring(0, 1);
+
+    // Urls
+    string returnUrl = Url.PageLink();
+
+    // Avatar
+    string SiteImageUrl = user.isExternal ? null : _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string siteUrl = _config.GetSection("MySettings").GetSection("SiteUrl").Value;
+
+
+    bool isMobile = MobileDetector.IsMobile(Context);
+
+    // string color = isMobile ? "mobile" : "light";
+    string top = isMobile ? "fixed-bottom" : "fixed-top";
+    string drop = isMobile ? "dropup" : "dropdown";
+    string edges = isMobile ? "round-top-edges" : "round-bottom-edges";
+}
+
+<div class="main-header @edges" data-background-color="default">
+
+    <nav class="navbar navbar-header navbar-expand-lg @edges @top">
+        <div class="container-fluid">
+            <div class="desktop-only">
+                <a asp-controller="Home" asp-action="Index" style="font-size:1.0rem; color:#f2eeee; text-decoration:none ">
+                    <i class="flaticon-search-2" style="font-size:2rem; color:#f2eeee"></i> GrandJob
+                </a>
+
+            </div>
+            <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                <li class="mobile-only nav-item hidden-caret">
+                    <a class="nav-link navbar-toggler sidenav-toggler" role="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </li>
+
+                @* Add *@
+                <li class="nav-item @drop hidden-caret">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown" href="#" id="addDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                        <div class="dropdown-menu round-edges dropdown-add">
+
+                            @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                            {
+                                <a class="dropdown-item" href="#"><i class="fas fa-plus" style="color:#808080"></i></a>
+                                <div class="dropdown-divider"></div>
+
+                                <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                                <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+
+                                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/Index">Добави CV</a>
+
+                            }
+                            @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                            {
+                                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/Index">Добави CV</a>
+                            }
+                            @if (user.Role.Equals(Roles.Employer))
+                            {
+                                <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                                <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                            }
+                            @if (user.Role.Equals(Roles.Recruiter))
+                            {
+                                <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                            }
+
+                        </div>
+                    </div>
+                </li>
+
+                <!--User Profile-->
+                <li class="nav-item @drop hidden-caret">
+                    @if (!isMobile)
+                    {
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                            <div class="avatar-sm">
+                                <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
+                            </div>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="navbar-toggler quick-sidebar-toggler" href="#" role="button" data-toggle="collapse" data-target="collapse">
+                            <div class="avatar-sm">
+                                <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
+                            </div>
+                        </a>
+                    }
+                    <ul class="dropdown-menu dropdown-user round-edges animated fadeIn">
+                        <li>
+                            <div class="user-box">
+
+                                @if (user?.PictureName is null)
+                                {
+                                    <div class="avatar-lg">
+                                        <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="avatar-lg">
+                                        <img src="@SiteImageUrl@user?.PictureName" alt="User picture" class="avatar-img rounded">
+                                    </div>
+                                }
+
+                                <div class="u-text">
+                                    <h4>@user?.FirstName @user?.LastName</h4>
+                                    <p class="text-rank" style="color:@user?.Role.GetDescription()">@user?.Role.GetDisplayName()</p>
+                                    <b class="flaticon-coins" style="color:darkgoldenrod"></b> <b>@user?.Balance</b>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="dropdown-divider"></div>
+                            <a asp-area="Identity" asp-page="/Account/Manage/EditProfile" class="dropdown-item">Редактирай профил</a>
+                            <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="dropdown-item">Актулизирай паролата</a>
+                            <div class="dropdown-divider"></div>
+                            @if (user.Role.Equals(Roles.Admin))
+                            {
+                                <form asp-page="/Account/Manage/Admin" asp-page-handler="Sync" asp-route-returnUrl="@returnUrl" method="post">
+                                    <button type="submit" class="btn btn-outline-primary dropdown-item">Sync Database</button>
+                                </form>
+                                <div class="dropdown-divider"></div>
+                            }
+                            <a asp-area="Identity" asp-page="/Account/Logout" class="dropdown-item">
+                                Излез
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                @if (!isMobile)
+                {
+                <li class="nav-item">
+                    <a href="#" class="nav-link quick-sidebar-toggler" id="sidebarButton">
+                        <i class="fa fa-th"></i>
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+    </nav>
+
+</div>

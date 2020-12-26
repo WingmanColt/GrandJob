@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/customCSS/Dashboard/plugins/Using/select2-theme.min.css" rel="stylesheet" />
+}
+
+
+@RenderBody()
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <script src="~/customJS/jobs/create/companySelect.min.js"></script>
+    <script src="~/customJS/jobs/create/langSelect.min.js"></script>
+    <script src="~/customJS/jobs/create/tagsSelect.min.js"></script>
+    <script src="~/customJS/jobs/create/worktypeSelect.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/jquery.tinymce.min.js"></script>
+
+    <script>
+        tinymce.init({
+
+            selector: '#mytextarea',
+            plugins: 'autoresize',
+            autoresize_on_init: false,
+            max_height: 700,
+            min_height: 600
+        });
+    </script>
+}

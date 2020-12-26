@@ -1,0 +1,171 @@
+﻿@page
+@model AllModel
+
+@{
+    ViewData["Title"] = "Всички добавени обяви";
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+
+    int index = 0;
+}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">@ViewData["Title"]</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row">
+
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <form method="get">
+                            <small>Сортирай по:<input type="submit" asp-for="Sort" value="Всички" class="font-weight-bold" /> <input type="submit" asp-for="Sort" value="Одобрени" class="text-success font-weight-bold" /> <input type="submit" asp-for="Sort" value="Чакащи" class="text-black-50 font-weight-bold" /><input type="submit" asp-for="Sort" value="Неодобрени" class="text-danger font-weight-bold" /><input type="submit" asp-for="Sort" value="Архивирани" class="text-warning font-weight-bold" /></small>
+                        </form>
+                    </div>
+                    @if (Model.List != null)
+                    {
+                            <small style="text-align: right">Страница: @Model.Pager.CurrentPage от @Model.Pager.TotalPages</small>
+
+                            <div class="card-body">
+                                <table class="table table-responsive-md table-hover table-striped mt-4">
+
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Заглавие</th>
+                                            <th scope="col">Добавена на</th>
+                                            <th scope="col">Изтича на</th>
+                                            <th scope="col">Статус</th>
+                                            <th scope="col">Достъп</th>
+                                        </tr>
+                                    </thead>
+
+
+                                    <tbody>
+
+                                        @await foreach (var item in Model.List)
+                                        {
+                                            index++;
+
+                                            <tr>
+                                                <td>@index</td>
+                                                <td>@item.Name</td>
+                                                <td>@item.CreatedOn.ToString("MM MMMM")</td>
+                                                <td>@item.ExpiredOn.ToString("MM MMMM")</td>
+                                                <td>
+                                                    @if (!item.isArchived)
+                                                    {
+                                                        @switch (item.isApproved)
+                                                        {
+                                                            case ApproveType.Waiting:<span class="badge badge-secondary">Изчакване</span>
+                                                                break;
+                                                            case ApproveType.Rejected:<span class="badge badge-danger">Отхвърлено</span>
+                                                                break;
+                                                            case ApproveType.Success:<span class="badge badge-success">Одобрено</span>
+                                                                break;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-warning">Архивирана</span>
+                                                    }
+
+                                                </td>
+                                                <td class="dropdown hidden-caret">
+                                                    <a href="#" class="btn btn-light btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-ellipsis-h"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a asp-controller="Jobs" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Success" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                                <span class="fas fa-check-circle"></span> Одобряване
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a asp-controller="Jobs" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Rejected" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                                <span class="fas fa-ban"></span> Отхвърли
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a asp-controller="Jobs" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Waiting" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                                <span class="fas fa-balance-scale"></span> Удължи одобрението
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">
+                                                                <span class="fa fa-eye"></span> Преглед
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a asp-area="Identity" asp-page="/Jobs/Edit" asp-route-id="@item.Id" class="dropdown-item">
+                                                                <span class="fa fa-book"></span> Редактиране
+                                                            </a>
+                                                        </li>
+
+
+                                                        <li>
+                                                            <a asp-area="Identity" asp-page="/Jobs/Delete" asp-route-id="@item.Id" asp-page-handler="Delete" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                                <span class="fa fa-trash"></span> Изтриване
+                                                            </a>
+                                                        </li>
+
+
+                                                    </ul>
+
+                                                </td>
+                                            </tr>
+
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                            <div class="card-action">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @await Html.PartialAsync("../Partials/_PaginationPartial", Model.Pager)
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header" style="text-align:center">
+                                            <b>Няма намерени обяви.</b>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </div>
+                               
+                            </div>
+                        }
+                    </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

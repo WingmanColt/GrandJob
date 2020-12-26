@@ -1,0 +1,62 @@
+﻿@inject UserManager<User> UserManager
+
+@inject IConfiguration _config
+@inject IContestantsService ContestantsService
+@inject ILocationService LocationService
+
+@{
+    // Picture
+    string siteImageUrl = _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string defaultPicture = siteImageUrl + "default-avatar.png";
+
+    var user = await UserManager.GetUserAsync(User);
+    var topCandidates = ContestantsService.GetTop(3);
+    User contestantUserId;
+}
+
+<div class="similar_profiles">
+    <div class="similar_profiles">
+        <h5 class="section-subtitle from-sidebar">Хора с висок рейтинг</h5>
+        <ul class="list-unstyled">
+
+            @if (await topCandidates.CountAsync().ConfigureAwait(false) > 0)
+            {
+                await foreach (var item in topCandidates)
+                {
+                    contestantUserId = await UserManager.FindByIdAsync(item.PosterID);
+                    /*LocationViewModel locId = LocationService.GetById<LocationViewModel>(item.LocationId);*/
+
+                    <li class="sidebar-profile">
+
+                            <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">
+                                @if (contestantUserId != null)
+                                {
+                                    <img class="profileAvatar-thumb" src="@siteImageUrl@contestantUserId.PictureName">
+                                }
+                                else
+                                {
+                                    <img class="profileAvatar-thumb" src="@defaultPicture" alt="default-avatar">
+                                }
+                            </a>
+                        
+                        <div class="main-details">
+                            <a class="name" asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">@item.FullName</a>
+                            <div class="speciality">@item.About.Substring(0, 31);</div>
+
+                            @if (item.payRate > 0)
+                            {
+                                <div class="works-at text-success"><i class="fa fa-money"></i> @item.payRate лв. / @item.SalaryType.GetDisplayName()</div>
+                            }
+                            <div class="works-at text-primary"><i class="fa fa-map-marker"></i> @item.LocationId</div>
+
+                        </div>
+
+                    </li>
+
+                }
+            }
+
+
+        </ul>
+    </div>
+</div>

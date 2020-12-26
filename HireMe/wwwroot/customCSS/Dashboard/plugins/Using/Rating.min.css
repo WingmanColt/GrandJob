@@ -1,0 +1,1 @@
+.rating{direction:rtl;unicode-bidi:bidi-override;color:#ddd}.rating input{display:none}.rating label:hover,.rating label:hover~label,.rating input:checked+label,.rating input:checked+label~label{color:#ffc107}

@@ -1,0 +1,66 @@
+
+        <footer class="footer container-fluid">
+        <div class="row">
+            <div style="background-color: rgb(255, 255, 255);" class="white-rounded-space col"></div>
+        </div>
+        <div class="footer-main pull-content round-bottom-edges row desktop-only">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2 col-5">
+
+                        <a target="_self" class="navbar-brand" href="/">
+                            <img class="image" src="~/customCSS/Base/images/logo.png" />
+                        </a>
+                    </div>
+                    <div class="social-icons-cont col-lg-3 col-7"><a target="_blank" class="btn-anchor" href="https://www.facebook.com/grandjob.eu/"><span class="icon "><svg width="32" height="32" viewBox="0 0 32 32"><g fill="none" fill-rule="evenodd"><path stroke="#F5F5FA" d="M15.997 1c-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15 8.285 0 15-6.716 15-15 0-8.284-6.715-15-15-15"></path><path fill="#FFF" d="M13.465 13.6v-1.814c0-2.66 1.922-4.786 4.269-4.786H20.6v3.597h-2.866c-.335 0-.701.499-.701 1.126V13.6H20.6v3.658h-3.567V25h-3.568v-7.742H10.6V13.6h2.865z"></path></g></svg></span></a> </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <h4 class="title">Акаунт</h4>
+                        <ul class="list">
+                            <li><a asp-area="Identity" asp-page="/Account/Manage/EditProfile" class="btn-anchor">Настройки</a></li>
+                            <li><a asp-area="Identity" asp-page="/Account/Login" class="btn-anchor">Влез</a></li>
+                            <li><a asp-area="Identity" asp-page="/Account/Register" class="btn-anchor">Създай акаунт</a></li>
+                            <li><a asp-area="Identity" asp-page="/Account/Manage/Pricing" class="btn-anchor">Купи Account-PRO</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <h4 class="title">Работодател</h4>
+                        <ul class="list">
+                            <li><a asp-controller="Contestants" asp-action="Index"><span class="text">Търси кандидати</span></a></li>
+                            <li><a asp-controller="Jobs" asp-action="Create" class="btn-anchor">Публикувай обява</a></li>
+                            <li><a asp-area="Identity" asp-page="/Companies/Index"><span class="text">Моите обяви</span></a></li>
+                            <li><a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn-anchor">Контролен панел</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-2 col-xs-6">
+                        <h4 class="title">Кандидат</h4>
+                        <ul class="list">
+                            <li><a asp-controller="Jobs" asp-action="Index" class="btn-anchor">Търси работа</a></li>
+                            <li><a asp-area="Identity" asp-page="/Resume/Index" class="btn-anchor">Моите файлове</a></li>
+                            <li><a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn-anchor">Контролен панел</a></li>
+                            <li><a asp-controller="Categories" asp-action="Index" class="btn-anchor">Всички категории</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-main pull-content round-bottom-edges row mobile-only">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2 col-5">
+
+                        <a target="_self" class="navbar-brand" href="/">
+                            <img class="image" src="~/customCSS/Base/images/logo.png" />
+                        </a>
+                    </div>
+                    <div class="social-icons-cont col-lg-3 col-7"><a target="_blank" class="btn-anchor" href="https://www.facebook.com/grandjob.eu/"><span class="icon "><svg width="32" height="32" viewBox="0 0 32 32"><g fill="none" fill-rule="evenodd"><path stroke="#F5F5FA" d="M15.997 1c-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15 8.285 0 15-6.716 15-15 0-8.284-6.715-15-15-15"></path><path fill="#FFF" d="M13.465 13.6v-1.814c0-2.66 1.922-4.786 4.269-4.786H20.6v3.597h-2.866c-.335 0-.701.499-.701 1.126V13.6H20.6v3.658h-3.567V25h-3.568v-7.742H10.6V13.6h2.865z"></path></g></svg></span></a> </div>
+                    <div class="col-lg-7 col-12">
+                        <ul class="footer-nav">
+                            <li><a class="btn-anchor " target="_self" asp-controller="Home" asp-action="Privacy">Условия за ползване</a></li>
+                            <li><a class="btn-anchor " target="_self" asp-controller="Home" asp-action="Privacy">Политика за поверителност</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </footer>

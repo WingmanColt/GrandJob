@@ -1,0 +1,65 @@
+﻿@page
+@model DeletePersonalDataModel
+
+@{
+    ViewData["Title"] = "Изтриване на акаунт";
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#" style="color:red">@ViewData["Title"]</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+
+                    <div class="card-header">
+                        <div class="card-title" style="color:red">Сигурни ли сте, че искате да си изтриете акаунта ?</div>                     
+                    </div>
+
+                    <form id="delete-user" method="post" class="form-group">
+                        <div class="card-body">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            @if (!Model.user.isExternal)
+                            {
+                                <div class="form-group row">
+                                    <label asp-for="Input.Password" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
+                                    <div class="col-lg-4 col-md-9 col-sm-8">
+                                        <input asp-for="Input.Password" type="password" class="form-control" required>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                        <div class="card-action">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-primary">Отказ</button>
+                                    <input class="btn btn-sm btn-outline-danger" type="submit" value="Изтрийте данните и затворете акаунта ми.">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

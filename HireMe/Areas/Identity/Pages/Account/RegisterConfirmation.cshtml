@@ -1,0 +1,33 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Завършване на регистрацията";
+    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+}
+
+
+    <div id="remote-control-form">
+        <p class="title">Влез в системата</p>
+
+        <div class="row setup-content" id="step-1">
+            @{
+                if (@Model.DisplayConfirmAccountLink)
+                {
+                    <p>
+
+                        Това ще бъде изпратено по имейл: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Натисни за да потвърдиш</a>
+                    </p>
+                }
+                else
+                {
+                    <p>
+                        Моля проверете емайл адреса си.
+                    </p>
+                }
+            }
+        </div>
+    </div>
+
+    <footer>
+        <a href="#">GrandJob</a>
+    </footer>

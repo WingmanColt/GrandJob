@@ -1,0 +1,128 @@
+﻿@inject IConfiguration config
+
+@inject IJobsService JobsService
+@inject IHtmlSanitizer Sanitizer
+
+@model CompanyViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+    ViewData["Description"] = Model.About;
+    ViewData["Keywords"] = Model.Title;
+
+    Layout = "Layout/_Details";
+
+    var jobsByCompany = JobsService.GetAllByEntity(Model.Id, true, 3);
+
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string imageFullPath = SiteImageUrl + Model.Logo;
+    }
+
+<div class="page-preview">
+    <div class="employer-fake-header"></div>
+    <div class="employer-header">
+        <div class="container">
+            <div class="justify-content-start row">
+                <div class="desktop-only col-md-2">
+                    <div class="image-wrapper">
+                        <img src="@imageFullPath" alt="Няма лого" />
+                    </div>
+                </div>
+                <div class="employer-title col-4 mb-sm-3 col-lg-7 col-12">
+                    <h1 class="mt-2">@Model.Title</h1>
+                    <p class="mb-4"><i class="fa fa-map-marker-alt"></i> @Model.LocationId, @Model.Adress</p>
+                    <span class="text-icon-row mr-4"><span class="fa fa-phone"></span><span class="ml-1">@Model.PhoneNumber</span></span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3 content-last container">
+        <div class="row">
+            <div class="pt-3 col-lg-6">
+                <div class="section-list">
+                    <div>
+                        <h4 class="title py-0">За нас</h4>
+                        <div class="html-section">
+                            @Html.Raw(@Sanitizer.Sanitize(@Model.About))
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-3 col-2"></div>
+            <div class="pt-3 col-lg-3">
+                <h3 class="mt-3">Отворени позиции</h3>
+                <div class="search-results">
+                    <div class="search-listing">
+                        @await foreach (var item in jobsByCompany)
+                        {
+
+            <div class="search-listing-details my-4">
+                <a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.CompanyId"></a>
+
+
+                <div class="search-listing-left desktop-only">
+                    <a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.CompanyId" style="text-decoration:none;">
+                        <div class="image-wrapper">
+                            <img src="@Model.Logo" alt="">
+                        </div>
+                    </a>
+                </div>
+
+
+                <div class="search-listing-center">
+                    <h5 class="job-link-title"><a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" style="text-decoration:none; color:black;">@item.Name</a></h5>
+                    <div class="job-link-location desktop-only">
+                        <span>
+                            @item.WorkType
+
+                        @if (@item.WorkType != null)
+                        {
+        <span class="job-location-separator">|</span>}
+
+                        <span class="city"><i class="fa fa-map-marker-alt"></i>@item.LocationId</span>
+                    </span>
+                </div>
+
+
+
+                <div class="job-link-location mobile-only">
+                    <p class="city"><i class="fa fa-map-markeр-alt"></i>@item.LocationId</p>
+                    <p>@item.WorkType</p>
+                </div>
+                <p class="mobile-only">
+                    <time datetime="1586955066000">@item.CreatedOn.ToString("MM MMMM")</time>
+                </p>
+            </div>
+
+
+            <div class="search-listing-right">
+                <div class="mobile-only">
+                    <a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" style="text-decoration:none;">
+                        <div class="image-wrapper">
+                            <img src="@Model.Logo" alt="">
+                        </div>
+                    </a>
+                </div>
+                <p class="desktop-only mb-2">
+
+                </p><span class="icon"></span>
+                <p class="job-link-salary mobile-only mt-3"></p>
+            </div>
+
+        </div>
+
+                        <hr>}
+                    </div>
+                    <a class="btn btn-primary btn-main btn-subcolor unset-width " target="_self" asp-controller="Home" asp-action="SearchJobsCompany" asp-route-categoryId="@Model.Id">Виж всички</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+

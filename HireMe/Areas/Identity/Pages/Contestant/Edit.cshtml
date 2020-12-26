@@ -1,0 +1,469 @@
+﻿@page "{id:int}"
+
+@model EditModel
+@{
+    ViewData["Title"] = "Редактиране";
+    Layout = "Layout/_Edit";
+
+
+    var visiblityList = Enum.GetValues(typeof(Visiblity));
+}
+
+
+<div class="row form-group">
+    <!-- Modal -->
+    <div id="myResume" class="modal fade" role="dialog" data-backdrop="false">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                <div class="modal-body">
+                    <div id="resume">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="content">
+    <div class="page-inner">
+        <h4 class="page-title">Детайли</h4>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-with-nav">
+                    <div class="card-header">
+                        <div class="row row-nav-line">
+                            <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active show" data-toggle="tab" href="#info" role="tab" aria-selected="true">Основна информация</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#social" role="tab" aria-selected="false">Социална информация</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#details" role="tab" aria-selected="false">Детайли</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#description" role="tab" aria-selected="false">Описание</a> </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <form id="company-form" method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="tab-content mt-3">
+                                <div class="tab-pane fade show active" id="info" role="tabpanel">
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.FullName"></label>
+                                                <input asp-for="Input.FullName" class="form-control required" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Genders"></label>
+                                                <select asp-for="Input.Genders" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Age"></label>
+                                                <input asp-for="Input.Age" class="form-control required" enabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.LocationId"></label>
+                                                <select class="form-control" asp-for="Input.LocationId">
+                                                    @await foreach (var item in Model.AllLocations)
+                                                    {
+                                                        <option value="@item.Value">@item.Value</option>
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-10">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.CategoryId"></label>
+                                                <select class="form-control" asp-for="Input.CategoryId">
+                                                    @await foreach (var item in Model.AllCategories)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-10">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.WorkType"></label>
+                                                <select class="selectWork form-control input-lg" id="id_label_multiple3" multiple="multiple" style="width: 90%">
+                                                    @if (Model.Input.WorkType != null)
+                                                    {
+                                                        @foreach (var item in Model.Worktypes)
+                                                        {
+                                                            <option value="@item" selected="selected">@item</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input asp-for="Input.WorkType" type="hidden" id="selectWork_Value" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="social" role="tabpanel">
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Website" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-web" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Website" class="form-control" aria-describedby="inputGroup-sizing-sm" placeholder="Сайт на компанията" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Portfolio" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-user-1" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Portfolio" class="form-control" aria-describedby="inputGroup-sizing-sm" placeholder="Блог" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Facebook" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-facebook" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Facebook" class="form-control" aria-label="https://facebook.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Linkdin" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-linkedin" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Linkdin" class="form-control" aria-label="https://linkdin.com/in/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Twitter" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-twitter btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-twitter" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Twitter" class="form-control" aria-label="https://twitter.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Github" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-github btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-chain" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Github" class="form-control" aria-label="https://github.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Dribbble" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-twitter btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-dribbble" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Dribbble" class="form-control" aria-label="https://dribbble.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="tab-pane fade" id="details" role="tabpanel">
+                                    <div class="row mt-3">
+                                        <div class="col-sm-4">
+                                            <div class="form-group form-group-default">
+                                                <label>Тип обява</label>
+                                                <select asp-for="Input.profileVisiblity" asp-items="Html.GetEnumSelectList<Visiblity>()" class="form-control"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.payRate" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-google btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-coins" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.payRate" class="form-control" placeholder="Въведете желаната сума" enabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.SalaryType"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-google btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-graph" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <select asp-for="Input.SalaryType" class="form-control" asp-items="Html.GetEnumSelectList<SalaryType>()"></select>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-10">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.userSkillsId"></label>
+                                                <select class="selectTags form-control" id="id_label_multiple" multiple="multiple" style="width: 95%">
+                                                    @if (Model.Skills != null && Model.Input.userSkillsId != null)
+                                                    {
+                                                        @await foreach (var item in Model.Skills)
+                                                        {
+                                                            <option value="@item.Id" selected="selected">@item.Title</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input asp-for="Input.userSkillsId" type="hidden" id="selectTags_Value" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-10">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.LanguagesId"></label>
+
+                                                <select class="selectLang form-control" id="id_label_multiple55" multiple="multiple" style="width: 95%">
+                                                    @if (Model.Languages != null && Model.Input.LanguagesId != null)
+                                                    {
+                                                        @await foreach (var item in Model.Languages)
+                                                        {
+                                                            <option value="@item.Id" selected="selected">@item.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input asp-for="Input.LanguagesId" type="hidden" id="selectLang_Value" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-5">
+                                            <div class="form-group form-group-default">
+                                                <label class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Старо резюме</label>
+                                                <div class="col-lg-4 col-md-9 col-sm-8">
+                                                    <div class="input-file input-file-image">
+                                                        <button type="button" class="btn btn-outline-primary btn-fill" data-toggle="modal" data-target="#myResume">Прегледай резюме</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right">Ново резюме</label>
+                                                <div class="col-lg-10 col-md-9 col-sm-8">
+                                                    <div class="input-file input-file-image">
+                                                        <input asp-for="Input.FormFile" type="file" id="uploadresume" />
+                                                        <label for="uploadresume" class="label-input-file btn btn-primary btn-fill"><i class="fa fa-file-image-o"></i>или прикачи ново</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="description" role="tabpanel">
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.About" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-pen" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.About" class="form-control input-group-lg" aria-describedby="inputGroup-sizing-lg" placeholder="Опишете накратко с какво се занимавате" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-lg-12">
+                                            <textarea asp-for="Input.Description" id="mytextarea" rows="12" cols="12"></textarea>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="text-right mt-3 mb-3">
+                                <button type="submit" class="btn btn-success">Запази</button>
+                                <button class="btn btn-danger">Отказ</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-profile card-secondary">
+                    <div class="card-header">
+                        <div class="profile-picture">
+                            <div class="avatar avatar-xl">
+
+                                @if (Model.Input.ImagePath is null)
+                                {
+                                        <img  class="avatar-img rounded-circle" src="~/uploads/Images/200x200.jpg">
+                                }
+                                else
+                                {
+                                        <img src="@Model.Input.ImagePath" alt="Няма снимка"  class="avatar-img rounded-circle">
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="user-profile text-center">
+                            <div class="name">@Model.Input.FullName</div>
+                            <div class="job">@Model.Input.LocationId</div>
+                            <div class="desc">@Model.Input.About</div>
+                            <div class="social-media">
+                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="@Model.Input.Website">
+                                    <span class="btn-label just-icon"><i class="flaticon-web"></i> </span>
+                                </a>
+                                <a class="btn btn-secondary btn-sm btn-link" rel="publisher" href="@Model.Input.Portfolio">
+                                    <span class="btn-label just-icon"><i class="flaticon-user-1"></i> </span>
+                                </a>
+                                <a class="btn btn-info btn-twitter btn-sm btn-link" href="https://www.facebook.com/@Model.Input.Facebook">
+                                    <span class="btn-label just-icon"><i class="flaticon-facebook"></i> </span>
+                                </a>
+                                <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="https://www.twitter.com/@Model.Input.Twitter">
+                                    <span class="btn-label just-icon"><i class="flaticon-twitter"></i> </span>
+                                </a>
+                                <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="https://www.linkdin.com/in/@Model.Input.Linkdin">
+                                    <span class="btn-label just-icon"><i class="flaticon-linkedin"></i> </span>
+                                </a>
+                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="https://www.dribbble.com/@Model.Input.Dribbble">
+                                    <span class="btn-label just-icon"><i class="flaticon-dribbble"></i> </span>
+                                </a>
+                                <a class="btn btn-default btn-sm btn-link" rel="publisher" href="https://www.github.com/@Model.Input.Github">
+                                    <span class="btn-label just-icon"><i class="flaticon-chain"></i> </span>
+                                </a>
+                            </div>
+                            <div class="view-profile">
+                                <a asp-controller="Contestants" asp-action="Details" asp-route-id="@Model.Input.Id" class="btn btn-secondary btn-block">Прегледай профила</a>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="card-footer">
+                            <div class="row user-stats text-center">
+                                <div class="col">
+                                    <div class="number">125</div>
+                                    <div class="title">Post</div>
+                                </div>
+                                <div class="col">
+                                    <div class="number">25K</div>
+                                    <div class="title">Followers</div>
+                                </div>
+                                <div class="col">
+                                    <div class="number">134</div>
+                                    <div class="title">Following</div>
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

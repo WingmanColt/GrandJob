@@ -1,0 +1,190 @@
+@inject ICompanyService CompanyService
+@inject IContestantsService ContestantsService
+@inject IJobsService JobsService
+
+@model IndexViewModel
+
+@{
+
+    var companies = 0;//await CompanyService.GetAllCountByCondition(ApproveType.Success, null);
+    var jobs = 0;//await JobsService.GetAllCountByCondition(-1, -1, null, ApproveType.Success);
+    var contestants = 0;//await ContestantsService.GetAllCount();
+    bool isMobile = MobileDetector.IsMobile(Context);
+
+    string background = isMobile ? "BaseColor" : "BaseImage";
+}
+
+<div class="top-side-home @background round-bottom-edges pull-content">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="narrow-container">
+
+            <div class="text text-white text-center pt-5 mt-md-5">
+                <p class="mb-4 mobile-only" style="padding-bottom:100px;">Намерете възможности за работа, развитие и кариера</p>
+                <div class="mb-5 desktop-only">
+                    <p class="mb-4 mobile-only" style="padding-bottom:100px;">Намерете възможности за работа, развитие и кариера</p>
+                    @*<h1 class="mb-5 desktop-only">Най-лесният начин да си намерите нова работа!</h1>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-transparent btn-register" target="_self">Регистрирай се</a>
+        <a asp-controller="Jobs" asp-action="Index" class="btn btn-transparent btn-subcolor" target="_self">Всички обяви</a>
+                    *@
+
+                </div>
+
+                @*<div class="ftco-counter ftco-no-pt ftco-no-pb desktop-only">
+
+                    <div class="row">
+                        <div class="col-md-4 d-flex justify-content-center counter-wrap">
+                            <div class="block-18">
+                                <div class="text d-flex">
+                                    <div class="icon mr-2">
+                                        <span class="flaticon-suitcase"></span>
+                                    </div>
+                                    <div class="desc text-left">
+                                        <strong class="number" >@companies</strong>
+                                        <span>Работодатели</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex justify-content-center counter-wrap">
+                            <div class="block-18 text-center">
+                                <div class="text d-flex">
+                                    <div class="icon mr-2">
+                                        <span class="flaticon-web-1"></span>
+                                    </div>
+                                    <div class="desc text-left">
+                                        <strong class="number" >@jobs</strong>
+                                        <span>Обяви</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex justify-content-center counter-wrap">
+                            <div class="block-18 text-center">
+                                <div class="text d-flex">
+                                    <div class="icon mr-2">
+                                        <span class="flaticon-user-4"></span>
+                                    </div>
+                                    <div class="desc text-left">
+                                        <strong class="number">@contestants</strong>
+                                        <span>Кандидати</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    *@
+            </div>
+
+            <div class="ftco-search my-md-5 pull-content">
+                <div class="row">
+
+                    <div class="nav nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link" id="v-pills-1-tab" data-toggle="pill" href="#v-pills-1" role="tab" aria-controls="v-pills-1" aria-selected="true">Търси работа</a>
+                        <a class="nav-link active mr-md-1" id="v-pills-2-tab" data-toggle="pill" href="#v-pills-2" role="tab" aria-controls="v-pills-2" aria-selected="false">Търси служители</a>
+                    </div>
+
+                    <div class="col-md-12 tab-wrap">
+
+                        <div class="tab-content p-4" id="v-pills-tabContent">
+
+                            <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-nextgen-tab">
+
+                                <form asp-controller="Home" asp-action="Jobs" method="post" class="search-job">
+                                    <div class="row no-gutters">
+                                        <div class="col-md-4 mr-md-2">
+                                            <div class="form-group">
+                                                <div class="form-field">
+                                                    <div class="icon"><span class="icon-briefcase"></span></div>
+                                                    <input asp-for="SearchString" type="text" class="form-control" placeholder="Ключова дума: .NET Developer, Шофьор">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mr-md-2">
+                                            <div class="form-group">
+                                                <div class="form-field">
+                                                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                                    @{
+                                                        bool isEmptyCategories = await Model.AllCategories.AnyAsync();
+                                                        if (isEmptyCategories)
+                                                        {
+                                                            <select class="form-control" asp-for="CategoryId">
+                                                                <option value="-1">Изберете индустрия</option>
+                                                                @await foreach (var item in Model.AllCategories)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text</option>
+                                                                }
+                                                            </select>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <div class="form-field">
+                                                    <button type="submit" class="btn btn-subcolor btn-big">Търси</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+
+
+                            <div class="tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-performance-tab">
+                                <form asp-controller="Home" asp-action="Candidates" method="post" class="search-job">
+                                    <div class="row no-gutters">
+                                        <div class="col-md-4 mr-md-2">
+                                            <div class="form-group">
+                                                <div class="form-field">
+                                                    <div class="icon"><span class="icon-briefcase"></span></div>
+                                                    <input asp-for="SearchString" type="text" class="form-control" placeholder="Ключова дума: .NET Developer, Шофьор">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mr-md-2">
+                                            <div class="form-group">
+                                                <div class="form-field">
+                                                    <div class="icon"><span class="ion-ios-arrow-down"></span></div>
+                                                    @{
+                                                        bool isEmpty = await Model.AllCategories.AnyAsync();
+                                                        if (isEmpty)
+                                                        {
+                                                            <select class="form-control" asp-for="CategoryId">
+                                                                <option value="-1">Изберете индустрия</option>
+                                                                @await foreach (var item in Model.AllCategories)
+                                                                {
+                                                                    <option value="@item.Value">@item.Text</option>
+                                                                }
+                                                            </select>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <div class="form-field">
+                                                    <button type="submit" class="btn btn-subcolor btn-big">Търси</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>

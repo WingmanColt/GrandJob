@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Collection" Version="7.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HireMe.Core\HireMe.Core.csproj" />
+    <ProjectReference Include="..\HireMe.Entities\HireMe.Entities.csproj" />
+    <ProjectReference Include="..\HireMe.Mapping\HireMe.Mapping.csproj" />
+  </ItemGroup>
+
+</Project>

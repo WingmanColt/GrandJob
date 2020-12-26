@@ -1,0 +1,115 @@
+﻿@model ContestantViewModel
+
+
+<div class="filter-header">
+    @*<form asp-controller="Contestants" asp-action="Index" id="filter-form" method="get">*@
+    <form method="get" id="filter-form" asp-controller="Contestants" asp-action="Index" class="ml-auto">
+
+        <fieldset>
+            <div class="filter-menu">
+
+                <div class="filters-section">
+
+                    <div class="my-2 form-group">
+                        <label class="form-label" for="employers">Ключови думи</label>
+                        <div class="css-2b097c-container">
+                            <div class="cities-select__control css-yk16xz-control">
+                                <div class="cities-select__value-container employers-select__value-container--is-multi css-1hwfws3">
+
+                                    <select class="selectTags form-control" id="id_label_multiple" multiple="multiple" style="width: 75%">
+                                        @if (!(Model.Skills is null)) 
+                                        {
+                                        @await foreach (var item in Model.Skills)
+                                        {
+                                            <option value="@item.Id" selected="selected">@item.Title</option>
+                                        }
+                                        }
+
+                                    </select>
+                                    <input asp-for="SkillsId" type="hidden" id="selectTags_Value" />
+                                </div>
+                                <div class="cities-select__indicators css-1wy0on6"><span class="cities-select__indicator-separator css-1okebmr-indicatorSeparator"></span></div>
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-group">
+                        <label class="form-label" for="city">Локация</label>
+
+                        <div class="cities-select__control">
+                            <div class="cities-select__value-container cities-select__value-container--is-multi">
+
+                                <div class="select-wrap">
+                                    <div class="cities-select__input" style="display: inline-block;">
+                                        <select class="selectLocation form-control" style="width:257px;">
+                                        </select>
+                                        <input asp-for="LocationId" type="hidden" id="selectLocation_Value" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="mb-3 form-group">
+                        <label class="form-label">Индустрия</label>
+                        <div class="css-2b097c-container">
+                            <div class="cities-select__control css-yk16xz-control">
+                                <div class="cities-select__value-container cities-select__value-container--is-multi css-1hwfws3">
+
+                                    <div class="select-wrap">
+                                        <div class="cities-select__input" style="display: inline-block;">
+                                            <select class="selectCategory form-control" style="width:257px;" multiple="multiple">
+                                            </select>
+                                            <input asp-for="CategoryId" type="hidden" id="selectCategory_Value" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="my-2 form-group">
+                        <label class="form-label" for="employers">Тип работа</label>
+                        <div class=" css-2b097c-container">
+                            <div class="employers-select__control css-yk16xz-control">
+                                <div class="employers-select__value-container employers-select__value-container--is-multi css-1hwfws3">
+
+                                    <select class="selectWork form-control" style="width:257px;" multiple="multiple">
+                                    </select>
+                                    <input asp-for="WorkType" type="hidden" id="selectWork_Value" />
+                                </div>
+                                <div class="employers-select__indicators css-1wy0on6"><span class="employers-select__indicator-separator css-1okebmr-indicatorSeparator"></span></div>
+                            </div>
+                            <div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="my-2 form-group">
+                        <label class="form-label" for="language">Език</label>
+                        <div class=" css-2b097c-container">
+                            <div class="language-select__control css-yk16xz-control">
+                                <div class="language-select__value-container language-select__value-container--is-multi css-1hwfws3">
+
+                                    <select class="selectLang form-control" style="width:257px;" onchange="this.form.submit();"></select>
+                                    <input asp-for="LanguagesId" type="hidden" id="selectLang_Value" />
+                                </div>
+
+                                <div class="language-select__indicators css-1wy0on6"><span class="language-select__indicator-separator css-1okebmr-indicatorSeparator"></span></div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </fieldset>
+
+    </form>
+</div>
+

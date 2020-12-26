@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "~/Views/Home/_PageLayout.cshtml";
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/customCSS/Dashboard/plugins/Using/select2-theme.min.css" rel="stylesheet" />
+    <link href="~/customCSS/Base/SearchResults.min.css" rel="stylesheet">
+    <link href="~/customCSS/Dashboard/plugins/Using/Rating.min.css" rel="stylesheet">
+}
+
+
+@RenderBody()
+
+
+@section Scripts {
+    <script src="~/customJS/Dashboard/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+
+    <script src="~/customJS/jobs/filter/categorySelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/companySelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/langSelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/locationSelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/tagsSelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/worktypeSelect.min.js"></script>
+
+    <script type="text/javascript">
+        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            $(document).ready(function () {
+
+                if ($('#filter-Mobile').is(':visible'))
+                    $('#filter-Mobile').hide();
+
+                $('#close').click(function () {
+                    $('#filter-Mobile').hide();
+                });
+
+
+                $("#filterButton").click(function () {
+                    if ($('#filter-Mobile').is(':visible')) {
+                        $('#filter-Mobile').hide();
+                    } else {
+                        $('#filter-Mobile').toggle();
+                    }
+
+                });
+            });
+            $('.form-label').css({ 'color': 'white' });
+        }
+
+
+    </script>
+}
+
+
+

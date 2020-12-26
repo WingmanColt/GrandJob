@@ -1,0 +1,102 @@
+$navs-bg: #fff;
+$body-bg: #eee;
+$active-color: #77acc8;
+$text-color: #464748;
+$spacer: 16px;
+
+$window-width: 270px;
+$nav-height: $spacer * 3;
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    padding: 3rem 0;
+    color: $text-color;
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(to top right, #77acc8, #d1f0ef);
+}
+
+.wrapper {
+    width: $window-width;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    background: $body-bg;
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+*[class^="icon-"] {
+    height: 24px;
+    width: 24px;
+}
+
+.flexure {
+    width: $window-width / 3;
+    left: 0;
+    top: -2px;
+    position: absolute;
+    z-index: 0;
+    transition: left 300ms ease-out;
+    filter: drop-shadow( 0px -1px 1px rgba(0, 0, 0, .03));
+    transform: scaleY(1.5);
+    svg, path
+
+{
+    fill: $body-bg;
+}
+
+}
+
+.nav {
+    background: $navs-bg;
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, .05);
+}
+
+.nav-item {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+    height: $nav-height;
+    *[class^="icon-"]
+
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    transition: top 500ms ease-out;
+    background: $navs-bg;
+    border-radius: 50%;
+    padding: .4rem;
+    svg, path
+
+{
+    fill: $text-color;
+}
+
+}
+}
+
+.nav-item.active {
+    *[class^="icon-"]
+
+{
+    position: absolute;
+    top: -$spacer;
+    svg, path
+
+{
+    fill: $active-color;
+}
+
+}
+}

@@ -1,0 +1,42 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+}
+
+@RenderBody()
+
+
+@section Scripts {
+    <script type="text/javascript">
+        function CheckAvailability() {
+            var $form = $("form#profile");
+
+            var username = $("#username").val();
+            console.log(username);
+            $.ajax({
+                url: '/UsersApi/isUsernameValid/',
+                type: "POST",
+                dataType: "json",
+                data: {
+                    term: username
+                },
+                success: function (response) {
+                    console.log(response);
+                    var message = $("#message");
+                    if (!response) {
+                        message.html("Моля опитайте с друго потребителско име !");
+                    } else {
+                        $form.submit();
+                    }
+                },
+                error: function (e) {
+                    
+                }
+
+            });
+        };
+
+        function ClearMessage() {
+            $("#message").html("");
+        };
+    </script>
+}

@@ -1,0 +1,117 @@
+﻿@page
+
+@inject IMessageService _messageService
+@inject UserManager<User> _userManager
+@inject IConfiguration _config
+
+@model MessengerModel
+@{
+    ViewData["Title"] = "Входящи съобщения";
+    ViewData["Sidebar"] = "sidebar_minimize";
+
+    Layout = "Layout/_Email";
+
+    string siteUrl = _config.GetSection("MySettings").GetValue<string>("SiteMessenger");
+
+    var context = HttpContext.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+
+    User user;
+    string isReaded;
+}
+
+<div class="content content-full">
+    <div class="page-inner page-inner-fill">
+        <div class="page-with-aside mail-wrapper bg-white">
+
+            @*<partial name="Partials/_aSideMenu" />*@
+            @await Html.PartialAsync("Partials/_aSideMenu", new ViewDataDictionary(ViewData) { { "Sort", Model.Sort } })
+
+            <div class="page-content mail-content">
+                <div class="inbox-head">
+                    <h3>@ViewData["Title"]</h3>
+
+                    @await Html.PartialAsync("Partials/_searchForm")
+
+                </div>
+                <div class="inbox-body">
+
+
+
+                    <div class="email-list">
+
+
+                        @{
+                            @if (Model.List != null)
+                            {
+                                await foreach (var item in Model.List)
+                                {
+
+                                    user = await _userManager.FindByIdAsync(item.SenderId);
+                                    isReaded = item.isRead ? " " : "unread";
+
+
+                                    <div class="email-list-item @isReaded">
+                                        <div class="email-list-actions">
+                                            <div class="d-flex">
+                                                <span class="rating rating-sm mr-3">
+
+                                                    <label for="star1">
+
+                                                        <a asp-controller="Message" asp-action="Stared" asp-route-id="@item.Id" asp-route-returnUrl="@returnUrl" title="Закачи">
+                                                            @if (item.isStared)
+                                                            {
+                                                                <span class="fas fa-star" style="color:#ffd800;"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="far fa-star" style="color: #9b9797;"></span>
+                                                            }
+
+                                                        </a>
+                                                    </label>
+                                                </span>
+                                                <span class="rating rating-sm mr-3">
+
+                                                    <label for="star2">
+                                                        <a asp-controller="Message" asp-action="Important" asp-route-id="@item.Id" asp-route-returnUrl="@returnUrl" title="Маркирай като важно">
+                                                            @if (item.isImportant)
+                                                            {
+                                                                <span class="fab fa-hotjar" style="color:#ea482a;"></span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="fab fa-hotjar" style="color:#9b9797;"></span>
+                                                            }
+                                                        </a>
+                                                    </label>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="email-list-detail text-black" onclick="location.href='@siteUrl@item.Id';" style="cursor:pointer;">
+                                            <span class="date float-right">
+                                                <a asp-controller="Message" asp-action="ReportMessage" asp-route-id="@item.Id" style="text-decoration:none; color:#555;" class="btn btn-sm" title="Докладвай"><i class="fas fa-exclamation-triangle"></i></a>
+                                                <a asp-controller="Message" asp-action="Trash" asp-route-id="@item.Id" asp-route-client="@MessageClient.Receiver" asp-route-returnUrl="@returnUrl" style="text-decoration:none; color:#555;" class="btn btn-sm" title="Изтриване"><span class="fas fa-trash-alt" style="font-size:13px;"></span></a>
+                                            </span><span class="from">@user.FirstName @user.LastName</span>
+                                            <p class="msg">@item.Title</p>
+                                        </div>
+                                    </div>
+
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="mail-option">
+                    <div class="email-filters-left ml-auto">
+                        @*@await Html.PartialAsync("../Partials/_PaginationPartial", Model.Pager)*@
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

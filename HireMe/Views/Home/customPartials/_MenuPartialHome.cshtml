@@ -1,0 +1,227 @@
+@inject IConfiguration _config
+@inject UserManager<User> _userManager
+@inject SignInManager<User> _signInManager
+@inject IFavoritesService _favouriteService
+
+@{
+    var user = await _userManager.GetUserAsync(User);
+    string name = user?.FirstName?.Substring(0, 1) + user?.LastName?.Substring(0, 1);
+    int? favCount = await _favouriteService.GetFavouriteByCount(user, PostType.All);
+
+    string siteUrl = _config.GetSection("MySettings").GetSection("SiteUrl").Value;
+    string SiteImageUrl = null;
+if(user is not null)
+SiteImageUrl = user.isExternal ?  null : _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+
+    var context = Context.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+}
+<style>
+
+    .dropdown-menu > li.open > a {
+        background-color: #F5F5F5;
+        color: #262626;
+        text-decoration: none;
+    }
+    .dropmaxdown  {
+        transform: translate3d(-200px, 15px, 0px) !important;
+        z-index:101;
+    }
+        .dropmaxdown:after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            position: absolute;
+            top: -5px;
+            left: 210px;
+            border-radius: 3px;
+            transform: skew(-50deg, 45deg);
+            z-index: -1;
+        }
+    hr {
+        background-color: #0094ff;
+    }
+</style>
+
+
+
+<div class="container-xl">
+    <nav class="nav-main px-sm-0 navbar navbar-expand navbar-light">
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand" style="font-size:1.0rem; color:#f2eeee; text-decoration:none ">
+                <i class="flaticon-search-2" style="font-size:2rem; color:#f2eeee"></i> GrandJob
+            </a>
+
+            <div class="flex-align-center ml-auto">
+                <a target="_self" asp-controller="Home" asp-action="Index" class="text-nav-link">Начало</a>
+                <a target="_self" asp-controller="Jobs" asp-action="Index" class="text-nav-link">Oбяви за работа</a>
+                <a target="_self" asp-controller="Contestants" asp-action="Index" class="text-nav-link">Кандидати</a>
+
+                @if (!_signInManager.IsSignedIn(User))
+                {
+                    <div class="btn-group dropleft">
+                        <button type="button" class="btn btn-main dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Регистрирай се
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Като Кандидат</a>
+                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/RegisterAsEmployer">Като Работодател</a>
+                        </div>
+                    </div>
+
+                    <a asp-area="Identity" asp-page="/Account/Login" class="text-nav-link">Влез</a>
+                }
+                else
+                {
+                    /*
+                    <div class="btn-group dropleft">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Меню
+                        </button>
+                        <div class="dropdown-menu">
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                                <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                                <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                            }
+                            @if (User.IsInRole("User"))
+                            {
+                                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/All">Качи CV/Резюме</a>
+                            }
+                            @if (User.IsInRole("Contestant"))
+                            {
+                                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/All">Качи CV/Резюме</a>
+                            }
+                            @if (User.IsInRole("Employer"))
+                            {
+                                <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                                <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                            }
+
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Моят профил</a>
+
+                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                                <button type="submit" class="dropdown-item">Излез</button>
+                            </form>
+
+                        </div>
+                    </div>
+                    */
+
+                    @* Add *@
+                    <div class="text-nav-link btn-group hidden-caret">
+                        <div class="dropdown">
+                            <a class="nav-link dropdown" href="#" id="addDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                            <div class="dropdown-menu round-edges dropdown-add">
+
+                                @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                                {
+                                    <a class="dropdown-item" href="#"><i class="fas fa-plus" style="color:#808080"></i></a>
+                                    <div class="dropdown-divider"></div>
+
+                                    <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                                    <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+
+                                    <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/Index">Добави CV</a>
+
+                                }
+                                @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                                {
+                                    <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                                    <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/Index">Добави CV</a>
+                                }
+                                @if (user.Role.Equals(Roles.Employer))
+                                {
+                                    <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                                    <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                                }
+                                @if (user.Role.Equals(Roles.Recruiter))
+                                {
+                                    <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Activity-->
+                    <a class="text-nav-link btn-group quick-sidebar-toggler" href="#notifications" id="notifications">
+                        <i class="fa fa-th"></i>
+                    </a>
+
+                    <!--User Profile-->
+                    <div class="text-nav-link btn-group dropdown hidden-caret">
+                        <a class="dropdown-toggle dropleft" data-toggle="dropdown" href="#" aria-expanded="false"style="text-decoration:none">
+                            <div class="avatar-md">
+                                <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
+                            </div>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-user dropmaxdown round-edges animated fadeIn">
+                            <div class="user-box">
+
+                                @if (user?.PictureName is null)
+                                {
+                                    <div class="avatar-lg">
+                                        <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="avatar-lg">
+                                        <img src="@SiteImageUrl@user?.PictureName" alt="Снимка" class="avatar-img rounded">
+                                    </div>
+                                }
+
+                                <div class="u-text">
+                                    <h4>@user?.FirstName @user?.LastName</h4>
+                                    <p class="text-rank" style="color:@user?.Role.GetDescription()">@user?.Role.GetDisplayName()</p>
+                                    <b class="flaticon-coins" style="color:darkgoldenrod"></b> <b>@user?.Balance</b>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-divider"></div>
+                            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="dropdown-item">Контролен панел</a>
+                            <a asp-area="Identity" asp-page="/Account/Manage/EditProfile" class="dropdown-item">Редактирай профил</a>
+                            <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="dropdown-item">Актулизирай паролата</a>
+                            <div class="dropdown-divider"></div>
+                            @if (user.Role.Equals(Roles.Admin))
+                            {
+                                <form asp-page="/Account/Manage/Admin" asp-page-handler="Sync" asp-route-returnUrl="@returnUrl" method="post">
+                                    <button type="submit" class="btn btn-outline-primary dropdown-item">Sync Database</button>
+                                </form>
+                                <div class="dropdown-divider"></div>
+                            }
+                            <a asp-area="Identity" asp-page="/Account/Logout" class="dropdown-item">
+                                Излез
+                            </a>
+
+                        </div>
+                    </div>
+
+
+                }
+
+
+            </div>
+
+    </nav>
+
+</div>
+
+
+
+
+
+
+
+

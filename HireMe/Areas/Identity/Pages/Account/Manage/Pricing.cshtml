@@ -1,0 +1,181 @@
+﻿@page
+
+@inject UserManager<User> _userManager
+
+@model PricingModel
+@{
+    ViewData["Title"] = "Купи PRO-акаунт";
+    Layout = "Layouts/_Pricing";
+
+    var user = await _userManager.GetUserAsync(User);
+}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">@ViewData["Title"]</a>
+                </li>
+            </ul>
+
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card-title" style="color:#808080"><i class="fas fa-info-circle" style="color:#0094ff"></i> Моля изберете пакет, с който искате да продължите в платформата ни.<br>Разполагате с два платени и един безплатен.</div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-3 pl-md-0">
+                <div class="card card-pricing">
+                    <div class="card-header">
+                        <h4 class="card-title">Безплатно</h4>
+                        <div class="card-price">
+                            <span class="price">0 лв.</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="specification-list">
+                            <li>
+                                <span class="name-specification">Кредити</span>
+                                <span class="status-specification">0 <i class="flaticon-coins" style="color:darkgoldenrod"></i></span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Кандидатури</span>
+                                <span class="status-specification">1</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Рейтинг</span>
+                                <span class="status-specification">Слаб</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Време за одобряване</span>
+                                <span class="status-specification">Бавно</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Boosted обяви</span>
+                                <span class="status-specification">Не</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Предложение във фирмите</span>
+                                <span class="status-specification">Не</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <form asp-page-handler="Free" method="post">
+                            @if (user?.AccountType != AccountType.Free)
+                            {
+                                <button type="submit" class="btn btn-primary btn-block"><b>Започни</b></button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary btn-block" disabled><i class="fas fa-user-check"></i></button>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 pl-md-0 pr-md-0">
+                <div class="card card-pricing card-pricing-focus card-primary">
+                    <div class="card-header">
+                        <h4 class="card-title">PRO-Акаунт</h4>
+                        <div class="card-price">
+                            <span class="price">10лв.</span>
+                            <span class="text">/месец</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="specification-list">
+                            <li>
+                                <span class="name-specification">Кредити</span>
+                                <span class="status-specification">100 <i class="flaticon-coins" style="color:darkgoldenrod"></i></span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Кандидатури</span>
+                                <span class="status-specification">Без ограничение</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Рейтинг</span>
+                                <span class="status-specification">Висок</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Време за одобряване</span>
+                                <span class="status-specification">Бързо</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Boosted обяви</span>
+                                <span class="status-specification">10</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Предложение във фирмите</span>
+                                <span class="status-specification">Да</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <form asp-page-handler="Pro" method="post">
+                            <button type="submit" class="btn btn-light btn-block" disabled><b>Очаквайте скоро</b></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 pr-md-0">
+                <div class="card card-pricing">
+                    <div class="card-header">
+                        <h4 class="card-title">Тест</h4>
+                        <div class="card-price">
+                            <span class="price">5лв.</span>
+                            <span class="text">/месец</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="specification-list">
+                            <li>
+                                <span class="name-specification">Кредити</span>
+                                <span class="status-specification">50 <i class="flaticon-coins" style="color:darkgoldenrod"></i></span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Кандидатури</span>
+                                <span class="status-specification">5</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Рейтинг</span>
+                                <span class="status-specification">Среден</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Време за одобряване</span>
+                                <span class="status-specification">Средно</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Boosted обяви</span>
+                                <span class="status-specification">5</span>
+                            </li>
+                            <li>
+                                <span class="name-specification">Предложение във фирмите</span>
+                                <span class="status-specification">Не</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <form asp-page-handler="Test" method="post">
+                            <button type="submit" class="btn btn-light btn-block" disabled><b>Очаквайте скоро</b></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

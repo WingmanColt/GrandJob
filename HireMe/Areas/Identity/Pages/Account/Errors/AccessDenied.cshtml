@@ -1,0 +1,30 @@
+﻿@page
+
+@{
+    ViewData["Title"] = "Достъпът е забранен";
+    Layout = "_Layout.cshtml";
+}
+
+
+<div class="wrapper not-found">
+    <h2 class="animated fadeIn text-danger">@ViewData["Title"]</h2>
+    <div class="desc animated fadeIn"><br />Моля влезте в акаунта си и опитайте отново.</div>
+    <h3><br /> Ако ви се появи същата грешка си изчистете кеш данните и бисквитките на браузъра!</h3>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-back-home mt-4 animated fadeInUp">
+        <span class="btn-label mr-2">
+            <i class="flaticon-home"></i>
+        </span>
+        Върни се назад
+    </a>
+
+    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-danger btn-back-home mt-4 animated fadeInUp">
+        <span class="btn-label mr-2">
+            <i class="fas fa-heart"></i>
+        </span>
+        Влез в профила
+    </a>
+    <br>
+
+</div>
+
+

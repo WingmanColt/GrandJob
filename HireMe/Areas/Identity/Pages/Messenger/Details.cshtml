@@ -1,0 +1,152 @@
+﻿@page "{id:int}"
+
+@inject IMessageService _messageService
+@inject IConfiguration _config;
+@inject UserManager<User> UserManager
+@inject IHtmlSanitizer Sanitizer
+
+@model DetailsModel
+
+@{
+    ViewData["Title"] = "Детайли";
+    ViewData["Sidebar"] = "sidebar_minimize";
+    Layout = "Layout/_Details";
+
+    var msgId = ViewData["Message"] as Message;
+
+    string imageUrl = _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string FullImage;
+
+    var context = HttpContext.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+}
+
+<div class="content content-full">
+    <div class="page-inner page-inner-fill">
+        <div class="page-with-aside mail-wrapper bg-white">
+
+            <partial name="/Areas/Identity/Pages/Messenger/Partials/_aSideMenu.cshtml" />
+
+            <div class="page-content mail-content">
+
+                <!-- Message Modal -->
+                <form asp-page-handler="SendMessage" asp-route-id="@Model.Id" method="post" id="messageForm">
+                   
+                    <div id="messageModal" class="modal fade" role="dialog" data-backdrop="false">
+                        <div class="modal-dialog modal-md">
+
+                            <!-- Modal content-->
+                            <div class="modal-content modal-window">
+                                <div class="modal-header">
+                                    <h4>Изпрати съобщение</h4>
+                                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    
+                                </div>
+
+                                <div class="modal-body">
+                                    <div asp-validation-summary="All" class="text-danger"></div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label asp-for="Message.ReceiverId"></label>
+                                                <input asp-for="Message.ReceiverId" class="form-control" disabled Value="@Model.sender?.UserName" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label asp-for="Message.Title"></label>
+                                                <input asp-for="Message.Title" class="form-control" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <label asp-for="Message.Description"></label>
+                                                <textarea asp-for="Message.Description" id="mytextarea"></textarea>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success btn-fill pull-right" id="MessageSubmit">Изпрати</button>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+
+
+                <div class="email-head">
+                    <span class="rating rating-sm mr-3">
+
+                        <label for="star1">
+
+                            <a asp-controller="Message" asp-action="Stared" asp-route-id="@msgId.Id" asp-route-returnUrl="@returnUrl" title="Закачи">
+                                @if (msgId.isStared)
+                                {
+                                    <span class="fas fa-star" style="color:#ffd800;"></span>
+                                }
+                                else
+                                {
+                                    <span class="far fa-star" style="color: #9b9797;"></span>
+                                }
+
+                            </a>
+                        </label>
+                    </span>
+                    <h3>
+                        @msgId.Title
+                    </h3>
+                    <div class="controls">
+                        @if (Model.sender?.Id != Model.curretntUser?.Id)
+                        {
+                        <button class="btn btn-md" data-toggle="modal" data-target="#messageModal" title="Отговори"><i class="fa fa-reply" style="font-size:22px"></i></button>
+                        <a asp-controller="Message" asp-action="ReportMessage" asp-route-id="@Model.Id" title="Докладвай"><i class="fas fa-exclamation-triangle"></i></a>
+                        }
+                        <a asp-controller="Message" asp-action="Trash" asp-route-id="@Model.Id" asp-route-returnUrl="" title="Изтрий"><i class="fas fa-trash-alt"></i></a>
+                    </div>
+                </div>
+                @{ 
+                    if (!(Model.sender?.PictureName is null))
+                        FullImage = Model.sender.isExternal ? Model.sender?.PictureName : imageUrl + Model.sender?.PictureName; 
+                    else
+                        FullImage = "~/uploads/Images/100x100.jpg";
+                }
+                <div class="email-sender">
+                    <div class="avatar">
+                        <img src="@FullImage" alt="Avatar">
+                    </div>
+                    <div class="sender">
+                        От <a href="#" class="from">@Model.sender?.FirstName @Model.sender?.LastName</a> до <a href="#" class="to">@Model.receiver?.FirstName @Model.receiver?.LastName</a>
+                      @*  <div class="action ml-1">
+                            <a data-toggle="dropdown" class="dropdown-toggle"></a>
+                            <div role="menu" class="dropdown-menu">
+                                <a href="#" class="dropdown-item">Mark as read</a><a href="#" class="dropdown-item">Mark as unread</a><a href="#" class="dropdown-item">Spam</a>
+                                <div class="dropdown-divider"></div>
+                                <a asp-controller="Message" asp-action="Trash" asp-route-id="@Model.Id" asp-route-returnUrl="" class="dropdown-item">Изтрий</a>
+                            </div>
+                        </div>
+                          *@
+                    </div>
+                    <div class="date">@msgId.dateTime.ToString("MM MMMM")</div>
+                </div>
+                <div class="email-body">
+                    @Html.Raw(@Sanitizer.Sanitize(@msgId.Description))
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

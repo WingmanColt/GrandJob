@@ -1,0 +1,52 @@
+.popover {
+    max-width: 240px;
+    line-height: 1.7;
+    border: 0;
+    box-shadow: 0 0 20px 1px rgba(69, 65, 78, 0.2);
+}
+
+    .popover .popover-header {
+        background: 0 0;
+        font-size: 14px;
+        border-bottom: 0;
+        text-transform: capitalize;
+        margin-top: 5px;
+        color: #aaa;
+        font-weight: 400;
+    }
+
+    .popover .popover-body {
+        margin-bottom: 5px;
+    }
+
+        .popover .popover-body p {
+            font-size: 13px;
+            margin-bottom: 1rem;
+        }
+
+    .popover.bs-popover-bottom .arrow:before,
+    .popover.bs-popover-left .arrow:before,
+    .popover.bs-popover-right .arrow:before,
+    .popover.bs-popover-top .arrow:before {
+        border: transparent;
+    }
+
+    .popover.bs-popover-auto[x-placement^="right"],
+    .popover.bs-popover-right {
+        margin-left: 10px;
+    }
+
+    .popover.bs-popover-auto[x-placement^="left"],
+    .popover.bs-popover-left {
+        margin-right: 10px;
+    }
+
+    .popover.bs-popover-auto[x-placement^="top"],
+    .popover.bs-popover-top {
+        margin-bottom: 10px;
+    }
+
+    .popover.bs-popover-auto[x-placement^="bottom"],
+    .popover.bs-popover-bottom {
+        margin-top: 10px;
+    }

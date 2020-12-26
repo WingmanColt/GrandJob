@@ -1,0 +1,391 @@
+.dropzone {
+    padding: 70px 60px 80px !important;
+    border: 2px dashed rgba(0, 0, 0, 0.13) !important;
+    background: 0 0 !important;
+}
+
+    .dropzone:hover {
+        background: #fafafa !important;
+        transition: all 0.5s !important;
+    }
+
+    .dropzone .dz-message .icon {
+        margin-bottom: 15px;
+        font-size: 39px;
+    }
+
+    .dropzone .dz-message .message {
+        font-size: 34px;
+        font-weight: 200;
+    }
+
+    .dropzone .dz-message .note {
+        font-size: 16px;
+        margin-top: 18px;
+        font-weight: 300;
+    }
+.messages-wrapper {
+    position: absolute;
+    left: calc(100% + 40px);
+    transition: left 0.3s ease;
+}
+
+    .messages-wrapper .messages-title {
+        width: 100%;
+        display: inline-block;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 15px;
+    }
+
+        .messages-wrapper .messages-title .user {
+            width: calc(100% - 40px);
+            float: right;
+            text-align: right;
+            padding: 10px 0;
+        }
+
+            .messages-wrapper .messages-title .user .name {
+                display: inline-block;
+                font-size: 13px;
+                font-weight: 400;
+                margin-bottom: 4px;
+            }
+
+            .messages-wrapper .messages-title .user .last-active {
+                display: block;
+                font-size: 10px;
+            }
+
+        .messages-wrapper .messages-title .return {
+            background: 0 0;
+            border: 0;
+            font-size: 25px;
+            padding: 10px 0;
+            cursor: pointer;
+        }
+
+    .messages-wrapper .messages-body {
+        height: calc(100vh - 310px);
+        display: block;
+        overflow-y: auto;
+    }
+
+        .conversations-body .message-content-wrapper,
+        .messages-wrapper .messages-body .message-content-wrapper {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .conversations-body .message,
+        .messages-wrapper .messages-body .message {
+            display: table;
+            table-layout: fixed;
+            padding: 8px 0;
+        }
+
+        .conversations-body .message-in,
+        .messages-wrapper .messages-body .message-in {
+            margin-right: 40px;
+            float: left;
+        }
+
+            .conversations-body .message-in .message-body,
+            .messages-wrapper .messages-body .message-in .message-body {
+                display: table-cell;
+                vertical-align: top;
+            }
+
+                .conversations-body .message-in .message-body .message-content,
+                .messages-wrapper .messages-body .message-in .message-body .message-content {
+                    background: #f7f7f7;
+                    padding: 12px 15px;
+                    border-radius: 5px;
+                    margin-left: 10px;
+                    position: relative;
+                    width: fit-content;
+                }
+
+                    .conversations-body .message-in .message-body .message-content:before,
+                    .messages-wrapper .messages-body .message-in .message-body .message-content:before {
+                        width: 0;
+                        height: 0;
+                        border-top: 10px solid transparent;
+                        border-bottom: 10px solid transparent;
+                        border-right: 10px solid #f7f7f7;
+                        content: "";
+                        position: absolute;
+                        left: -10px;
+                        top: 12px;
+                    }
+
+                    .conversations-body .message-in .message-body .message-content .name,
+                    .messages-wrapper .messages-body .message-in .message-body .message-content .name {
+                        color: #83848a;
+                        font-size: 11px;
+                        margin-bottom: 5px;
+                    }
+
+                    .conversations-body .message-in .message-body .message-content .content,
+                    .messages-wrapper .messages-body .message-in .message-body .message-content .content {
+                        font-size: 13px;
+                    }
+
+                .conversations-body .message-in .message-body .date,
+                .messages-wrapper .messages-body .message-in .message-body .date {
+                    margin-left: 10px;
+                    margin-top: 8px;
+                    font-size: 11px;
+                    color: #83848a;
+                    padding-left: 12px;
+                }
+
+                .conversations-body .message-in .message-body .message-content + .message-content,
+                .messages-wrapper .messages-body .message-in .message-body .message-content + .message-content {
+                    margin-top: 10px;
+                }
+
+                    .conversations-body .message-in .message-body .message-content + .message-content:before,
+                    .messages-wrapper .messages-body .message-in .message-body .message-content + .message-content:before {
+                        display: none;
+                    }
+
+        .conversations-body .message-out,
+        .messages-wrapper .messages-body .message-out {
+            float: right;
+            margin-left: 40px;
+        }
+
+            .conversations-body .message-out .message-body,
+            .messages-wrapper .messages-body .message-out .message-body {
+                display: table-cell;
+                vertical-align: top;
+                float: right;
+            }
+
+                .conversations-body .message-out .message-body .message-content,
+                .messages-wrapper .messages-body .message-out .message-body .message-content {
+                    background: #177dff;
+                    padding: 12px 15px;
+                    border-radius: 5px;
+                    margin-right: 10px;
+                    position: relative;
+                    width: fit-content;
+                }
+
+                    .conversations-body .message-out .message-body .message-content:before,
+                    .messages-wrapper .messages-body .message-out .message-body .message-content:before {
+                        width: 0;
+                        height: 0;
+                        border-top: 10px solid transparent;
+                        border-bottom: 10px solid transparent;
+                        border-left: 10px solid #177dff;
+                        content: "";
+                        position: absolute;
+                        right: -10px;
+                        top: 12px;
+                    }
+
+                    .conversations-body .message-out .message-body .message-content .content,
+                    .messages-wrapper .messages-body .message-out .message-body .message-content .content {
+                        font-size: 13px;
+                        color: #fff !important;
+                    }
+
+                .conversations-body .message-out .message-body .date,
+                .messages-wrapper .messages-body .message-out .message-body .date {
+                    margin-right: 10px;
+                    margin-top: 8px;
+                    font-size: 11px;
+                    color: #83848a;
+                    text-align: right;
+                    padding-right: 15px;
+                }
+
+                .conversations-body .message-out .message-body .message-content + .message-content,
+                .messages-wrapper .messages-body .message-out .message-body .message-content + .message-content {
+                    margin-top: 10px;
+                }
+
+                    .conversations-body .message-out .message-body .message-content + .message-content:before,
+                    .messages-wrapper .messages-body .message-out .message-body .message-content + .message-content:before {
+                        display: none;
+                    }
+
+.messages-form {
+    display: table;
+    width: 100%;
+    margin-top: 30px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+    .messages-form .messages-form-control {
+        display: table-cell;
+        padding-right: 15px;
+    }
+
+    .messages-form .messages-form-tool {
+        display: table-cell;
+        text-align: right;
+        width: 50px;
+    }
+
+        .messages-form .messages-form-tool .attachment {
+            height: 100%;
+            line-height: 1;
+            color: #888c91;
+            background: #e8e8e8;
+            font-size: 17px;
+            padding: 10px 12px;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+
+.show-chat .messages-contact {
+    left: calc(-100% - 40px);
+}
+
+.show-chat .messages-wrapper {
+    left: 0;
+}
+
+.list-group-messages .btn-dropdown {
+    background: 0 0;
+    border: 0;
+    font-size: 16px;
+    color: #b5b5b5;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 10px;
+}
+
+.list-group-messages .list-group-item {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+}
+
+    .list-group-messages .list-group-item.unread .list-group-item-title {
+        font-weight: 600;
+    }
+
+.list-group-messages .list-group-item-title a {
+    color: #575962;
+}
+
+.conversations {
+    display: flex;
+    height: calc(100vh - 57px);
+    flex-direction: column;
+}
+
+    .conversations .message-header {
+        background: #fff;
+        padding: 0.5rem;
+        background-color: #fff;
+        box-shadow: 0 1px 0 0 rgba(61, 70, 79, 0.075);
+        z-index: 1;
+    }
+
+    .conversations .message-title {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+        .conversations .message-title .user {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .conversations .message-title .user .name {
+                display: block;
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 24px;
+                margin-bottom: 2px;
+            }
+
+            .conversations .message-title .user .last-active {
+                display: block;
+                font-size: 11px;
+            }
+
+        .conversations .message-title .return {
+            background: 0 0;
+            border: 0;
+            font-size: 25px;
+            cursor: pointer;
+            height: 100%;
+            top: 0;
+        }
+
+    .conversations .conversations-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.5rem 2rem;
+    }
+
+    .conversations .conversations-content {
+        border: 1px solid #eee;
+        border-radius: 5px;
+        padding: 1rem;
+    }
+
+    .conversations .messages-form {
+        margin: 0;
+        padding: 0.7rem 1rem;
+        background: #fff;
+    }
+
+.conversations-action {
+    background: #f6f6f6;
+    padding: 10px 0;
+}
+
+    .conversations-action .action {
+        display: flex;
+        padding: 1rem 1.5rem;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+        .conversations-action .action:hover {
+            background: #f4f5f5;
+        }
+
+        .conversations-action .action span {
+            font-size: 16px;
+            line-height: 21px;
+        }
+
+        .conversations-action .action i {
+            font-size: 21px;
+            width: 2.5rem;
+            color: rgba(38, 50, 56, 0.5);
+        }
+
+        .conversations-action .action.danger i,
+        .conversations-action .action.danger span {
+            color: #f3545d;
+        }
+
+        .conversations-action .action:last-child {
+            margin-bottom: 0;
+        }
+
+@media screen and (max-width: 991px) {
+    .conversations {
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+}
+@media screen and (max-width: 576px) {
+
+    .conversations .conversations-body {
+        padding: 1.5rem 1rem;
+    }
+}

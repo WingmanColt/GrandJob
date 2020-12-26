@@ -1,0 +1,310 @@
+﻿@page "{id:int}"
+
+@inject ICompanyService _companyService
+@inject ILocationService LocationService
+
+@model EditModel
+
+@{
+    ViewData["Title"] = "Редактиране";
+    Layout = "Layout/_Edit";
+}
+
+
+<div class="content">
+    <div class="page-inner">
+        <h4 class="page-title">Детайли</h4>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-with-nav">
+                    <div class="card-header">
+                        <div class="row row-nav-line">
+                            <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active show" data-toggle="tab" href="#info" role="tab" aria-selected="true">Основна информация</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#social" role="tab" aria-selected="false">Социална информация</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#team" role="tab" aria-selected="false">Персонал</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#details" role="tab" aria-selected="false">Детайли</a> </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <form id="company-form" method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="tab-content mt-3">
+                                <div class="tab-pane fade show active" id="info" role="tabpanel">
+                                    <div class="row mt-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Title"></label>
+                                                <input asp-for="Input.Title" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Email"></label>
+                                                <input asp-for="Input.Email" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.PhoneNumber"></label>
+                                                <input asp-for="Input.PhoneNumber" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.LocationId"></label>
+                                                <select class="form-control" asp-for="Input.LocationId">
+                                                    @await foreach (var item in Model.AllLocations)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Adress"></label>
+                                                <input asp-for="Input.Adress" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3 mb-1">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.About"></label>
+                                                <input asp-for="Input.About" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="social" role="tabpanel">
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Website" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-web" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Website" class="form-control" aria-label="https://www." aria-describedby="inputGroup-sizing-sm" placeholder="Сайт на компанията" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Facebook" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-facebook" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Facebook" class="form-control" aria-label="https://facebook.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Linkdin" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-linkedin" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Linkdin" class="form-control" aria-label="https://linkdin.com/in/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Twitter" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-twitter btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-twitter" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Twitter" class="form-control" aria-label="https://twitter.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="tab-pane fade" id="team" role="tabpanel">
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Admin1_Id" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-google btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-add-user" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Admin1_Id" onclick="complate('#AutoComplete')" class="form-control" id="AutoComplete" name="AutoComplete" autocomplete="off" />
+                                                        <input asp-for="Input.Admin1_Id" type="hidden" onclick="complate('#AutoComplete')" id="AutoCompleteHidden" autocomplete="off" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Admin2_Id" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-twitter btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-add-user" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Admin2_Id" onclick="complate('#AutoComplete2')" class="form-control" id="AutoComplete2" name="AutoComplete" autocomplete="off" />
+                                                        <input asp-for="Input.Admin2_Id" type="hidden" onclick="complate('#AutoComplete2')" id="AutoComplete2Hidden" autocomplete="off" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Admin3_Id" class="col-sm-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                                <div class="col-lg-12 col-md-9 col-sm-8">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <a class="btn btn-twitter btn-sm btn-link" rel="publisher" href="#">
+                                                                <i class="flaticon-add-user" style="font-size:30px"></i>
+                                                            </a>
+                                                        </div>
+                                                        <input asp-for="Input.Admin3_Id" onclick="complate('#AutoComplete3')" class="form-control" id="AutoComplete3" name="AutoComplete3" autocomplete="off" />
+                                                        <input asp-for="Input.Admin3_Id" type="hidden" onclick="complate('#AutoComplete3')" id="AutoComplete3Hidden" autocomplete="off" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-pane fade" id="details" role="tabpanel">
+                                    <div class="row mt-3">
+                                        <div class="col-sm-4">
+                                            <div class="form-group form-group-default">
+                                                <label>Частна фирма</label>
+                                                <input asp-for="Input.Private" class="form-control form-control-sm" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-group-default">
+                                            <label asp-for="Input.FormFile" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label>
+                                            <div class="col-lg-4 col-md-9 col-sm-8">
+                                                <div class="input-file input-file-image">
+                                                    <img class="img-upload-preview img-circle" width="100" height="100" src="@Model.Input.PictureFullPath" alt="preview">
+                                                    <input asp-for="Input.FormFile" type="file" id="uploadImg" />
+                                                    <label for="uploadImg" class="label-input-file btn btn-icon btn-primary btn-round btn-lg"><i class="fa fa-file-image-o"></i> Качи</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="text-right mt-3 mb-3">
+                                <button type="submit" class="btn btn-success">Запази</button>
+                                <button class="btn btn-danger">Отказ</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-profile card-secondary">
+                    <div class="card-header">
+                        <div class="profile-picture">
+                            <div class="avatar avatar-xl">
+                                <img src="@Model.Input.PictureFullPath" alt="Няма лого" class="avatar-img rounded-circle">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="user-profile text-center">
+                            <div class="name">@Model.Input.Title</div>
+                            <div class="job">@Model.Input.LocationId</div>
+                            <div class="desc">@Model.Input.About</div>
+                            <div class="social-media">
+                                <a class="btn btn-info btn-twitter btn-sm btn-link" href="https://www.facebook.com/@Model.Input.Facebook">
+                                    <span class="btn-label just-icon"><i class="flaticon-facebook"></i> </span>
+                                </a>
+                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="@Model.Input.Website">
+                                    <span class="btn-label just-icon"><i class="flaticon-web"></i> </span>
+                                </a>
+                                <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="https://www.twitter.com/@Model.Input.Twitter">
+                                    <span class="btn-label just-icon"><i class="flaticon-twitter"></i> </span>
+                                </a>
+                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="https://www.linkdin.com/in/@Model.Input.Linkdin">
+                                    <span class="btn-label just-icon"><i class="flaticon-linkedin"></i> </span>
+                                </a>
+                            </div>
+                            <div class="view-profile">
+                                <a asp-controller="Company" asp-action="Details" asp-route-id="@Model.Input.Id" class="btn btn-secondary btn-block">Прегледай профила</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row user-stats text-center">
+                            <div class="col">
+                                <div class="number">125</div>
+                                <div class="title">Post</div>
+                            </div>
+                            <div class="col">
+                                <div class="number">25K</div>
+                                <div class="title">Followers</div>
+                            </div>
+                            <div class="col">
+                                <div class="number">134</div>
+                                <div class="title">Following</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

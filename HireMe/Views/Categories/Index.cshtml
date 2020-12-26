@@ -1,0 +1,48 @@
+﻿@inject IJobsService JobsService
+@inject IContestantsService ContestantsService
+
+@model IAsyncEnumerable<CategoriesViewModel>
+
+@{
+    ViewData["Title"] = "Всички категории";
+    ViewData["Description"] = "Търсете новата си работа по категориите изброени тук.";
+    ViewData["Keywords"] = "categories, industry, категории, индустрия";
+    Layout = "Layout/_Index";
+}
+
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-7 heading-section text-center">
+                <span class="subheading">Всички категории</span>
+                <h2 class="mb-0">Индустрия</h2>
+            </div>
+        </div>
+        <div class="row">
+            @{
+                @if (Model != null)
+                {
+                    await foreach (var item in Model)
+                    {
+                        <div class="col-md-3">
+                            <ul class="category text-center">
+                                <li>
+                                    <i class="text-letblue @item.Icon"></i>
+
+                                    @item.Title_BG<br>
+                                  @*  <a asp-controller="Home" asp-action="SearchJobsCategory" asp-route-categoryId="@item.Id" style="text-decoration: none;">
+                                        <span class="number">@await JobsService.GetAllCountByCondition(item.Id, -1, null, ApproveType.Success)</span> <span>Отворени позиции</span><br>
+                                    </a>
+                                    <a asp-controller="Home" asp-action="SearchContestantCategory" asp-route-categoryId="@item.Id" style="text-decoration: none;">
+                                        <span class="number">@await ContestantsService.GetAllCountByCondition(item.Id, null, ApproveType.Success)</span> <span>Кандидати</span>
+                                    </a>
+                                      *@
+                                    <i class="ion-ios-arrow-forward"></i>
+
+                                </li>
+                            </ul>
+                        </div>
+                        }
+                    }
+                }
+            </div>
+    </div>

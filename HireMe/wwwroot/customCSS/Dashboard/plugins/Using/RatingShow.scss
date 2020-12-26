@@ -1,0 +1,72 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Pacifico);
+
+body {
+    background: #484556;
+    color: #F3FCF0;
+    font-family: sans-serif;
+    text-align: center;
+    font-family: 'Pacifico', serif;
+}
+
+h1 {
+    font-weight: normal;
+}
+
+/*  star rating  */
+.star-rating {
+    display: flex;
+    align-items: center;
+    font-size: 3rem;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.back-stars {
+    padding: 0 5px;
+    display: flex;
+    color: #989494;
+    position: relative;
+}
+
+.front-stars {
+    display: flex;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    &:hover
+
+{
+    color: green;
+}
+
+&.over {
+    color: green;
+    &.fill
+
+{
+    color: yellow;
+}
+
+}
+}
+
+.rate-board {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    #rate-number
+
+{
+    height: 30px;
+    border-radius: 5px;
+    border: 0;
+    margin-left: 10px;
+    width: 45px;
+    padding-left: 5px;
+    font-weight: bold;
+    background-color: #fff;
+    display: inline-block;
+    color: #000;
+}
+}

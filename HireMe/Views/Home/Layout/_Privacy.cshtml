@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+
+<div id="root">
+    <div class="app heading-sticky" style="background-color: rgb(255, 255, 255);">
+
+        <!-- Menu Area -->
+        <div class="header header-bg round-bottom-edges fixed-top" style="background: -webkit-gradient(linear, left top, right top, from(#207dff), to(#a16ae8));"></div>
+        <div class="header round-bottom-edges fixed-top" style="background-color: transparent;">
+            <partial name="../Home/customPartials/_MenuPartial" />
+        </div>
+
+        <!-- Content Area -->
+        <div class="page-content scroll-holder container-fluid pull-content">
+            @RenderBody()
+        </div>
+
+        <!-- Footer Area -->
+        <partial name="../Home/customPartials/_FooterPartial" />
+    </div>
+</div>
+
+
+
+
+

@@ -1,0 +1,208 @@
+﻿@model CreateJobInputModel
+
+@{
+    ViewData["Title"] = "Публикувай обява за работа";
+    ViewData["Description"] = "Публикувайте обявата си за работа тук.";
+    ViewData["Keywords"] = "обява, работа, кандидатура, публикувай";
+    Layout = "Layout/_Create";
+
+    var visiblityEnum = Enum.GetValues(typeof(Visiblity)).Cast<Visiblity>();
+}
+
+    <style>
+
+    .text-letblue {
+        color: #55a8fd;
+    }
+
+    .alert-info {
+        color: #2c96ce;
+        background-color: #cdf2ff;
+        border-color: #8fd6f7;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 3px;
+    }
+
+    </style>
+
+    <div class="row">
+
+        <div class="col-md-10 col-lg-7 mb-8 ml-5">
+            <h3>Публикувай обява за работа (БЕЗПЛАТНО)</h3>
+
+            <h6>Моля използвайте български език.</h6>
+            <hr>
+            <br>
+            <form asp-controller="Jobs" asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <b>Искате ли да рекламирате обявата си ?</b>
+                <div class="row form-group">
+                    <div class="col-md-12 mb-3 mb-md-0">
+                        <label for="option-price-1">
+                            <input type="checkbox" id="option-price-1"> <span class="text-success">3€</span> За 7 дни
+                        </label>
+                    </div>
+                    <div class="col-md-12 mb-3 mb-md-0">
+                        <label for="option-price-2">
+                            <input type="checkbox" id="option-price-2"> <span class="text-success">6€</span> За 30 дни
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group string required">
+                            <label class="font-weight-bold" asp-for="Name">Заглавие</label>
+                            <input asp-for="Name" class="form-control input-lg" placeholder="Заглавие на обява" enabled />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <h4>Описание</h4>
+                <div class="row form-group mb-6">
+
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label class="font-weight-bold">Местоположение</label>
+
+                            <select class="form-control" asp-for="LocationId">
+                                @await foreach (var item in Model.AllLocations)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+
+                        </div>
+
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label class="font-weight-bold">Изберете фирма</label>
+                        <select class="selectCompany form-control" style="width:257px;"></select>
+                        <input asp-for="CompanyId" type="hidden" id="selectCompany_Value" />
+                    </div>
+                </div>
+                <div class="row form-group mb-5">
+                    <div class="col-md-5 mb-3 mb-md-0">
+                        <label class="font-weight-bold">Изберете категория</label>
+                                <select class="form-control" asp-for="CategoryId">
+                                    <option value="-1">Изберете индустрия</option>
+                                    @await foreach (var item in Model.AllCategories)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                        </div>
+
+                </div>
+
+
+                <div class="row form-group mb-3">
+                    <div class="col-md-12">
+                        <label class="font-weight-bold">Подходяща за</label>
+                    </div>
+
+                    <div class="col-lg-8 col-sm-2">
+                        <select class="selectWork form-control input-lg" id="id_label_multiple3" multiple="multiple" style="width: 90%"></select>
+                        <input asp-for="WorkType" type="hidden" id="selectWork_Value" />
+                    </div>
+                </div>
+                <div class="row form-group mb-4">
+                    <div class="col-lg-12 mb-3 mb-md-0">
+                        <div class="col-md-offset-8"><h3>Описание</h3></div>
+                        <textarea asp-for="Description" id="mytextarea" rows="12" cols="12"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="alert alert-info no-margin"><b class="text-black-50"><i class="fa fa-info-circle" aria-hidden="true"></i> Препоръчваме да използвате минимум 200 думи в описанието.</b></div>
+                <hr>
+
+                <div class="row form-group">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label class="font-weight-bold" asp-for="Adress">Адрес</label>
+                        <input asp-for="Adress" class="form-control required" placeholder="eg. bul. Tsarigradsko shose 115" enabled />
+                        <span asp-validation-for="Adress" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12 mb-6 mb-md-0">
+                        <label class="font-weight-bold">Тагове</label><br>
+                        <select class="selectTags form-control" id="id_label_multiple2" multiple="multiple" style="width: 75%"></select>
+                        <input asp-for="TagsId" type="hidden" id="selectTags_Value" />
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-12 mb-6 mb-md-0">
+                        <label class="font-weight-bold">Езици</label><br>
+                        <select class="selectLang form-control" id="id_label_multiple55" multiple="multiple" style="width: 75%"></select>
+                        <input asp-for="LanguageId" type="hidden" id="selectLang_Value" />
+                    </div>
+                </div>
+                <hr>
+                <div class="row form-group mb-3">
+                    <div class="col-md-12">
+                        <label class="font-weight-bold">Опит</label>
+                    </div>
+
+                    <div class="col-lg-5 col-sm-2">
+                        <select asp-for="ExprienceLevels" asp-items="Html.GetEnumSelectList<ExprienceLevels>()" class="form-control input-lg"></select>
+                    </div>
+                </div>
+                <div class="row form-group mb-3">
+                    <div class="col-md-12">
+                        <label class="font-weight-bold">Заплащане</label> <br><small>пример: (400 BGN - 1200 BGN)</small>
+                    </div>
+
+                    <div class="col-lg-3 col-sm-6">
+                        <input asp-for="MinSalary" class="form-control" placeholder="Minimum" value="0" />
+
+                    </div>
+                    -
+                    <div class="col-lg-3 col-sm-4">
+                        <input asp-for="MaxSalary" class="form-control" placeholder="Maximum" value="0" />
+                    </div>
+
+                    <div class="col-lg-3 col-sm-2">
+                        <select asp-for="SalaryType" asp-items="Html.GetEnumSelectList<SalaryType>()" class="form-control input-lg"></select>
+                    </div>
+                </div>
+
+
+                <div class="row form-group">
+
+                    <div class="col-md-12">
+                        <input type="submit" value="Post" class="btn btn-primary py-2 px-5">
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+
+        <div class="col-md-4">
+            <div class="p-5 mb-5 bg-white">
+                <h3 class="h5 font-weight-bold text-black mb-3">Често задавани въпроси</h3>
+                <hr>
+                <b class="text-letblue">В:</b> <strong>Има ли такса за публикуване на обява?</strong><br>
+                <b class="text-letblue">О:</b> Няма такси за публикуване на обява в GrandJob. Това е 100% безплатна услуга, която предлагаме както за работодателите, така и за кандидатите.
+                <hr>
+
+                <b class="text-letblue">В:</b> <strong>Как да си подсилвам публикацията?</strong><br>
+                <b class="text-letblue">О:</b> Можете да подсилите вашата обява, като използвате кредитите, които сте закупили. Можете да заредите кредити чрез (кредитна карта, дебитна карта, и PayPal).
+                <hr>
+            </div>
+
+        </div>
+
+    </div>
+   
+
+
+

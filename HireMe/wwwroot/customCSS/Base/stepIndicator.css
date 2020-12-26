@@ -1,0 +1,259 @@
+/*Hide all except first fieldset*/
+#conForm fieldset:not(:first-of-type) {
+    display: none;
+}
+#companyForm fieldset:not(:first-of-type) {
+    display: none;
+}
+.step-indicator {
+    padding: 0;
+    list-style-position: inside
+}
+
+    .step-indicator li {
+        margin-bottom: 5px
+    }
+
+        .step-indicator li.active {
+            font-weight: 500;
+            color: #55a8fd
+        }
+
+        .step-indicator li.complete .caption {
+            text-decoration: line-through
+        }
+
+    .step-indicator .caption {
+        display: inline-block
+    }
+
+.step-wrapper {
+    display: none
+}
+
+.steps-wrapper {
+    text-align: left;
+    list-style-type: decimal
+}
+
+    .steps-wrapper .step {
+        display: none
+    }
+
+@media (min-width: 992px) {
+    .steps-wrapper {
+        text-align: center;
+        border-collapse: separate;
+        display: table;
+        margin-left: 0px;
+        position: relative;
+        table-layout: fixed;
+        vertical-align: middle
+    }
+
+        .steps-wrapper li {
+            display: table-cell;
+            vertical-align: bottom;
+            float: none;
+            padding: 0;
+            width: 1%;
+            position: relative
+        }
+
+            .steps-wrapper li:first-child:after {
+                left: 50%
+            }
+
+            .steps-wrapper li:last-child:after {
+                right: 50%
+            }
+
+            .steps-wrapper li:after {
+                background-color: #449cff;
+                content: "";
+                display: block;
+                height: 4px;
+                position: relative;
+                top: -17px;
+                z-index: -1
+            }
+
+        .steps-wrapper .step {
+            width: 32px;
+            height: 32px;
+            background-color: #449cff;
+            color: #fff;
+            border-radius: 50%;
+            padding-top: 6px;
+            margin: 15px auto 0;
+            display: block
+        }
+
+    .step-popover {
+        background-color: #fff;
+        padding: 16px 14px;
+        font-weight: 500;
+        width: 160px;
+        margin: 0 auto;
+        position: relative;
+        color: #617083
+    }
+
+        .step-popover:before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 90%;
+            height: 100%;
+            top: 0px;
+            left: 50%;
+            -webkit-box-shadow: 0 2px 8px rgba(0, 40, 113, 0.18);
+            box-shadow: 0 2px 8px rgba(0, 40, 113, 0.18);
+            -moz-transform: translateX(-50%);
+            -o-transform: translateX(-50%);
+            -ms-transform: translateX(-50%);
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            z-index: -1
+        }
+
+        .step-popover:after {
+            top: 100%;
+            left: 50%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+            border-color: rgba(255, 255, 255, 0);
+            border-top-color: #fff;
+            border-width: 8px;
+            margin-left: -8px
+        }
+}
+
+@media (min-width: 480px) {
+    .step-wrapper {
+        position: relative;
+        z-index: 777;
+        display: inline-block;
+        width: 54px;
+        height: 46px;
+        background: url(https://d3e2zv1bbem3wj.cloudfront.net/assets/wizard/step-circle-402ca1d9cc12c9ac369faead04c1666360338134a49f0e4359e1ccf2b7d4e2d7.png) no-repeat
+    }
+
+    .is-first .step-wrapper {
+        background: url(https://d3e2zv1bbem3wj.cloudfront.net/assets/wizard/step-circle-first-477f02223e96358bf889c5dbbab25d8d182ad7b270fda3dafd31514b965eaf58.png) no-repeat;
+        width: 51px
+    }
+
+    .is-last .step-wrapper {
+        width: 52px;
+        background: url(https://d3e2zv1bbem3wj.cloudfront.net/assets/wizard/step-circle-last-f5e2896dd19f3908a389074ed279591a507abc707d8f38870792b37967d56a8e.png) no-repeat
+    }
+
+    .step-indicator {
+        border-collapse: separate;
+        display: table;
+        margin-left: 0;
+        padding: 0;
+        position: relative;
+        table-layout: fixed;
+        vertical-align: middle;
+        text-align: center
+    }
+
+        .step-indicator li {
+            display: table-cell;
+            float: none;
+            padding: 0;
+            width: 1%;
+            position: relative
+        }
+
+            .step-indicator li:before {
+                background-color: #f0f3f5;
+                border-top: 1px solid #d8e1e6;
+                border-bottom: 1px solid #d8e1e6;
+                content: "";
+                display: block;
+                height: 14px;
+                position: relative;
+                top: 30px
+            }
+
+            .step-indicator li:first-child:before {
+                left: 50%
+            }
+
+            .step-indicator li:last-child:before {
+                right: 50%
+            }
+
+        .step-indicator .active .caption {
+            color: #55a8fd;
+            font-weight: 500
+        }
+
+        .step-indicator .complete:after {
+            display: block;
+            content: "";
+            position: absolute;
+            height: 6px;
+            top: 34px;
+            left: 50%;
+            z-index: 775;
+            background-color: #56db8b;
+            width: 100%
+        }
+
+        .step-indicator .complete.is-first .step-wrapper {
+            background: url(https://d3e2zv1bbem3wj.cloudfront.net/assets/wizard/step-circle-first-complete-7b77cb9ffb30ae1ddb79053ba3744be88e19bfcd5011c54dc59ac3c5702ed84e.png) no-repeat
+        }
+
+        .step-indicator .complete .step-wrapper {
+            background: url(https://d3e2zv1bbem3wj.cloudfront.net/assets/wizard/step-circle-complete-2d2640904c095e09e78701fa741e536e5952c5d808b699b7689d4a5b52ac9bb5.png) no-repeat
+        }
+
+        .step-indicator .complete .step {
+            opacity: 0
+        }
+
+        .step-indicator .active.complete .step {
+            border-color: #55a8fd;
+            color: #55a8fd
+        }
+
+        .step-indicator .active.complete .caption {
+            color: #55a8fd
+        }
+
+        .step-indicator .is-first .step {
+            margin-left: 5px
+        }
+
+        .step-indicator .is-last .step {
+            margin-left: 10px
+        }
+
+        .step-indicator .step {
+            background-color: #fff;
+            border: 1px solid #d1dadf;
+            font-size: 15px;
+            font-weight: 500;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            border-radius: 18px;
+            margin: 5px auto 0;
+            position: relative;
+            z-index: 1
+        }
+
+        .step-indicator .caption {
+            display: block;
+            box-sizing: border-box;
+            padding: 11px 16px
+        }
+}

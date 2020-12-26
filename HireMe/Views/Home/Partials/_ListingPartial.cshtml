@@ -1,0 +1,70 @@
+@inject IFavoritesService _favoriteService
+
+@model IndexViewModel
+
+<div class="pull-content light-background round-bottom-edges">
+    <div class="mb-3 mt-lg-5 container">
+        <div class="narrow-container">
+            <div class="row">
+                <div class="col-lg-7 col-md-12">
+                    <div class="listing listing-regular">
+                        <h2>Индустрия</h2>
+                        <ul>
+                            @await foreach (var item in Model.TopCategories)
+                            {
+                                <li><a class=" " target="_self" asp-controller="Home" asp-action="SearchJobsCategory" asp-route-categoryId="@item.Id"><span class="listing-text">@item.Title_BG</span>@*<div class="listing-count"><span>@await ContestantsService.GetAllCountByCondition(item.Id, null, ApproveType.Success)</span><span class="text-tiny">Хора</span></div><div class="listing-count"><span>@await JobsService.GetAllCountByCondition(item.Id, -1, null, ApproveType.Success)</span><span class="text-tiny">Обяви</span></div>*@<span class="icon fa fa-arrow-circle-right text-success" style="font-size: 1.3rem;"></span></a></li>
+                            }
+
+                        </ul><a class="btn btn-main btn-subcolor m-0 " target="_self" asp-controller="Categories" asp-action="Index">Виж всички</a>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-12">
+                    <div class="listing listing-squares pt-5 pt-lg-0">
+                        <h2>Топ работодатели</h2>
+                        @if (await Model.TopCompanies.AnyAsync())
+                        {
+                            <div class="row">
+                                @await foreach (var item in Model.TopCompanies)
+                                {
+                                    <div class="col-6 col-lg-6 col-md-4">
+                                        <a class="job-link hidden-link" target="_self" asp-controller="Company" asp-action="Details" asp-route-id="@item.Id"></a>
+                                                <div class="image-wrapper">
+                                                    @if (item.Logo is null)
+                                                    {
+                                                        <i class="fas fa-images" style="font-size:2em"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="@Model.PictureUrl@item.Logo" alt="Няма лого">
+                                                    }
+
+                                                    <div class="overlay">
+                                                        <a asp-controller="Company" asp-action="UpdateFavourite" asp-route-id="@item.Id" asp-route-returnUrl="@Model.ReturnUrl" class="icon">
+                                                            @if (!(await _favoriteService.isInFavourite(Model.User, PostType.Company, item.Id)))
+                                                            {
+                                                                <i class="far fa-heart"></i>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fas fa-heart"></i>
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                           
+                                        
+                                    </div>
+                                }
+                                <a class="btn btn-main btn-subcolor m-0 " target="_self" asp-controller="Jobs" asp-action="Index">Виж всички</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <b>Все още няма добавени фирми.</b>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

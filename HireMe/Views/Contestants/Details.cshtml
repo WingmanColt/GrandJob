@@ -1,0 +1,377 @@
+﻿@inject IConfiguration config
+@inject UserManager<User> UserManager
+
+@inject IContestantsService ContestantsService
+@inject IHtmlSanitizer _sanitizer
+
+@model ContestantViewModel
+
+@{
+    ViewData["Title"] = Model.FullName;
+    ViewData["Description"] = Model.About;
+    ViewData["Keywords"] = Model.FullName;
+
+    Layout = "Layout/_Details";
+
+    User conUser = await UserManager.FindByIdAsync(@Model.PosterID);
+
+    // Resume
+    string SiteResumeUrl = config.GetSection("MySettings").GetSection("SiteResumeUrl").Value;
+    string resumFullPath = SiteResumeUrl + Model.ResumeFileId;
+
+    // Image
+    string SiteImageUrl = conUser.isExternal ? null : config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string imageFullPath = SiteImageUrl + conUser?.PictureName;
+
+    // Add to work
+    //  var topCandidates = ContestantsService.GetTop(3);
+}
+<style>
+    .pdfobject-container {
+        height: 50rem;
+        border: 1rem solid rgba(0,0,0,.1);
+    }
+</style>
+
+
+<div class="page-wrapper">
+    <div class="container">
+
+        <!-- Report Modal -->
+        <form asp-controller="Message" asp-action="Report" asp-route-postname="@Model.FullName" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div id="reportModal" class="modal fade" role="dialog" data-backdrop="false">
+                <div class="modal-dialog modal-lg">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Докладвам:</label><br>
+                                        <strong>@Model.FullName</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Причина*</label>
+                                        <textarea asp-for="MessageInputModel.Description" class="form-control text required" rows="10" cols="10" style="height:100px;width:600px;" required="required" aria-required="true" placeholder="Въведете причината, поради която докладвате тази обява. Опитайте се да дадете колкото се може повече подробности."> </textarea>
+                                        <span asp-validation-for="MessageInputModel.Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger btn-fill pull-right" id="MessageSubmit">Send</button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+
+        <!-- Message Modal -->
+        <form asp-controller="Message" asp-action="SendContestant" asp-route-receiver="@Model.PosterID" method="post" id="messageForm">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div id="messageModal" class="modal fade" role="dialog" data-backdrop="false">
+                <div class="modal-dialog modal-md">
+
+                    <!-- Modal content-->
+                    <div class="modal-content modal-window">
+                        <div class="modal-header">
+                            <h4>Изпрати съобщение</h4>
+                            <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+
+                        </div>
+
+                        <div class="modal-body">
+
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label asp-for="MessageInputModel.ReceiverId"></label>
+                                        <input asp-for="MessageInputModel.ReceiverId" class="form-control" disabled Value="@conUser?.UserName" placeholder="@Model.FullName" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label asp-for="MessageInputModel.Title"></label>
+                                        <input asp-for="MessageInputModel.Title" class="form-control" />
+                                        <span asp-validation-for="MessageInputModel.Title" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label asp-for="MessageInputModel.Description"></label>
+                                        <textarea asp-for="MessageInputModel.Description" id="mytextarea"></textarea>
+                                        <span asp-validation-for="MessageInputModel.Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success btn-fill pull-right" id="MessageSubmit">Изпрати</button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div class="row profile-header">
+        <div class="col-md-12">
+            <div class="panel panel-xl">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="profile-header-main">
+
+                            @if (conUser?.PictureName is null)
+                            {
+                            <div class="avatar-lg">
+                                <img class="avatar-img rounded" src="~/uploads/Images/200x200.jpg">
+                            </div>
+                                    }
+                                    else
+                                    {
+                                    <div class="avatar-lg">
+                                        <img src="@imageFullPath" alt="Няма снимка" class="avatar-img rounded">
+                                    </div>
+                                    }
+
+                                    <div class="profile-contact">
+                                        <div class="profile-main-top">
+                                            <h1 class="name">@Model.FullName</h1>
+                                            @if (Model.payRate > 0)
+                                            {
+                                                <div class="pay_rate">@Model.payRate лв. / @Model.SalaryType.GetDisplayName()</div>
+                                            }
+
+                                        </div>
+                                        <div class="speciality">@Model.About</div>
+                                        <div class="d-flex flex-column flex-wrap flex-md-row align-items-center justify-content-between">
+                                            <div class="profile-button-actions">
+                                                <button class="btn btn-message btn-floating"
+                                                        style="background-color: #55cf7a;"
+                                                        data-toggle="modal" data-target="#messageModal">
+                                                    <i class="fa fa-inbox"></i> <span>Съобщение</span>
+                                                </button>
+                                                <button class="btn btn-message btn-floating"
+                                                        style="background-color: #b31a1a;"
+                                                        data-toggle="modal" data-target="#reportModal">
+                                                    <i class="fa fa-flag"></i> <span>Докладвай</span>
+                                                </button>
+                                            </div>
+                                            <div class="profile-link-actions">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    <div class="col-md-3">
+                        <div class="profile-header-info">
+                            <dl class="profile-info-row">
+                                <dt>Рейтинг:</dt>
+                                <dd>  <input data-filled="fa fa-2x fa-star mr-1 text-warning" data-empty="fa fa-2x fa-star-o mr-1 text-dark-5" value="@Model.Rating" type="hidden" class="rating" data-readonly /></dd>
+                            </dl>
+                            <dl class="profile-info-row">
+                                <dt>Тип работа:</dt>
+
+                                @if (Model.WorkType != null)
+                                {
+                                    <dd>@Model.WorkType.Replace(",", "; ")</dd>
+                                }
+                                else
+                                {
+                                    <dd>Не е посочено</dd>
+                                }
+                            </dl>
+
+
+                            <dl class="profile-info-row">
+                                <dt>Местоположение:</dt>
+                                <dd>@Model.LocationId</dd>
+                            </dl>
+
+                            <dl class="profile-info-row">
+                                <dt>Дата на раждане:</dt>
+                                <dd>@Model.CreatedOn.ToString("MM MMMM")</dd>
+                            </dl>
+
+                            @if (Model.Experience > 0)
+                            {
+                                <dl class="profile-info-row">
+                                    <dt>Стаж в години:</dt>
+                                    <dd>@Model.Experience</dd>
+                                </dl>
+                            }
+                        </div>
+                        <ul class="list-inline social-profiles">
+
+                            @if (Model.Facebook != null)
+                            {
+                                <li>
+                                    <a target="_blank" rel="nofollow" href="http://facebook.com/@Model.Facebook"><i class="fa fa-facebook-square"></i></a>
+                                </li>
+                            }
+                            @if (Model.Twitter != null)
+                            {
+                                <li>
+                                    <a target="_blank" rel="nofollow" href="http://twitter.com/@Model.Twitter"><i class="fa fa-twitter"></i></a>
+                                </li>
+                            }
+                            @if (Model.Linkdin != null)
+                            {
+                                <li>
+                                    <a target="_blank" rel="nofollow" href="http://linkedin.com/in/@Model.Linkdin"><i class="fa fa-linkedin"></i></a>
+                                </li>
+                            }
+                            @if (Model.Github != null)
+                            {
+                                <li>
+                                    <a target="_blank" rel="nofollow" href="http://github.com/@Model.Github"><i class="fa fa-github"></i></a>
+                                </li>
+                            }
+                            @if (Model.Dribbble != null)
+                            {
+                                <li>
+                                    <a target="_blank" rel="nofollow" href="http://dribbble.com/@Model.Dribbble"><i class="fa fa-dribbble"></i></a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="row margin-bottom-20">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li class="active"><a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Профил</a></li>
+                <li><a class="nav-item nav-link" id="nav-skills-tab" data-toggle="tab" href="#nav-skills" role="tab" aria-controls="nav-skills" aria-selected="false">Резюме</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row margin-bottom-30">
+        <div class="col-md-3">
+            <div class="panel panel-sm panel-websites">
+                <div class="panel-body">
+                    <h5 class="section-subtitle">Страници</h5>
+                    <ul class="list-unstyled">
+                        @if (Model.Website != null)
+                        {
+                            <li>
+                                <a target="_blank" rel="nofollow" href="@Model.Website"><i class="fa fa-globe"></i> Личен сайт</a>
+                            </li>
+                        }
+                        @if (Model.Portfolio != null)
+                        {
+                            <li>
+                                <a target="_blank" rel="nofollow" href="@Model.Portfolio"><i class="fa fa-newspaper-o"></i> Блог/Портфолио</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                    <div class="panel panel-sm panel-profile-info">
+                        <div class="panel-body">
+                            <div class="profile-info-section">
+                                <h5 class="section-subtitle no-margin">Описание</h5>
+                                <div class="text-light-grey">
+                                    @Html.Raw(_sanitizer.Sanitize(Model.Description))
+                                </div>
+                            </div>
+                            <div class="profile-info-section" id="profile-skills">
+                                <h5 class="section-subtitle no-margin">Умения</h5>
+                                <ul class="profile-card-tags list-inline">
+
+                                    @if (Model.Skills != null && Model.userSkillsId != null)
+                                    {
+                                        await foreach (var item in Model.Skills)
+                                        {
+                                            <li>
+                                                <span class="tag tag-sm">@item.Title</span>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                            <div class="profile-info-section">
+                                <h5 class="section-subtitle no-margin">Езици</h5>
+                                <ul class="profile-card-tags list-inline">
+                                    <li>
+                                        @if (Model.Languages != null && Model.LanguagesId != null)
+                                        {
+                                            await foreach (var item in Model.Languages)
+                                            {
+                                                <span class="tag tag-sm">@item.Name</span>
+                                            }
+                                        }
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="nav-skills" role="tabpanel" aria-labelledby="nav-skills-tab">
+                    <div class="panel panel-sm panel-profile-info">
+                        <div class="panel-body">
+                            <div class="profile-info-section">
+                                <h5 class="section-subtitle no-margin">CV</h5>
+                                @if (Model.ResumeFileId != null)
+                                {
+                                    <div id="resume"></div>
+                                }
+                                else
+                                {
+                                    <div class="text-light-grey">
+                                        Кандидатът не е качил CV все още...
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="col-md-3">
+            @* <partial name="../Partials/_SimilarProfilePartial" />*@
+        </div>
+    </div>
+
+</div>
+
+
+<script src="~/customJS/pdfobject.min.js"></script>
+<script>PDFObject.embed("@resumFullPath", "#resume");</script>

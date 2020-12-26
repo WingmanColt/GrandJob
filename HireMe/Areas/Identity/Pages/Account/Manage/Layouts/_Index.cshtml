@@ -1,0 +1,78 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+}
+<link rel="stylesheet" href="~/customCSS/Dashboard/plugins/Using/card-stats.min.css">
+<link rel="stylesheet" href="~/customCSS/Dashboard/plugins/Using/card-accordion.min.css">
+@*
+<style>
+    .swal-title {
+        color: #fff;
+        font-size: 15px;
+    }
+
+    .swal-modal {
+        background-color: rgba(10, 10,10, 0.5);
+    }
+
+    .swal-text {
+        color: #fff;
+    }
+
+    .swal-overlay {
+    }
+</style>
+    *@
+@RenderBody()
+
+@section Scripts {
+
+    <script src="~/customJS/Dashboard/plugin/sweetalert/sweetalert.min.js"></script>
+    <script>
+        $('#alert_demo_8').click(function (e) {
+            var myhtml = document.createElement("div");
+            myhtml.className = "swal-text";
+
+            var first = "1.Използвайте ключови думи в обявата си.<br>";
+            var second = "2.Споделтете в социалните мрежи вашата обява.<br>";
+            var third = "3.Купете Pro-Account и разберете какво получавате, и как да ги използвате.<br>";
+            myhtml.innerHTML = first + second + third;
+            swal({
+                title: 'Как да си помогна ?',
+                content: myhtml,
+
+                type: 'warning',
+                buttons: {
+                    cancel: {
+                        visible: false,
+                        text: 'No, cancel!',
+                        className: 'btn btn-danger'
+                    },
+                    confirm: {
+                        text: 'Разбрах',
+                        className: 'btn btn-success'
+                    }
+                }
+            }).then((willDelete) => {
+                if (willDelete) {
+                    swal("Успех !", {
+                        icon: "success",
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        }
+                    });
+                } else {
+                    swal("Your imaginary file is safe!", {
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-success'
+                            }
+                        }
+                    });
+                }
+            });
+        })
+    </script>
+
+}

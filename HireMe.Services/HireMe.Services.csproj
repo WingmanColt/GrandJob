@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
+    <PackageReference Include="NToastNotify" Version="7.0.0" />
+    <PackageReference Include="SendGrid" Version="9.22.0" />
+    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HireMe.Core\HireMe.Core.csproj" />
+    <ProjectReference Include="..\HireMe.Data\HireMe.Data.csproj" />
+    <ProjectReference Include="..\HireMe.Entities\HireMe.Entities.csproj" />
+    <ProjectReference Include="..\HireMe.Firewall\HireMe.Firewall.csproj" />
+    <ProjectReference Include="..\HireMe.Mapping\HireMe.Mapping.csproj" />
+    <ProjectReference Include="..\HireMe.ViewModels\HireMe.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

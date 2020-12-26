@@ -1,0 +1,370 @@
+﻿@page
+
+@inject IConfiguration config
+@inject UserManager<User> UserManager
+
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Дашборд";
+    Layout = "Layouts/_Index";
+
+    var context = HttpContext.Request;
+    var location = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = location.AbsoluteUri;
+
+    string siteUrl = config.GetSection("MySettings").GetSection("ResumeUrl").Value;
+
+    var user = await UserManager.GetUserAsync(User);
+
+    // ChartJS
+    //Chart chart = (Chart)ViewData["chart"];
+
+}
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">Статистика</h4>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+
+                                    @*if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                                    {
+                                        <p class="card-category">Работодатели</p>
+                                        <h4 class="card-title">@Model.AllCompaniesWaiting</h4>
+                                    }
+                                    @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+                                    {
+                                        <p class="card-category">Моите компании</p>
+                                        <h4 class="card-title">@Model.MyCompanies</h4>
+                                    }
+                                    @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                                    {
+                                        <p class="card-category">Моите обяви</p>
+                                        <h4 class="card-title">@Model.MyContestant</h4>
+                                    }
+                                        *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-info bubble-shadow-small">
+                                    <i class="far fa-newspaper"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    @*if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                                    {
+                                        <p class="card-category">Oбяви за работа</p>
+                                        <h4 class="card-title">@Model.AllJobsWaiting</h4>
+                                    }
+                                    @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+                                    {
+                                        <p class="card-category">Обяви за работа</p>
+                                        <h4 class="card-title">@Model.MyJobs</h4>
+                                    }
+                                    @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                                    {
+                                        <p class="card-category">Кандидатствани</p>
+                                        <h4 class="card-title">@Model.MyAppliedJobs</h4>
+                                    }*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-success bubble-shadow-small">
+                                    <i class="far fa-envelope"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    @*if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                                    {
+                                        <p class="card-category">Кандидати</p>
+                                        <h4 class="card-title">@Model.AllContestantsWaiting</h4>
+                                    }
+                                    @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+                                    {
+                                        <p class="card-category">Съобщения</p>
+                                        <h4 class="card-title">@Model.MyMessages</h4>
+                                    }
+                                    @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                                    {
+                                        <p class="card-category">Съобщения</p>
+                                        <h4 class="card-title">@Model.MyMessages</h4>
+                                    }*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                    <i class="fas fa-link"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Приложения</p>
+                                    <h4 class="card-title">@Model.MyAppsCount</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* Jobs candidatures *@
+        @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+        {
+
+            <div class="row">
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-title">Получени кандидатури</div>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="table-full-width">
+                                <table class="table">
+                                    <tbody>
+
+                                        @if (!(Model.ReceivedResumes is null))
+                                        {
+
+                                            @await foreach (var item in Model.ReceivedResumes)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.Date.ToString("dd/MM/yyyy")
+                                                    </td>
+                                                    <td>@item.Title</td>
+
+                                                    <td class="td-actions text-right">
+                                                        <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.FileId" class="btn btn-icon btn-xs" title="Прегледай">
+                                                            <span class="fa fa-eye"></span>
+                                                        </a>
+
+                                                        <a asp-controller="Resume" asp-action="DeleteApplication" asp-route-id="@item.Id" asp-route-returnurl="@returnUrl" title="Изтрий" class="btn btn-icon btn-xs">
+                                                            <i class="fa fa-times"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td>Все още няма изпратени кандидатури за вашите обяви!</td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="card-footer">
+                            <i class="fa fa-info-circle"></i> Кандидатурите, които получавате от потребителите ще ги виждате тук.
+                        </div>
+                    </div>
+                </div>
+                @*
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Седмична статистика</div>
+                            <div class="card-category">March 25 - April 02</div>
+                        </div>
+                        <div class="card-body pb-0">
+                            <div class="pull-in">
+
+                                <canvas id="myChart" width="400" height="400"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                *@
+            </div>
+        }
+        @* Jobs candidatures END *@
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-space">
+                    <div class="card-header">
+                        <h4 class="card-title">Информационно табло</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-3">
+                                <div class="nav flex-column nav-pills nav-secondary nav-pills-no-bd nav-pills-icons" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                    <a class="nav-link active show" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home-icons" role="tab" aria-controls="v-pills-home-icons" aria-selected="true">
+                                        <i class="flaticon-round"></i>
+                                        Отностно
+                                    </a>
+                                    <a class="nav-link" id="v-pills-contestants-tab" data-toggle="pill" href="#v-pills-contestants-icons" role="tab" aria-controls="v-pills-contestants-icons" aria-selected="false">
+                                        <i class="flaticon-user-4"></i>
+                                        Кандидати
+                                    </a>
+                                    <a class="nav-link" id="v-pills-employer-tab" data-toggle="pill" href="#v-pills-employer-icons" role="tab" aria-controls="v-pills-employer-icons" aria-selected="false">
+                                        <i class="flaticon-suitcase"></i>
+                                        Работадатели
+                                    </a>
+                                    <a class="nav-link" id="v-pills-pro-tab" data-toggle="pill" href="#v-pills-pro-icons" role="tab" aria-controls="v-pills-pro-icons" aria-selected="false">
+                                        <i class="flaticon-coins"></i>
+                                        PRO-Акаунт
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-9">
+                                <div class="tab-content" id="v-pills-tabContent">
+                                    <div class="tab-pane fade active show" id="v-pills-home-icons" role="tabpanel" aria-labelledby="v-pills-home-icons">
+                                        <div class="accordion accordion-secondary">
+                                            <div class="card">
+                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
+                                                    <div class="span-icon">
+                                                        <div class="flaticon-round"></div>
+                                                    </div>
+                                                    <div class="span-title">
+                                                        Как да използвам платформата ?
+                                                    </div>
+
+                                                </div>
+
+                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        Ползването на платформата е напълно безплатно за кандидати. Бизнесите също могат да се възползват от основните ни функции безплатно.
+
+                                                        За да се възползваш от възможностите, които платформата ни предоставя, можеш да си създадеш профил на Кандидат или Работадател. После просто следвай стъпките и не забравяй да се вслушваш в поп-ъп съветите по време на попълване - те са там за да те улеснят с използването на платформата.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-contestants-icons" role="tabpanel" aria-labelledby="v-pills-contestants-icons">
+                                        <div class="accordion accordion-secondary">
+                                            <div class="card">
+                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
+                                                    <div class="span-icon">
+                                                        <div class="flaticon-user-4"></div>
+                                                    </div>
+                                                    <div class="span-title">
+                                                        Искам да ме потърсят за работа ...
+                                                    </div>
+
+                                                </div>
+
+                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        1. Завърши регистрацията и потвърди емайл адреса си <a asp-page="EditProfile" title="редактирай профил">от тук.</a>
+                                                        <br>2. Създай си профил на кандидат <a asp-controller="Contestant" asp-action="Create" title="Създай профил">от тук.</a>
+                                                        <br>3. Качи своето CV, докато създаваш профила си.
+                                                        <br>4. Пусни си кандидатурата, в която индустрия желаеш да работиш.
+                                                        <br>5. Направи всичко възможно обявата ти да достигне до повече хора.  <a id="alert_demo_8" href="#" title="Създай профил">Научи как ?</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-employer-icons" role="tabpanel" aria-labelledby="v-pills-employer-icons">
+                                        <div class="accordion accordion-secondary">
+                                            <div class="card">
+                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
+                                                    <div class="span-icon">
+                                                        <div class="flaticon-suitcase"></div>
+                                                    </div>
+                                                    <div class="span-title">
+                                                        Как да пусна обява за работа ?
+                                                    </div>
+
+                                                </div>
+
+                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        1. Завърши регистрацията и потвърди емайл адреса си <a asp-page="EditProfile" title="редактирай профил">от тук.</a>
+                                                        <br>2. Добави профил на фирмата <a asp-page="/Companies/Create" title="Създай профил">от тук.</a>
+                                                        <br>3. Добави своя екип, ако имат регистрация в сайта ни.
+                                                        <br>4. Изчакай да се прегледа и одобри от администратор.
+                                                        <br>5. Вече можете да пускате обяви за работа <a asp-controller="Jobs" asp-action="Create" title="Създай профил">от тук.</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="v-pills-pro-icons" role="tabpanel" aria-labelledby="v-pills-pro-icons">
+                                        <div class="accordion accordion-secondary">
+                                            <div class="card">
+                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
+                                                    <div class="span-icon">
+                                                        <div class="flaticon-coins"></div>
+                                                    </div>
+                                                    <div class="span-title">
+                                                        Искам да имам висок рейтинг в сайта...
+                                                    </div>
+
+                                                </div>
+
+                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                                    <div class="card-body">
+                                                        Можете да опитате платените услуги на платформата ни, след като си изберете пакет <a asp-page="Pricing" title="избери пакет">от тук.</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

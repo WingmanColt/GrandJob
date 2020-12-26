@@ -1,0 +1,95 @@
+﻿@model AccountViewModel
+@{ ViewData["Title"] = "Влезте в системата";
+                ViewData["Description"] = "Влезте в системата и намерете новата си работа сега.";
+                ViewData["Keywords"] = "login,register,влез,регистрация,акаунт,account";
+                Layout = "Layout/_Register"; 
+    }
+<div class="row">
+    <div class="register-wrapper col-lg-8">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="container" id="containerWrapper">
+
+
+            <div class="form-container sign-up-container" id="Register">
+                <form asp-controller="Account" asp-action="Register" method="post">
+                    @*<div asp-validation-summary="All" class="text-danger"></div>*@
+                    <div class="desktop-only">
+                        <h1>Регистрация</h1>
+                    </div>
+                    <div class="mobile-only row col-xs-12">
+                        <button class="btn btn-md btn-outline-primary text-black-50" type="button" id="signIn">Имам акаунт</button>
+                    </div>
+                    <span>Продължете със социалните мрежи</span>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <span>или си направте нова регистрация</span>
+                    <input type="email" asp-for="EmailReg" autocomplete="on" placeholder="Емайл" />
+                    <input type="password" asp-for="PasswordReg" autocomplete="off" placeholder="Парола" />
+                    <input type="password" asp-for="ConfirmPasswordReg" autocomplete="off" placeholder="Парола" />
+                    <button class="btn btn-md btn-subcolor" type="submit">Регистрация</button>
+                </form>
+            </div>
+
+
+            <div class="form-container sign-in-container" id="Login">
+                <form asp-controller="Account" asp-action="Login" method="post">
+                    @*<div asp-validation-summary="All" class="text-danger"></div>*@
+                    <div class="desktop-only">
+                        <h1>Влез</h1>
+                    </div>
+                    <div class="mobile-only row col-xs-12">
+                        <button class="btn btn-md btn-outline-primary text-black-50" type="button" id="signUp">Нямам акаунт все още</button>
+                    </div>
+                    <span>Продължете със социалните мрежи</span>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <span>или използвайте вашия акаунт</span>
+                    <input type="email" asp-for="Email" autocomplete="on" placeholder="Емайл" />
+                    <input type="password" asp-for="Password" placeholder="Парола" />
+
+                    @*  <label asp-for="RememberMe"><input asp-for="RememberMe" />@Html.DisplayNameFor(m => m.RememberMe)</label>*@
+
+                    <a href="#">Забравена парола?</a>
+                    <button class="btn btn-md btn-main" type="submit">Продължи</button>
+                </form>
+            </div>
+
+            <div class="desktop-only">
+                <div class="overlay-container">
+                    <div class="overlay">
+                        <div class="overlay-panel overlay-left">
+                            <h1>Здравейте !</h1>
+                            <p>Ако вече имате създаден акаунт, моля влезте.</p>
+                            <button class="buttonMain ghost" id="signInOverlay">Влез</button>
+                        </div>
+                        <div class="overlay-panel overlay-right">
+                            <h1>Здравейте !</h1>
+                            <p>Ако все още нямате акаунт в платформата ни, започнете сега.</p>
+                            <button class="buttonMain ghost" id="signUpOverlay">Регистрирай ме</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="p-5 mb-5 bg-white">
+            <h3 class="h5 font-weight-bold text-black mb-3">Често задавани въпроси</h3>
+            <hr>
+            <b class="text-letblue">В:</b> <strong>Има ли такса за публикуване на обява?</strong><br>
+            <b class="text-letblue">О:</b> Няма такси за публикуване на обява в GrandJob. Това е 100% безплатна услуга, която предлагаме както за работодателите, така и за кандидатите.
+            <hr>
+
+            <b class="text-letblue">В:</b> <strong>Как да си подсилвам публикацията?</strong><br>
+            <b class="text-letblue">О:</b> Можете да подсилите вашата обява, като използвате кредитите, които сте закупили. Можете да заредите кредити чрез (кредитна карта, дебитна карта, и PayPal).
+            <hr>
+        </div>
+
+    </div>
+</div>

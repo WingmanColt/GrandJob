@@ -1,0 +1,43 @@
+﻿@inject SignInManager<User> _signInManager
+@{
+    Layout = "_MasterLayout";
+}
+
+<div id="root">
+    <div class="app fixed-header" style="background-color: rgb(255, 255, 255);">
+
+        <div class="desktop-only">
+            <div id="page-navbar-bg" class="header header-bg round-bottom-edges fixed-top contract-header">
+            </div>
+
+            <div id="page-navbar-menu" class="header fixed-top contract-header" style="background-color: transparent;">
+                <!-- Menu Area -->
+                <partial name="../Home/customPartials/_MenuPartialHome" />
+            </div>
+        </div>
+
+        <div class="mobile-only">
+            <!-- Menu Area -->
+            <partial name="../Home/customPartials/_MobileMenuPartial" />
+        </div>
+
+        @if (_signInManager.IsSignedIn(User))
+        {
+            @await Component.InvokeAsync("_Activity")
+        }
+            <!-- Content Area -->
+            <div class="page-content scroll-holder pull-content" style="background-color: #f4f7fa;">
+                <div class="container">
+                    @RenderBody()
+                </div>
+            </div>
+            <!-- Footer Area -->
+            <partial name="../Home/customPartials/_FooterPartial" />
+        </div>
+</div>
+
+@section Scripts {
+
+
+    @RenderSection("Scripts", required: false)
+}

@@ -1,0 +1,94 @@
+
+.section-subtitle {
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 6px 0 15px;
+    margin-bottom: 25px
+}
+
+    .section-subtitle:before,
+    .section-subtitle:after {
+        display: table;
+        content: " "
+    }
+
+    .section-subtitle:after {
+        clear: both
+    }
+
+    .section-subtitle.from-sidebar {
+        border-bottom: 1px solid #ced9ee
+    }
+
+
+.sidebar-section {
+    margin-top: 30px
+}
+
+.sidebar-profile {
+    margin-bottom: 20px
+}
+
+    .sidebar-profile:before,
+    .sidebar-profile:after {
+        display: table;
+        content: " "
+    }
+
+    .sidebar-profile:after {
+        clear: both
+    }
+
+    .sidebar-profile:last-child {
+        margin-bottom: 0
+    }
+
+    .sidebar-profile .avatar {
+        float: left;
+        margin-right: 10px;
+        width: 50px
+    }
+
+    .sidebar-profile .main-details {
+        float: left;
+        width: calc(100% - 60px)
+    }
+
+    .sidebar-profile .name {
+        font-size: 14px;
+        font-weight: 500;
+        color: #3c495a
+    }
+
+    .sidebar-profile .speciality {
+        color: #7f92a9;
+        font-size: 12px
+    }
+
+    .sidebar-profile .works-at,
+    .sidebar-profile .location {
+        font-size: 12px;
+        margin: 3px 0
+    }
+
+        .sidebar-profile .works-at .hi,
+        .sidebar-profile .works-at .form-group-select:before,
+        .sidebar-profile .works-at .select2-container--bootstrap.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice__remove:before,
+        .select2-container--bootstrap.select2-container--bootstrap .select2-selection--multiple .sidebar-profile .works-at .select2-selection__choice__remove:before,
+        .sidebar-profile .works-at .select2-container--bootstrap.select2-container--bootstrap .select2-results__option[aria-selected=true]:before,
+        .select2-container--bootstrap.select2-container--bootstrap .sidebar-profile .works-at .select2-results__option[aria-selected=true]:before,
+        .sidebar-profile .works-at a.datepicker:before,
+        .sidebar-profile .works-at .caret-list-item:before,
+        .sidebar-profile .works-at .interaction-type:before,
+        .sidebar-profile .location .hi,
+        .sidebar-profile .location .form-group-select:before,
+        .sidebar-profile .location .select2-container--bootstrap.select2-container--bootstrap .select2-selection--multiple .select2-selection__choice__remove:before,
+        .select2-container--bootstrap.select2-container--bootstrap .select2-selection--multiple .sidebar-profile .location .select2-selection__choice__remove:before,
+        .sidebar-profile .location .select2-container--bootstrap.select2-container--bootstrap .select2-results__option[aria-selected=true]:before,
+        .select2-container--bootstrap.select2-container--bootstrap .sidebar-profile .location .select2-results__option[aria-selected=true]:before,
+        .sidebar-profile .location a.datepicker:before,
+        .sidebar-profile .location .caret-list-item:before,
+        .sidebar-profile .location .interaction-type:before {
+            font-size: 14px
+        }
+

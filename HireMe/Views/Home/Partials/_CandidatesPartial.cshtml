@@ -1,0 +1,132 @@
+﻿@inject IConfiguration Config
+@inject ISkillsService _skillService
+@inject UserManager<User> UserManager
+
+@model IndexViewModel
+@{
+    string SiteImageUrl = Config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    User userId;
+    string FullImage;
+
+}
+
+    <div class="container animate__animated animate__bounce desktop-only">
+        <div class="row">
+            <div class="col-md-10 col-md-push-1">
+                <ul class="top-profiles list-inline">
+                    @await foreach (var item in Model.LastContestants)
+                    {
+                        userId = await UserManager.FindByIdAsync(item?.PosterID);
+                        if (!(userId is null))
+                            FullImage = userId.isExternal ? userId?.PictureName : SiteImageUrl + userId?.PictureName;
+                        else 
+                            FullImage = "~/uploads/Images/100x100.jpg";
+
+                        <li class="sidebar-profile">
+                            <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">
+
+
+                                <div class="image-wrapper">
+                                    @if (@userId?.PictureName is null)
+                                    {
+                                        <img src="~/uploads/Images/100x100.jpg">
+                                    }
+                                    else
+                                    {
+                                        <img src="@FullImage">
+                                    }
+                                </div>
+                            </a>
+
+                            <div class="main-details">
+                                <a class="name" asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">@item.FullName</a>
+                                <div class="speciality"><i class="fa fa-money"></i>@item.payRate лв. / @item.SalaryType.GetDisplayName()</div>
+                                <div class="works-at text-success"><i class="fas fa-map-marker-alt" title="@item.LocationId"></i> @item.LocationId</div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+
+@*<div class="row">
+        <div class="col-md-10 col-md-push-1">
+            <ul class="top-profiles list-inline">
+                @await foreach (var item in Model.LastContestants)
+                {
+                    userId = await UserManager.FindByIdAsync(item.PosterID);
+                    skills = _skillService.GetAllByContestant(item);
+                    FullImage = userId.isExternal ? @userId?.PictureName : SiteImageUrl + userId?.PictureName;
+                    <li class="sidebar-profile">
+                        <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">
+                            <div class="image-wrapper">
+                                @if (@userId?.PictureName is null)
+                                {
+                                    <img src="~/uploads/Images/100x100.jpg">
+                                }
+                                else
+                                {
+                                    <img src="@FullImage">
+                                }
+                            </div>
+                        </a>
+                        <div class="main-details">
+                            <a class="name" asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">@StringHelper.GetUntil(@item.FullName, 15)</a>
+                            if (item.payRate > 0)
+                            {
+                                <div class="works-at text-success"><i class="fa fa-money"></i> @item.payRate лв. / @item.SalaryType.GetDisplayName()</div>
+                            }
+                            <div class="speciality"><i class="fas fa-map-marker-alt"></i> @item.LocationId</div>
+                        </div>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>*@
+
+<!-- Checkbox for manipulation   -->
+@*
+            @await foreach (var item in Model.LastContestants)
+            {
+                userId = await UserManager.FindByIdAsync(item.PosterID);
+                FullImage = userId.isExternal ? @userId?.PictureName : SiteImageUrl + userId?.PictureName;
+
+            <div class="card-wrapper">
+                <div class="card-front">
+                    <div class="card-links">
+                        <span class="fab fa-linkedin"></span>
+                        <span class="fa fa-link"></span>
+                    </div>
+                    <div class="card-user">
+                        <a style="text-decoration:none;" asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">
+                            @if (@userId?.PictureName is null)
+                            {
+                                <img src="~/uploads/Images/100x100.jpg">
+                            }
+                            else
+                            {
+                                <img src="@FullImage" alt="Няма снимка">
+                            }
+                            <span>@item.FullName</span>
+                            <span class="fas fa-map-marker-alt">@item.LocationId</span>
+                        </a>
+                        <div class="user-info">
+                            <span>71<b>Posts</b></span>
+                            <span>532<b>Followers</b></span>
+                            <span>451<b>Following</b></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-back"></div>
+            </div>
+                    }
+
+
+            </div>
+    </div>
+
+*@

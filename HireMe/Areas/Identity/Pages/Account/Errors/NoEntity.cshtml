@@ -1,0 +1,23 @@
+﻿@page
+
+@{
+    ViewData["Title"] = "Достъпът е забранен";
+    Layout = "_Layout.cshtml";
+}
+
+
+<div class="wrapper not-found">
+    <h2 class="animated fadeIn text-danger">@ViewData["Title"]</h2>
+    <div class="desc animated fadeIn"><br />Този ресурс не съществува.</div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-back-home mt-4 animated fadeInUp">
+        <span class="btn-label mr-2">
+            <i class="flaticon-home"></i>
+        </span>
+        Върни се назад
+    </a>
+
+    <br>
+
+</div>
+
+

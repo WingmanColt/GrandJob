@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "~/Views/Home/_PageLayout.cshtml";
+
+    <link href="~/customCSS/Account/Register.css" rel="stylesheet" />
+}
+
+@RenderBody()
+
+
+@section Scripts {
+
+    <script>
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+
+        const signUpOverlayButton = document.getElementById('signUpOverlay');
+        const signInOverlayButton = document.getElementById('signInOverlay');
+        const container = document.getElementById("containerWrapper");
+
+        signUpOverlayButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+        });
+
+        signInOverlayButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+        });
+
+        signUpButton.addEventListener('click', () => {
+            container.classList.add("right-panel-active");
+            document.getElementById('#Login').style.opacity = 0;
+             document.getElementById('#Register').style.opacity = 1;
+        });
+
+        signInButton.addEventListener('click', () => {
+            container.classList.remove("right-panel-active");
+             document.getElementById('#Login').style.opacity = 1;
+              document.getElementById('#Register').style.opacity = 0;
+        });
+        </script>
+
+}
+
+

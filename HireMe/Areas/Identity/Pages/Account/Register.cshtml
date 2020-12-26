@@ -1,0 +1,68 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Регистрация като кандидат";
+    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+}
+
+    <br>
+    <br>
+    <div class="row">
+        @* Center pos *@
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-6">
+            <div class="wrapper">
+                <form asp-route-returnUrl="@Model.ReturnUrl" method="post" class="login">
+
+                    <h4>Регистрирай се като кандидат.</h4>
+                    <hr />
+
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Email"></label>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="on" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.Password"></label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="off" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Input.ConfirmPassword"></label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="off" />
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Регистрация</button>
+                </form>
+
+                <footer>
+                    @{
+                        if (Model.ExternalLogins?.Count > 0)
+                        {
+                            <form id="external" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+
+                                <p>
+                                    @foreach (var provider in Model.ExternalLogins)
+                                    {
+                                        <button type="submit" class="btn btn-hover @provider.DisplayName.ToLower()" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+
+                                            <i class="fab fa-@provider.DisplayName.ToLower() fa-lg"></i>
+
+                                            Влез с @provider.DisplayName
+                                        </button>
+                                    }
+                                </p>
+
+                            </form>
+                        }
+                    }
+                    <a href="#">GrandJob</a>
+                </footer>
+            </div>
+        </div>
+    </div>
+

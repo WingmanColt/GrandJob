@@ -1,0 +1,124 @@
+﻿@page
+@inject UserManager<User> UserManager
+
+@model ExternalLoginsModel
+@{
+    ViewData["Title"] = "Свързани приложения";
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+
+    var user = await UserManager.GetUserAsync(User);
+    var context = HttpContext.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+}
+<style>
+    .facebook {
+        background-color: #49639F;
+        color: #fff;
+    }
+
+    .google {
+        background-color: #DF4A32;
+        color: #fff;
+    }
+</style>
+
+
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="flaticon-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">@ViewData["Title"]</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+
+                    <div class="card-header">
+
+                    </div>
+
+                    <div class="card-body">
+
+                        @if (Model.CurrentLogins?.Count > 0 && user.SignInSocialEnable)
+                        {
+                            <p>Свързани приложения</p>
+                            <table class="table">
+                                <tbody>
+                                    @foreach (var login in Model.CurrentLogins)
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                @if (Model.ShowRemoveButton)
+                                                {
+                                                    <form id="remove-login" asp-page-handler="RemoveLogin" method="post">
+                                                        <div>
+                                                            <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                                                            <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+
+
+                                                            <button type="submit" class="btn btn-dark @login.ProviderDisplayName.ToLower()" name="provider" title="премахни @login.LoginProvider от твоя акаунт">
+
+                                                                <i class="fab fa-@login.ProviderDisplayName.ToLower() fa-lg"></i>
+
+                                                                Премахни  @login.LoginProvider
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    @: &nbsp;
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        @if (Model.OtherLogins?.Count > 0 && user.SignInSocialEnable)
+                        {
+                            <h4>Добавете друго приложение за влизане.</h4>
+                            <hr />
+                            <form id="link-login-form" asp-page-handler="LinkLogin" method="post" class="form-horizontal">
+                                <div id="socialLoginList">
+                                    <p>
+                                        @foreach (var provider in Model.OtherLogins)
+                                        {
+
+                                            <button type="submit" class="btn btn-dark @provider.DisplayName.ToLower()" name="provider">
+
+                                                <i class="fab fa-@provider.DisplayName.ToLower() fa-lg"></i>
+
+                                                Свържи @provider.DisplayName
+                                            </button>
+                                        }
+                                    </p>
+                                </div>
+                            </form>
+                        }
+                        @if (!user.SignInSocialEnable)
+                        {
+                            <h1>Включете сега:  <a asp-controller="Account" asp-action="SignInSocialEnabling" asp-route-returnUrl="@returnUrl" style="text-decoration:none; color:#00ff21;" title="Включване"><span class="fas fa-power-off" style="font-size:22px;"></span></a></h1>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

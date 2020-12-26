@@ -1,0 +1,41 @@
+﻿@{
+    Layout = "~/Views/Home/_PageLayout.cshtml";
+
+    <link href="~/customCSS/Jobs/Create.min.css" rel="stylesheet" />
+    <link href="~/customCSS/Base/stepIndicator.min.css" rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/customCSS/Dashboard/plugins/Using/select2-theme.min.css" rel="stylesheet" />
+}
+
+@RenderBody()
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <script src="~/customJS/contestants/filter/tagsSelect.min.js"></script>
+    <script src="~/customJS/contestants/filter/langSelect.min.js"></script>
+    <script src="~/customJS/contestants/filter/worktypeSelect.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/jquery.tinymce.min.js"></script>
+
+    <script>
+        tinymce.init({
+
+            selector: '#mytextarea',
+            plugins: 'autoresize',
+            autoresize_on_init: false,
+            max_height: 500,
+            min_height: 400
+        });
+    </script>
+
+    <script src="~/customJS/Dashboard/plugin/jquery.validate/jquery-validate.min.js"></script>
+    <script src="~/customJS/contestants/create/validationRules.min.js"></script>
+    <script src="~/customJS/contestants/create/StepIndicator.min.js"></script>
+
+}
+
+

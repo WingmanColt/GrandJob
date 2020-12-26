@@ -1,0 +1,328 @@
+.quick-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: -380px;
+    width: 380px;
+    overflow: auto;
+    overflow-x: hidden;
+    height: 65vh;
+    display: block;
+    z-index: 1;
+    background: #fff;
+    background-size: cover;
+    background-position: center center;
+    box-shadow: 2px 0 20px rgba(69, 65, 78, 0.07);
+    transition: all 0.5s;
+    z-index: 1101;
+    padding: 20px 20px;
+}
+
+    .quick-sidebar .scroll-wrapper .scroll-element {
+        opacity: 0.4 !important;
+    }
+
+    .quick-sidebar .scroll-wrapper:hover .scroll-element {
+        opacity: 0.8 !important;
+    }
+
+   /* .quick-sidebar .close-quick-sidebar {
+        position: absolute;
+        right: 25px;
+        color: #999;
+    }
+       */
+    .quick-sidebar .close-quick-sidebar .sectionName i {
+        font-size: 1.3rem;
+    }
+@media screen and (max-width: 991px) {
+       
+    .quick-sidebar .close-quick-sidebar {
+        position: absolute;
+        left: 6px;
+        color: #070101;
+        font-weight: 600;
+    }
+        .quick-sidebar .close-quick-sidebar .sectionName i {
+            font-size: 1.1rem;
+        }
+    .quick_sidebar_open .quick-sidebar {
+        width: 100%;
+        height:auto;
+    }
+}
+.quick-sidebar .sectionName {
+    border-bottom: 1px solid #f1f1f1;
+    color: #444;
+    font-size: 1.1em;
+    font-weight: 700;
+    padding: 1px 15px 20px;
+}
+/*.quick-sidebar .nav-link {
+    padding-top: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    margin-right: 15px !important;
+}
+    */
+.quick-sidebar .nav-item i {
+    font-size:1.8rem;
+}
+    
+.quick-sidebar .quick-wrapper .quick-scroll {
+   /* height: calc(100vh - 115px);*/
+    height:auto;
+    overflow: auto;
+    margin-bottom: 15px;
+}
+
+.quick-sidebar .quick-wrapper .quick-content {
+    padding-bottom: 25px;
+}
+
+.quick-sidebar .quick-wrapper .category-title {
+    font-size: 16px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    margin-top: 25px;
+    display: block;
+    border-bottom: 1px solid #f1f1f1;
+    margin-bottom: 15px;
+}
+
+.quick-sidebar-overlay {
+    position: fixed;
+    z-index: 1100;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.63);
+}
+
+.quick_sidebar_open .quick-sidebar {
+    right: 0 !important;
+}
+.topbar_open .navbar-header .navbar-nav > .nav-item:last-child .quick-sidebar-toggler {
+    padding-left: 5px !important;
+}
+@media screen and (max-width: 350px) {
+    .quick_sidebar_open .quick-sidebar {
+        width: 100%;
+        padding: 20px;
+    }
+}
+
+
+
+/*Messages*/
+.messages-contact {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    transition: left 0.3s ease;
+}
+
+    .messages-contact .contact-list .user {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 11px 10px;
+        border-radius: 5px;
+    }
+        .messages-contact .contact-list .user a.link {
+            text-decoration: none;
+            width:80%
+        }
+            .messages-contact .contact-list .user a.link:hover {
+                background-color: #efeded;
+            }
+
+
+    .messages-contact .contact-list .message a {
+        text-decoration: none;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 11px 10px;
+        border-radius: 5px;
+    }
+
+            .messages-contact .contact-list .message a:hover {
+                background-color: #efeded;
+            }
+    .messages-contact .contact-list .user .remove-block {
+        font-size: 17px;
+        display: contents;
+        float: right;
+    }
+
+        .messages-contact .contact-list .user .remove-block i:hover {
+            color: #ff0000;
+        }
+
+    .messages-contact .contact-list .user a .user-data,
+    .messages-contact .contact-list .message a .user-data {
+        margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+        .messages-contact .contact-list .user a .user-data .name,
+        .messages-contact .contact-list .message a .user-data .name {
+            color: #575962;
+            font-size: 13px;
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+        .messages-contact .contact-list .user a .user-data .subject,
+        .messages-contact .contact-list .message a .user-data .subject {
+            font-size: 13px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .messages-contact .contact-list .user a .user-data .time,
+        .messages-contact .contact-list .message a .user-data .time {
+            color: #7d8c95;
+            font-size: 11px;
+        }
+    .messages-contact .contact-list .see-all {
+        border-top: 1px solid #f1f1f1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        color: #555;
+        font-size: 13px;
+        font-weight: 400;
+        text-decoration: none;
+    }
+
+        .messages-contact .contact-list .see-all:hover {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #555;
+            font-size: 13px;
+            font-weight: 400;
+            text-decoration: none;
+        }
+
+        .messages-contact .contact-list .see-all i {
+            float: right;
+        }
+
+
+/*Tasks*/
+.tasks-wrapper .tasks-scroll {
+    height: calc(100vh - 130px);
+    overflow: auto;
+    margin-bottom: 15px;
+}
+
+.tasks-wrapper .tasks-content {
+    padding-bottom: 25px;
+}
+
+    .tasks-wrapper .tasks-content .tasks-list {
+        padding: 0 10px;
+        list-style: none;
+    }
+
+        .tasks-wrapper .tasks-content .tasks-list li {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+            .tasks-wrapper .tasks-content .tasks-list li .custom-control {
+                position: unset !important;
+            }
+
+            .tasks-wrapper .tasks-content .tasks-list li input[type="checkbox"]:checked ~ .custom-control-label {
+                text-decoration: line-through;
+                color: #999;
+            }
+
+            .tasks-wrapper .tasks-content .tasks-list li .custom-control.custom-checkbox {
+                margin-right: 50px !important;
+            }
+
+            .tasks-wrapper .tasks-content .tasks-list li .task-action {
+                display: none;
+                position: absolute;
+                font-size: 17px;
+                right: 0;
+                top: 0;
+            }
+
+                .tasks-wrapper .tasks-content .tasks-list li .task-action a.link {
+                    margin-left: 10px;
+                }
+
+                    .tasks-wrapper .tasks-content .tasks-list li .task-action a.link:hover {
+                        text-decoration: none;
+                        color: unset;
+                    }
+
+            .tasks-wrapper .tasks-content .tasks-list li:hover .task-action {
+                display: block;
+            }
+
+            /*Settings*/
+.settings-wrapper .settings-content .settings-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+    .settings-wrapper .settings-content .settings-list li {
+        display: table;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+        .settings-wrapper .settings-content .settings-list li .item-label {
+            display: table-cell;
+            vertical-align: middle;
+            font-size: 12px;
+        }
+
+        .settings-wrapper .settings-content .settings-list li .item-control {
+            display: table-cell;
+            float: right;
+            margin-right: 5px;
+        }
+
+            .settings-wrapper .settings-content .settings-list li .item-control .toggle-group .toggle-off,
+            .settings-wrapper .settings-content .settings-list li .item-control .toggle-group .toggle-on {
+                font-size: 11px !important;
+            }
+
+.user-box {
+    display: flex;
+    padding: 0.25rem 1rem;
+}
+
+    .user-box .u-text {
+        padding: 0 10px;
+        overflow: hidden;
+    }
+
+        .user-box .u-text h4 {
+            margin-bottom: 5px;
+            margin-top: 4px;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .user-box .u-text .text-rank {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .user-box .u-text .btn {
+            font-size: 11px;
+        }

@@ -1,0 +1,54 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+}
+<div class="wrapper">
+    <div class="login">
+        <p class="title">Вашият профил е свързан с @Model.ProviderDisplayName.</p>
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <hr />
+
+        <p class="text-info">
+            Успешно сте се удостоверили с <strong> @Model.ProviderDisplayName </strong>.
+            Моля, въведете имейл адрес за този сайт по-долу и щракнете върху бутона "Завърши регистрацията", за да завършите
+            влизане в системата.
+        </p>
+
+
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div class="row setup-content" id="step-1">
+                <b>Име:</b>
+                <input asp-for="Input.FirstName" onkeyup="ClearMessage()" class="form-control" placeholder="Име" autofocus />
+                <i class="fa fa-user"></i>
+
+                <b>Фамилия:</b>
+                <input asp-for="Input.LastName" onkeyup="ClearMessage()" class="form-control" placeholder="Фамилия" autofocus />
+                <i class="fa fa-user"></i>
+
+                <b>Емайл:</b>
+                <input asp-for="Input.Email" autocomplete="on" id="txtUsername" onkeyup="ClearMessage()" class="form-control" placeholder="Email" autofocus />
+
+                <input asp-for="Input.EmailFromSocial" hidden />
+                <input asp-for="Input.PictureName" hidden />
+
+                <i class="fa fa-user"></i>
+
+                <label asp-for="Input.IsEmployer">
+                    <input asp-for="Input.IsEmployer" />
+                    @Html.DisplayNameFor(m => m.Input.IsEmployer)
+                </label>
+                <hr>
+
+                <button type="submit">
+                    <span class="state">Завърши регистрацията</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <footer>
+        <a href="#">GrandJob</a>
+    </footer>
+    </div>

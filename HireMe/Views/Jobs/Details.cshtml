@@ -1,0 +1,239 @@
+﻿@inject IConfiguration Config
+@inject ICompanyService CompanyService
+@inject IJobsService JobsService
+@inject ILocationService LocationService
+@inject IHtmlSanitizer Sanitizer
+
+@model JobsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+    ViewData["Description"] = Model.About;
+    ViewData["Keywords"] = Model.Name;
+
+    Layout = "Layout/_Details";
+
+    var context = Context.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    Model.ReturnUrl = loc.AbsoluteUri;
+
+    var company = await CompanyService.GetByIdAsync(Model.CompanyId);
+    string SiteImageUrl = Config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string imageFullPath = SiteImageUrl + company?.Logo;
+    string ratePercent = $"{(int)Model.Rating}"+"%";
+}
+
+
+<div class="job-preview">
+    <div class="job-header">
+
+        <div class="job-header-top">
+
+            <div class="d-none d-sm-flex justify-content-end pr-0 col desktop-only-flex">
+
+                <div class="rating">
+                    <div class="rating-upper" style="width:@ratePercent">
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                    </div>
+                    <div class="rating-lower">
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-5 pb-4 container">
+                <div class="w-100 row">
+                    <div class="col-lg-7 col-12">
+                        <div class="job-title">
+                            <b style="font-size:20px; font-weight:700;">@Model.RatingVotes</b>&nbsp;<span class="fa fa-eye" style="font-size:20px; " aria-hidden="true"></span>
+
+                            <h1>@Model.Name</h1>
+
+                            <div>
+                                <a asp-controller="Company" asp-action="Details" asp-route-id="@Model.CompanyId">
+                                    <h6>@company?.Title</h6>
+                                </a>
+                                <span class="text-delimeter"></span>
+                            </div>
+
+                            <div>
+                                <span class="text-purple icon-location_city"></span>
+                                <strong>@Model.Adress, @Model.LocationId</strong>
+                                <span class="text-delimeter"></span>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="job-header-bottom py-4">
+            <div class="py-1 container">
+                <div class="w-100 row">
+                    <div class="col">
+                        <div class="image-wrapper">
+                            <img src="@imageFullPath" alt="Няма лого" />                          
+                        </div>
+                    </div>
+                    <div class="right w-50 d-flex justify-content-end align-items-center pr-0 col">
+                        <div class="job-buttons">
+                            <button class="button-apply" data-toggle="modal" data-target="#apply">
+                                <b>Кандидатствай</b>
+                            </button>
+                            <button class="button-danger" data-toggle="modal" data-target="#reportModal">
+                                <b>Докладвай</b>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-5 container">
+        <div class="justify-center row">
+
+            <div class="col-lg-6">
+                <h3>Описание</h3>
+                <div class="section-list">
+                    <div class="job-details-box">
+                        <div>
+                            <h3 class="subtitle">Тип заетост</h3>
+                            @if (Model.WorkType != null)
+                            {
+                                <p>@Model.WorkType.Replace(",", "; ")</p>
+                            }
+                            else
+                            {
+                                <p>Не е посочено</p>
+                            }
+                        </div>
+                        <div>
+                            <h3 class="subtitle">Ниво</h3>
+                            <p>@Model.ExprienceLevels.GetDisplayName()</p>
+                        </div>
+                        <div>
+                            <h3 class="subtitle">От</h3>
+                            <p>@Model.CreatedOn.ToString("MM MMMM")</p>
+                        </div>
+                        <div>
+                            <h3 class="subtitle">Заплата (лв.)</h3>
+                            @if (Model.MinSalary > 0 || Model.MaxSalary > 0)
+                            {
+                                <p>@Model.MinSalary - @Model.MaxSalary<span> / @Model.SalaryType.GetDisplayName()</span></p>
+                            }
+                            else
+                            {
+                                <p>По договаряне</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="html-section">
+                        <p>@Html.Raw(@Sanitizer.Sanitize(@Model.Description))</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<form asp-controller="Jobs" asp-action="ApplyWithResume" asp-route-jobId="@Model.Id" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+    <div id="apply" class="modal fade" role="dialog" data-backdrop="false">
+        <div class="modal-dialog modal-md">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    @if (Model.resumeFilesId is null)
+                    {
+                        <h5 class="text-center">Все още няма качено CV.</h5>
+
+                    }
+                    else
+                    {
+                        <h5 class="text-center">Кандидатствай с файл</h5>
+                        <br>
+                        <drop-down-list asp-for="@Model.resumeFilesId" asp-items="resumeFiles" />
+                    }
+                </div>
+                <div class="modal-footer">
+                    <div class="wrap">
+                        @if (Model.resumeFilesId is null)
+                        {
+                            <a asp-area="Identity" asp-page="/Resume/All" class="btn btn-warning btn-fill col-lg-pull-3" id="MessageSubmit">Качи нов файл</a>
+
+                        }
+                        else
+                        {
+                            <button type="submit" asp-for="@Model.resumeFilesId" class="button" id="SubmitApply">Кандидатствай сега</button>
+                        }
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<form asp-controller="Message" asp-action="Report" asp-route-postname="@Model.Name" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div id="reportModal" class="modal fade" role="dialog" data-backdrop="false">
+        <div class="modal-dialog modal-md">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Обява:</label><br>
+                                <strong>@Model.Name</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Причина*</label>
+                                <textarea asp-for="Message.Description" class="form-control text required" rows="10" cols="50" style="height:auto;max-width:95%;" required="required" aria-required="true" placeholder="Въведете причината, поради която докладвате тази обява. Опитайте се да дадете колкото се може повече подробности."> </textarea>
+                                <span asp-validation-for="Message.Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger btn-fill pull-right" id="MessageSubmit">Докладвай</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

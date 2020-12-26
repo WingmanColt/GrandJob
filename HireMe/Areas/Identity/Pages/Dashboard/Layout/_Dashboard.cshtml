@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/customCSS/Dashboard/plugins/Using/scrollbar.min.css">
+
+<div class="wrapper">
+    <div class="mobile-only">
+        <!-- Menu Area -->
+        <partial name="/Areas/Identity/Pages/Dashboard/Partials/_MobileMenuPartial.cshtml" />
+    </div>
+    <div class="desktop-only">
+        <partial name="/Areas/Identity/Pages/Dashboard/Partials/_MainNavbar.cshtml" />
+    </div>
+
+        <partial name="/Areas/Identity/Pages/Dashboard/Partials/_MainSidebar.cshtml" />
+
+        @await Component.InvokeAsync("_Activity")
+
+        <div class="main-panel">
+            @RenderBody()
+        </div>
+    </div>
+
+    @section Scripts {
+        @RenderSection("Scripts", required: false)
+    }

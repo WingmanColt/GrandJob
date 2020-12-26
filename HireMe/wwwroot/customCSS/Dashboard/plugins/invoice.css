@@ -1,0 +1,116 @@
+
+.card-invoice .invoice-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .card-invoice .invoice-header .invoice-title {
+        font-size: 27px;
+        font-weight: 400;
+        color: #3a3a3a;
+    }
+
+    .card-invoice .invoice-header .invoice-logo {
+        width: 150px;
+        display: flex;
+        align-items: center;
+    }
+
+        .card-invoice .invoice-header .invoice-logo img {
+            width: 100%;
+        }
+
+.card-invoice .sub {
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.card-invoice .info-invoice {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+    .card-invoice .info-invoice p {
+        font-size: 13px;
+    }
+
+.card-invoice .invoice-desc {
+    text-align: right;
+    font-size: 13px;
+}
+
+.card-invoice .invoice-detail {
+    width: 100%;
+    display: block;
+}
+
+    .card-invoice .invoice-detail .invoice-top .title {
+        font-size: 20px;
+    }
+
+.card-invoice .transfer-to .sub {
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.card-invoice .transfer-to .account-transfer > div span:first-child {
+    font-weight: 600;
+    color: #333;
+    font-size: 13px;
+}
+
+.card-invoice .transfer-to .account-transfer > div span:last-child {
+    font-size: 13px;
+    float: right;
+}
+
+.card-invoice .transfer-total {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+    .card-invoice .transfer-total .sub {
+        font-size: 14px;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .card-invoice .transfer-total .price {
+        font-size: 28px;
+        color: #177dff;
+        padding: 7px 0;
+        font-weight: 600;
+    }
+
+    .card-invoice .transfer-total span {
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+.card-invoice .card-body {
+    padding: 0;
+    border: 0 !important;
+    width: 75%;
+    margin: auto;
+}
+
+.card-invoice .card-header {
+    padding: 50px 0 20px;
+    border: 0 !important;
+    width: 75%;
+    margin: auto;
+}
+
+.card-invoice .card-footer {
+    padding: 5px 0 50px;
+    border: 0 !important;
+    width: 75%;
+    margin: auto;
+}

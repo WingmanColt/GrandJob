@@ -1,0 +1,79 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Влез в системата";
+    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+}
+<div class="wrapper">
+    <form method="post" class="login" id="remote-control-form">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <p class="title">Влез в системата</p>
+
+        <div class="row setup-content" id="step-1">
+            <b>Емайл / Потребителско име:</b>
+            <input asp-for="Input.Email" autocomplete="on" id="txtUsername" onkeyup="ClearMessage()" class="form-control" placeholder="Email" autofocus /><i class="fas fa-user"></i>
+            <span id="message"></span>
+            <br>
+            <hr>
+            <button id="btnCheck" type="button" value='Submit' onclick="CheckAvailability()" class="btn btn-primary btn-lg pull-right">Напред</button>
+
+            <input id="successButton" class="btn btn-primary nextBtn btn-lg pull-right" type="button" style='display: none;' />
+        </div>
+
+        <div class="row setup-content" id="step-2">
+            <b>Парола:</b>
+            <input asp-for="Input.Password" autocomplete="off" class="form-control" placeholder="Password" /><i class="fas fa-key"></i>
+            <br>
+
+
+            <label asp-for="Input.RememberMe">
+                <input asp-for="Input.RememberMe" />
+                @Html.DisplayNameFor(m => m.Input.RememberMe)
+            </label>
+
+
+            <hr>
+            <button type='button' id='Submit' value='Submit' onclick='fakeProgress();'>
+                <span class="state">Влез</span>
+                <i class="spinner"></i>
+            </button>
+            <div class="form-group">
+                <p>
+                    <a id="forgot-password" asp-page="./ForgotPassword">Забравена парола?</a>
+                </p>
+            </div>
+
+            <!-- Hidden submit element so that it can be submitted programatically -->
+            <input type='submit' style='display: none;' />
+
+        </div>
+    </form>
+
+    <footer>
+        @{
+            if (Model.ExternalLogins?.Count > 0)
+            {
+                <form id="external" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+
+                    <p>
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <button type="submit" class="btn btn-hover @provider.DisplayName.ToLower()" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+
+                                <i class="fab fa-@provider.DisplayName.ToLower() fa-lg"></i>
+
+                                Влез с @provider.DisplayName
+                            </button>
+                        }
+                    </p>
+
+                </form>
+            }
+        }
+        <a href="#">GrandJob</a>
+    </footer>
+    </div>
+
+
+

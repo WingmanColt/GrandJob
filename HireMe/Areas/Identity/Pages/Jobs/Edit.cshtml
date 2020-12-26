@@ -1,0 +1,304 @@
+﻿@page "{id:int}"
+
+@model EditModel
+
+@{
+    ViewData["Title"] = "Редактиране";
+    Layout = "Layout/_Edit";
+}
+
+<div class="content">
+    <div class="page-inner">
+        <h4 class="page-title">Детайли</h4>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-with-nav">
+                    <div class="card-header">
+                        <div class="row row-nav-line">
+                            <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active show" data-toggle="tab" href="#info" role="tab" aria-selected="true">Основна информация</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#social" role="tab" aria-selected="false">Вид</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#team" role="tab" aria-selected="false">Заплащане</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#details" role="tab" aria-selected="false">Описание</a> </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="tab-content mt-3">
+                                <div class="tab-pane fade show active" id="info" role="tabpanel">
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Name"></label>
+                                                <input asp-for="Input.Name" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.LocationId"></label>
+                                                <select class="form-control" asp-for="Input.LocationId">
+                                                    @await foreach (var item in Model.AllLocations)
+                                                            {
+                                                                <option value="@item.Value">@item.Value</option>
+                                                            }
+                                                        
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.Adress"></label>
+                                                <input asp-for="Input.Adress" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3 mb-1">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.WorkType"></label>
+                                                <select class="selectWork form-control input-lg" id="id_label_multiple3" multiple="multiple" style="width: 90%">
+                                                    @if (Model.Input.WorkType != null)
+                                                    {
+                                                        @foreach (var item in Model.Worktypes)
+                                                        {
+                                                            <option value="@item" selected="selected">@item</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input asp-for="Input.WorkType" type="hidden" id="selectWork_Value" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mt-3 mb-1">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.CompanyId"></label>
+                                                <select class="selectCompany form-control" style="width:257px;">
+                                                    @if (Model.Companies != null && Model.Input.CompanyId > 0)
+                                                    {
+                                                        @await foreach (var item in Model.Companies)
+                                                        {
+                                                            <option value="@item.Id" selected="selected">@item.Title</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input asp-for="Input.CompanyId" type="hidden" id="selectCompany_Value" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.CategoryId"></label>
+                                                <select class="form-control" asp-for="Input.CategoryId">
+                                                    @{
+                                                        bool isEmptyCategory = await Model.AllCategories.AnyAsync();
+                                                        if (isEmptyCategory && Model.Input.CategoryId > 0)
+                                                        {
+                                                            await foreach (var item in Model.AllCategories)
+                                                            {
+                                                                <option value="@item.Value">@item.Text</option>
+                                                            }
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="social" role="tabpanel">
+                                    <div class="row mt-3">
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.ExprienceLevels"></label>
+                                                <select asp-for="Input.ExprienceLevels" asp-items="Html.GetEnumSelectList<ExprienceLevels>()" class="form-control input-md"></select>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.TagsId"></label>
+                                                <select class="selectTags form-control" id="id_label_multiple2" multiple="multiple" style="width: 90%">
+
+                                                    @if (Model.Skills != null && Model.Input.TagsId != null)
+                                                    {
+                                                        @await foreach (var item in Model.Skills)
+                                                        {
+                                                            <option value="@item.Id" selected="selected">@item.Title</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input asp-for="Input.TagsId" type="hidden" id="selectTags_Value" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.LanguageId"></label>
+                                                <select class="selectLang form-control" id="id_label_multiple5" multiple="multiple" style="width: 90%">
+
+                                                    @if (Model.Languages != null && Model.Input.LanguageId != null)
+                                                    {
+                                                        @await foreach (var item in Model.Languages)
+                                                        {
+                                                            <option value="@item.Id" selected="selected">@item.Name</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <input asp-for="Input.LanguageId" type="hidden" id="selectLang_Value" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="tab-pane fade" id="team" role="tabpanel">
+                                    <div class="row mt-3 mb-1">
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.MinSalary"></label>
+                                                <input asp-for="Input.MinSalary" class="form-control" placeholder="example: (1200 BGN)" enabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.MaxSalary"></label>
+                                                <input asp-for="Input.MaxSalary" class="form-control" placeholder="example: (1200 BGN)" enabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-default">
+                                                <label asp-for="Input.SalaryType"></label>
+                                                <select asp-for="Input.SalaryType" asp-items="Html.GetEnumSelectList<SalaryType>()" class="form-control"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-pane fade" id="details" role="tabpanel">
+                                    <div class="row mt-3">
+                                        <div class="col-lg-12">
+                                            <textarea asp-for="Input.Description" id="mytextarea" rows="12" cols="12"></textarea>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                            <div class="text-right mt-3 mb-3">
+                                <button class="btn btn-danger">Отказ</button>
+                                <button type="submit" class="btn btn-success">Запази</button>
+                            </div>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-profile card-secondary">
+                    <div class="card-header">
+                        <div class="profile-picture">
+
+                            <div class="avatar avatar-xl">
+                                <img src="@Model.Input.CompanyLogo" alt="Няма лого" class="avatar-img rounded-circle">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="user-profile text-center">
+                            <div class="name">@Model.Input.Name</div>
+                            <div class="job">@Model.Input.LocationId</div>
+                            <div class="social-media">
+                                <a class="btn btn-info btn-twitter btn-sm btn-link" href="https://www.facebook.com/@Model.Company.Facebook">
+                                    <span class="btn-label just-icon"><i class="flaticon-facebook"></i> </span>
+                                </a>
+                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="@Model.Company.Website">
+                                    <span class="btn-label just-icon"><i class="flaticon-web"></i> </span>
+                                </a>
+                                <a class="btn btn-primary btn-sm btn-link" rel="publisher" href="https://www.twitter.com/@Model.Company.Twitter">
+                                    <span class="btn-label just-icon"><i class="flaticon-twitter"></i> </span>
+                                </a>
+                                <a class="btn btn-danger btn-sm btn-link" rel="publisher" href="https://www.linkdin.com/in/@Model.Company.Linkdin">
+                                    <span class="btn-label just-icon"><i class="flaticon-linkedin"></i> </span>
+                                </a>
+                            </div>
+                            <div class="view-profile">
+                                @switch (Model.Input.isApproved)
+                                {
+                                    case ApproveType.Waiting:
+                                        {
+                                            <button class="btn btn-warning">
+                                                <span class="btn-label">
+                                                    <i class="fas fa-exclamation-circle"></i>
+                                                </span>
+                                                В изчакване
+                                            </button>
+                                        }
+                                        break;
+                                    case ApproveType.Rejected:
+                                        {
+                                            <button class="btn btn-danger">
+                                                <span class="btn-label">
+                                                    <i class="fas fa-remove"></i>
+                                                </span>
+                                                Отхвърлена
+                                            </button>
+                                        }
+                                        break;
+                                    case ApproveType.Success:
+                                        {
+                                            <button class="btn btn-success">
+                                                <span class="btn-label">
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                                Публично видима
+                                            </button>
+                                        }
+                                        break;
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="card-footer">
+            <div class="row user-stats text-center">
+                <div class="col">
+                    <div class="number">125</div>
+                    <div class="title">Post</div>
+                </div>
+                <div class="col">
+                    <div class="number">25K</div>
+                    <div class="title">Followers</div>
+                </div>
+                <div class="col">
+                    <div class="number">134</div>
+                    <div class="title">Following</div>
+                </div>
+            </div>
+        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,59 @@
+﻿@inject UserManager<User> UserManager
+
+@model MessageViewModel
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+}
+
+<form asp-controller="Message" asp-action="Report" asp-route-postname="@Model.Title" method="post" id="messageForm">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div id="reportModal" class="modal fade" role="dialog" data-backdrop="false">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Description"></label>
+                                <input asp-for="Description" class="form-control" id="mytextarea" />
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success btn-fill pull-right" id="MessageSubmit">Изпрати съобщение</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/Home/tinymce/jquery.tinymce.min.js"></script>
+    <script src="~/Home/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+
+            selector: '#mytextarea',
+            plugins: 'autoresize',
+            autoresize_on_init: false,
+            max_height: 500,
+            min_height: 400
+        });
+    </script>
+}

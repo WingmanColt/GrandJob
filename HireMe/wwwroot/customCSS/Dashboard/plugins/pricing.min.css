@@ -1,0 +1,123 @@
+.card-pricing {
+    padding: 20px 5px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+    .card-pricing .card-header {
+        border-bottom: 0 !important;
+    }
+
+    .card-pricing .card-footer {
+        border-top: 0 !important;
+        padding: 15px 15px 10px 15px;
+    }
+
+    .card-pricing .card-title {
+        font-weight: 400;
+        font-size: 20px;
+    }
+
+    .card-pricing .card-price .price {
+        font-size: 36px;
+        font-weight: 400;
+    }
+
+    .card-pricing .card-price .text {
+        font-size: 18px;
+        font-weight: 400;
+        color: #d1d7e3;
+    }
+
+    .card-pricing .specification-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+        .card-pricing .specification-list li {
+            padding: 8px 0 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+            .card-pricing .specification-list li .name-specification {
+                color: #83848a;
+            }
+
+            .card-pricing .specification-list li .status-specification {
+                margin-left: auto;
+                float: right;
+                font-weight: 400;
+            }
+
+    .card-pricing.card-pricing-focus {
+        padding: 40px 5px;
+    }
+
+    .card-pricing.card-danger .name-specification,
+    .card-pricing.card-default .name-specification,
+    .card-pricing.card-info .name-specification,
+    .card-pricing.card-primary .name-specification,
+    .card-pricing.card-secondary .name-specification,
+    .card-pricing.card-success .name-specification,
+    .card-pricing.card-warning .name-specification {
+        color: #fff !important;
+    }
+
+    .card-pricing.card-primary .specification-list li {
+        border-color: #2f8bff;
+    }
+
+    .card-pricing.card-primary .btn-light {
+        color: #177dff !important;
+    }
+
+    .card-pricing.card-success .specification-list li {
+        border-color: #64e069;
+    }
+
+    .card-pricing.card-success .btn-light {
+        color: #35cd3a !important;
+    }
+
+    .card-pricing.card-secondary .specification-list li {
+        border-color: #7f77dc;
+    }
+
+    .card-pricing.card-secondary .btn-light {
+        color: #716aca !important;
+    }
+
+    .card-pricing.card-default .specification-list li {
+        border-color: #6f8996;
+    }
+
+    .card-pricing.card-default .btn-light {
+        color: #282a3c !important;
+    }
+
+    .card-pricing.card-info .specification-list li {
+        border-color: #11c0e4;
+    }
+
+    .card-pricing.card-info .btn-light {
+        color: #36a3f7 !important;
+    }
+
+    .card-pricing.card-danger .specification-list li {
+        border-color: #ff6972;
+    }
+
+    .card-pricing.card-danger .btn-light {
+        color: #f3545d !important;
+    }
+
+    .card-pricing.card-warning .specification-list li {
+        border-color: #ffbc67;
+    }
+
+    .card-pricing.card-warning .btn-light {
+        color: #ffa534 !important;
+    }

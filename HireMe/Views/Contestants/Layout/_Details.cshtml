@@ -1,0 +1,25 @@
+﻿@{
+    Layout = "~/Views/Home/_PageLayout.cshtml";
+
+    <link href="~/customCSS/Contestants/Details.min.css" rel="stylesheet">
+    <link href="~/customCSS/Base/base_2.min.css" rel="stylesheet">
+}
+
+
+@RenderBody()
+
+@section Scripts {
+
+    <script src="~/customJS/tinymce/jquery.tinymce.min.js"></script>
+    <script src="~/customJS/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+
+            selector: '#mytextarea',
+            plugins: 'autoresize',
+            autoresize_on_init: false,
+            max_height: 500,
+            min_height: 400
+        });
+    </script>
+}

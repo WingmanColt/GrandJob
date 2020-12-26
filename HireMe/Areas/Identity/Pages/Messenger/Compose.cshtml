@@ -1,0 +1,55 @@
+﻿@page 
+
+@model ComposeModel
+
+@{
+    ViewData["Title"] = "Ново съобщение";
+    ViewData["Sidebar"] = "sidebar_minimize";
+    Layout = "Layout/_Compose";
+}
+
+<div class="content content-full">
+    <div class="page-inner page-inner-fill">
+        <div class="page-with-aside mail-wrapper bg-white">
+
+            @await Html.PartialAsync("Partials/_aSideMenu")
+
+            <div class="page-content mail-content">
+                <div class="email-head">
+                    <h3>
+                        <i class="flaticon-pen mr-1"></i>
+                        @ViewData["Title"]
+                    </h3>
+                </div>
+                <form method="post">
+                    <div class="email-compose-fields">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-1">До :</label>
+                            <div class="col-md-5">
+                                <input asp-for="Message.ReceiverId" onclick="complate('#AutoComplete')" class="form-control" id="AutoComplete" name="AutoComplete" autocomplete="off" required />
+                                <input asp-for="Message.ReceiverId" type="hidden" onclick="complate('#AutoComplete')" id="AutoCompleteHidden" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="Message.Title" class="col-form-label col-md-1"></label>
+                            <div class="col-md-7">
+                                <input asp-for="Message.Title" class="form-control required">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="email-editor">
+                        <label asp-for="Message.Description" class="col-form-label col-md-1"></label>
+                        <textarea asp-for="Message.Description" id="mytextarea" rows="12" cols="12"></textarea>
+                        <div class="email-action">
+                            <button type="submit" class="btn btn-primary">Изпрати</button>
+                            <button class="btn btn-danger">Отказ</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

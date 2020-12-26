@@ -1,0 +1,14 @@
+﻿@{
+    string searchstring = ViewData["SearchString"]?.ToString() ?? "";
+}
+<form method="get" asp-route-SearchString="@searchstring" class="ml-auto">
+
+    <div class="input-group" >
+        <input asp-for="@searchstring" type="text" class="form-control" placeholder="Търси съобщение">
+        <div class="input-group-append">
+            <span class="input-group-text">
+                <i class="fa fa-search search-icon"></i>
+            </span>
+        </div>
+    </div>
+</form>

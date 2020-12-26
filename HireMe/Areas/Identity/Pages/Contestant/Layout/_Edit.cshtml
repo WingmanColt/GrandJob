@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="~/customCSS/Dashboard/plugins/Using/select2-theme.min.css" rel="stylesheet" />
+
+}
+<style>
+    .pdfobject-container {
+        height: 120rem;
+        border: 1rem solid rgba(0,0,0,.1);
+    }
+</style>
+
+@RenderBody()
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+
+    <script src="~/customJS/contestants/filter/langSelect.js"></script>
+    <script src="~/customJS/contestants/filter/tagsSelect.js"></script>
+    <script src="~/customJS/contestants/filter/worktypeSelect.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/jquery.tinymce.min.js"></script>
+
+    <script>
+        tinymce.init({
+
+            selector: '#mytextarea',
+            plugins: 'autoresize',
+            autoresize_on_init: false,
+            max_height: 700,
+            min_height: 600
+        });
+    </script>
+    
+    <script src="~/customJS/pdfobject.min.js"></script>
+    <script>PDFObject.embed("@Model?.Input?.resumeFullPath", "#resume");</script>
+        
+}
+

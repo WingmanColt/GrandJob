@@ -1,219 +1,97 @@
-﻿@inject IConfiguration _config
-@inject UserManager<User> _userManager
-
-@inject INotificationService _notifyService
-@inject IMessageService _messageService
+﻿@inject UserManager<User> _userManager
 
 @{
-
     var user = await _userManager.GetUserAsync(User);
 
     String pageName = ViewContext.RouteData.Values["page"].ToString();
     String folderName = ViewContext.RouteData.Values["page"].ToString().Split('/')[1];
-    // Avatar
-    string siteUrl = _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
-    var pictureFullPath = siteUrl + user.PictureName;
 }
 
+    <!-- Sidebar Backdrop -->
+    <div class="sidebar-backdrop"></div>
 
-<!-- Left Sidebar -->
-<div class="sidebar">
+    <!-- User Sidebar -->
+    <div class="user-sidebar">
 
-    <div class="sidebar-background"></div>
-    <div class="sidebar-wrapper scrollbar-inner">
+      <div class="sidebar-inner">
+        <ul class="navigation">
 
-        <ul class="nav">
-            <li class="nav-item @(pageName == "/Account/Manage/Index" ? "active" : "")">
-                <a asp-area="Identity" asp-page="/Account/Manage/Index">
-                    <i class="fas fa-home"></i>
-                    <p>Начало</p>
-                </a>
+          <li class="@(pageName == "/Account/Manage/Index" ? "active" : "")">
+              <a asp-area="Identity" asp-page="/Account/Manage/Index"> <i class="la la-home"></i> Начало</a>
+          </li>
+          
+          <li class="@(pageName == "/Account/Manage/EditProfile" ? "active" : "")">
+              <a asp-area="Identity" asp-page="/Account/Manage/EditProfile"><i class="la la-user-tie"></i>Моят профил</a>
+          </li>
+            @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+            {
+           <li class="@(pageName == "/Resume/Index" ? "active" : "")">
+             <a asp-area="Identity" asp-page="/Resume/Index"><i class="las la-feather"></i>Кандидатствани обяви</a>
+           </li>
+
+          <li class="@(pageName == "/my-files/index" ? "active" : "")">
+            <a asp-area="Identity" asp-page="/MyFiles/Index"><i class="las la-folder-open"></i>Моите файлове</a>
+          </li>
+           }
+
+          @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+           {
+           <li class="@(pageName == "/list/jobs" ? "active" : "")">
+              <a asp-area="Identity" asp-page="/List" asp-page-handler="Jobs"><i class="la la-file-invoice"></i>Обяви за работа</a>
+           </li>
+           }
+
+            @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+            {
+            <li class="@(pageName == "/list/companies" ? "active" : "")">
+                    <a asp-area="Identity" asp-page="/List" asp-page-handler="Companies"><i class="la la-briefcase"></i>Фирми</a>
+           </li>
+           }
+
+           @if(user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+           {
+            <li class="@(pageName == "/list/contestants" ? "active" : "")">
+              <a asp-area="Identity" asp-page="/List" asp-page-handler="Contestants"><i class="las la-id-badge"></i>Кандидатури</a>
+            </li>
+           }
+
+          <li class="@(pageName == "/Tasks/" ? "active" : "")">
+              <a asp-area="Identity" asp-page="/Tasks/Index"><i class="las la-tasks"></i> Задачи</a>
             </li>
 
+          <li class="@(pageName == "/Account/Manage/Pricing" ? "active" : "")">
+              <a asp-area="Identity" asp-page="/Account/Manage/Pricing"><i class="la la-box"></i>Цени</a>
+          </li>
+          @*
+           <li class="@(pageName == "/Messenger/" ? "active" : "")">
+            <a asp-area="Identity" asp-page="/Messenger/Index"><i class="la la-comment-o"></i>Съобщения</a>
+           </li>
+           *@
+          <li class="@(pageName == "/Account/Manage/ChangePassword" ? "active" : "")">
+           <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword"><i class="la la-lock"></i>Смяна на парола</a>
+           </li>
 
-            @* Companies dropdown *@
-            @{
-
-                if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator) || user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-                {
-                    <li class="nav-item @(folderName == "Companies" ? "active" : "")">
-                        <a data-toggle="collapse" href="#company">
-                            <i class="fas fa-building"></i>
-                            <p>Фирми</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="company">
-                            <ul class="nav nav-collapse">
-                                @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                                {
-                                    <li class="@(pageName == "/Companies/All" ? "active" : "")">
-                                        <a asp-area="Identity" asp-page="/Companies/All">
-                                            <span class="sub-item">Всички фирми</span>
-                                        </a>
-                                    </li>
-                                }
-                                <li class="@(pageName == "/Companies/Index" ? "active" : "")">
-                                    <a asp-area="Identity" asp-page="/Companies/Index">
-                                        <span class="sub-item">Моите фирми</span>
-                                    </a>
-                                </li>
-                                <li class="">
-                                    <a asp-controller="Company" asp-action="Create">
-                                        <span class="sub-item">Добави нова фирма</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-
-                    @* End Company dropdown *@
-
-
-                    @* Jobs dropdown *@
-
-                    <li class="nav-item @(folderName == "Jobs" ? "active" : "")">
-                        <a data-toggle="collapse" href="#jobs">
-                            <i class="fas fa-clipboard"></i>
-                            <p>Обяви за работа</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="jobs">
-                            <ul class="nav nav-collapse">
-                                @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                                {
-                                    <li class="@(pageName == "/Jobs/All" ? "active" : "")">
-                                        <a asp-area="Identity" asp-page="/Jobs/All">
-                                            <span class="sub-item">Всички добавени</span>
-                                        </a>
-                                    </li>
-                                }
-                                <li class="@(pageName == "/Jobs/Index" ? "active" : "")">
-                                    <a asp-area="Identity" asp-page="/Jobs/Index">
-                                        <span class="sub-item">Моите обяви</span>
-                                    </a>
-                                </li>
-                                <li class="@(pageName == "/Jobs/Create" ? "active" : "")">
-                                    <a asp-controller="Jobs" asp-action="Create">
-                                        <span class="sub-item">Добави обява</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                }
-                @* End Jobs dropdown *@
-
-                @* Candidates dropdown *@
-
-                if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator) || user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
-                {
-                    <li class="nav-item @(folderName == "Contestant" ? "active" : "") || @(folderName == "Resume" ? "active" : "")">
-                        <a data-toggle="collapse" href="#candidates">
-                            <i class="fas fa-user-plus"></i>
-                            <p>Кандидатура</p>
-                            <span class="caret"></span>
-                        </a>
-                        <div class="collapse" id="candidates">
-                            <ul class="nav nav-collapse">
-                                @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                                {
-                                    <li class="@(pageName == "/Contestant/All" ? "active" : "")">
-                                        <a asp-area="Identity" asp-page="/Contestant/All">
-                                            <span class="sub-item">Всички добавени</span>
-                                        </a>
-                                    </li>
-                                }
-                                <li class="@(pageName == "/Contestant/Index" ? "active" : "")">
-                                    <a asp-area="Identity" asp-page="/Contestant/Index">
-                                        <span class="sub-item">Моите обяви</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="Contestants" asp-action="Create">
-                                        <span class="sub-item">Добави профил</span>
-                                    </a>
-                                </li>
-                                <li class="@(pageName == "/Resume/Index" ? "active" : "")">
-                                    <a asp-area="Identity" asp-page="/Resume/Index">
-                                        <span class="sub-item">Моите файлове</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                }
-                @* End Company dropdown *@
-
-
-                @* Email dropdown *@
-
-                <li class="nav-item @(folderName == "Messenger" ? "active" : "")">
-                    <a data-toggle="collapse" href="#email">
-                        <i class="fas fa-envelope"></i>
-                        <p>Съобщения</p>
-                        <span class="caret"></span>
-                    </a>
-                    <div class="collapse" id="email">
-                        <ul class="nav nav-collapse">
-                            <li class="@(pageName == "/Messenger/index" ? "active" : "")">
-                                <a asp-area="Identity" asp-page="/Messenger/Index">
-                                    <span class="sub-item">Всички съобщения</span>
-                                </a>
-                            </li>
-                            <li class="@(pageName == "/Messenger/Compose" ? "active" : "")">
-                                <a asp-area="Identity" asp-page="/Messenger/Compose">
-                                    <span class="sub-item">Ново съобщение</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-                @* End Email dropdown *@
-                <hr>
-                <li class="nav-item @(pageName == "/Account/Manage/PersonalData" ? "active" : "")">
-                    <a asp-area="Identity" asp-page="/Account/Manage/PersonalData">
-                        <i class="fas fa-cloud-download-alt"></i>
-                        <p>Данни</p>
-                    </a>
-                </li>
-                <li class="nav-item @(pageName == "/Account/Manage/ExternalLogins" ? "active" : "")">
-                    <a asp-area="Identity" asp-page="/Account/Manage/ExternalLogins">
-                        <i class="fas fa-link"></i>
-                        <p>Приложения</p>
-                    </a>
-                </li>
-                <li class="nav-item @(pageName == "/Account/Manage/Pricing" ? "active" : "")">
-                    <a asp-area="Identity" asp-page="/Account/Manage/Pricing">
-                        <i class="fas fa-store"></i>
-                        <p>Купи PRO-акаунт</p>
-                    </a>
-                </li>
-                if (user.Role.Equals(Roles.Admin))
-                {
-                    <hr>
-                    <li class="nav-item @(pageName == "/Account/Manage/Users" ? "active" : "")">
-                        <a asp-area="Identity" asp-page="/Account/Manage/Users">
-                            <i class="fas fa-user-alt"></i>
-                            <p>Потребители</p>
-                        </a>
-                    </li>
-                    <li class="nav-item @(pageName == "/Account/Manage/SystemStatistic" ? "active" : "")">
-                        <a asp-area="Identity" asp-page="/Account/Manage/SystemStatistic">
-                            <i class="fas fa-database"></i>
-                            <p>Система</p>
-                        </a>
-                    </li>
-                }
+           @if (user.Role.Equals(Roles.Admin))
+            {
+           <li class="@(pageName == "/Account/Manage/Users" ? "active" : "")">
+           <a asp-area="Identity" asp-page="/Account/Manage/Users"><i class="las la-users-cog"></i>Потребители</a>
+           </li>   
             }
+
         </ul>
-        <button class="mobile-only navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon">
-                <i class="fas fa-arrow-right"></i>
-            </span>
-        </button>
-    </div>
 
-    </div>
+        @*<div class="skills-percentage">
+          <h4>Skills Percentage</h4>
+          <p>Put value for "Cover Image" field to increase your skill up to "85%"</p>
 
-<!-- End Sidebar -->
+          <!-- Pie Graph -->
+          <div class="pie-graph">
+            <div class="graph-outer">
+              <input type="text" class="dial" data-fgColor="#7367F0" data-bgColor="transparent" data-width="234" data-height="234" data-linecap="normal" value="30">
+              <div class="inner-text count-box"><span class="count-text txt" data-stop="30" data-speed="2000"></span>%</div>
+            </div>
+          </div>
+        </div>*@
+      </div>
+    </div>
+    <!-- End User Sidebar -->

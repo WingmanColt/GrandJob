@@ -1,239 +1,313 @@
-﻿@inject IConfiguration Config
-@inject ICompanyService CompanyService
-@inject IJobsService JobsService
-@inject ILocationService LocationService
+﻿@inject IConfiguration config
+@inject ISkillsService _skillService
 @inject IHtmlSanitizer Sanitizer
 
 @model JobsViewModel
 
 @{
-    ViewData["Title"] = Model.Name;
-    ViewData["Description"] = Model.About;
-    ViewData["Keywords"] = Model.Name;
+    ViewData["Title"] = "Обяви за работа";
+    ViewData["Description"] = "Публикувайте обявата си за работа тук. Или намерете подходяща работа за вас.";
+    ViewData["Keywords"] = "обява, работа, кандидатура, публикувай";
 
-    Layout = "Layout/_Details";
+    Layout = "~/Views/Home/_PageLayout.cshtml";
 
-    var context = Context.Request;
-    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
-    Model.ReturnUrl = loc.AbsoluteUri;
-
-    var company = await CompanyService.GetByIdAsync(Model.CompanyId);
-    string SiteImageUrl = Config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
-    string imageFullPath = SiteImageUrl + company?.Logo;
-    string ratePercent = $"{(int)Model.Rating}"+"%";
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
 }
 
 
-<div class="job-preview">
-    <div class="job-header">
+    <!-- Job Detail Section -->
+    <section class="job-detail-section style-two">
+      <div class="job-detail-outer">
+        <div class="auto-container">
+          <div class="row">
+            <div class="content-column col-lg-8 col-md-12 col-sm-12">
+              <div class="job-block-outer">
+                <!-- Job Block -->
+                <div class="job-block-seven">
+                  <div class="inner-box">
+                    <div class="content">
+                      <span class="company-logo"><img class="lazyload" data-src="@SiteImageUrl@Model.CompanyLogo" alt=""></span>
+                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a></h4>
+                      <ul class="job-info">
+                        <li><span class="icon flaticon-map-locator"></span> @Model.LocationId</li>
+                        <li><span class="icon flaticon-clock-3"></span> @Model.CreatedOn.ToString("MM MMMM")</li>
+                        @if (Model.MinSalary > 0)
+                        {
+                        <li><span class="icon flaticon-money"></span> @Model.MinSalary - @Model.MaxSalary</li>
+                        }
+                      </ul>
+                      <ul class="job-other-info">
+                        @*
+                        <li class="privacy">Private</li>
+                        <li class="required">Urgent</li>
+                        *@
 
-        <div class="job-header-top">
-
-            <div class="d-none d-sm-flex justify-content-end pr-0 col desktop-only-flex">
-
-                <div class="rating">
-                    <div class="rating-upper" style="width:@ratePercent">
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
+                      </ul>
                     </div>
-                    <div class="rating-lower">
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                    </div>
+                  </div>
                 </div>
-            </div>
-            <div class="pt-5 pb-4 container">
-                <div class="w-100 row">
-                    <div class="col-lg-7 col-12">
-                        <div class="job-title">
-                            <b style="font-size:20px; font-weight:700;">@Model.RatingVotes</b>&nbsp;<span class="fa fa-eye" style="font-size:20px; " aria-hidden="true"></span>
+              </div>
 
-                            <h1>@Model.Name</h1>
 
-                            <div>
-                                <a asp-controller="Company" asp-action="Details" asp-route-id="@Model.CompanyId">
-                                    <h6>@company?.Title</h6>
-                                </a>
-                                <span class="text-delimeter"></span>
+              <div class="job-detail">
+                  <br>
+           @if (Model.GalleryImages is not null)
+           {
+          <div class="carousel-outer wow fadeInUp">
+
+          <div class="companies-carousel owl-carousel owl-theme default-dots">
+                                @await foreach (var item in Model.GalleryImages)
+                                {
+                                     <div class="company-block">
+                                        <figure class="image" style="width:unset; height:unset; border-radius:unset;">
+                                            <a href="@Model.GalleryPath\@item" class="lightbox-image" data-fancybox="gallery">
+                                                <img class="bordered lazyload" data-src="@Model.GalleryPath\@item" alt="">
+                                            </a>
+                                        </figure>
+                                        </div>
+                                }
                             </div>
-
-                            <div>
-                                <span class="text-purple icon-location_city"></span>
-                                <strong>@Model.Adress, @Model.LocationId</strong>
-                                <span class="text-delimeter"></span>
                             </div>
-
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <div class="job-header-bottom py-4">
-            <div class="py-1 container">
-                <div class="w-100 row">
-                    <div class="col">
-                        <div class="image-wrapper">
-                            <img src="@imageFullPath" alt="Няма лого" />                          
-                        </div>
-                    </div>
-                    <div class="right w-50 d-flex justify-content-end align-items-center pr-0 col">
-                        <div class="job-buttons">
-                            <button class="button-apply" data-toggle="modal" data-target="#apply">
-                                <b>Кандидатствай</b>
-                            </button>
-                            <button class="button-danger" data-toggle="modal" data-target="#reportModal">
-                                <b>Докладвай</b>
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mt-5 container">
-        <div class="justify-center row">
-
-            <div class="col-lg-6">
-                <h3>Описание</h3>
-                <div class="section-list">
-                    <div class="job-details-box">
-                        <div>
-                            <h3 class="subtitle">Тип заетост</h3>
-                            @if (Model.WorkType != null)
-                            {
-                                <p>@Model.WorkType.Replace(",", "; ")</p>
-                            }
-                            else
-                            {
-                                <p>Не е посочено</p>
-                            }
-                        </div>
-                        <div>
-                            <h3 class="subtitle">Ниво</h3>
-                            <p>@Model.ExprienceLevels.GetDisplayName()</p>
-                        </div>
-                        <div>
-                            <h3 class="subtitle">От</h3>
-                            <p>@Model.CreatedOn.ToString("MM MMMM")</p>
-                        </div>
-                        <div>
-                            <h3 class="subtitle">Заплата (лв.)</h3>
-                            @if (Model.MinSalary > 0 || Model.MaxSalary > 0)
-                            {
-                                <p>@Model.MinSalary - @Model.MaxSalary<span> / @Model.SalaryType.GetDisplayName()</span></p>
-                            }
-                            else
-                            {
-                                <p>По договаряне</p>
-                            }
-                        </div>
-                    </div>
-                    <div class="html-section">
-                        <p>@Html.Raw(@Sanitizer.Sanitize(@Model.Description))</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-
-
-<form asp-controller="Jobs" asp-action="ApplyWithResume" asp-route-jobId="@Model.Id" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-    <div id="apply" class="modal fade" role="dialog" data-backdrop="false">
-        <div class="modal-dialog modal-md">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    @if (Model.resumeFilesId is null)
-                    {
-                        <h5 class="text-center">Все още няма качено CV.</h5>
-
-                    }
-                    else
-                    {
-                        <h5 class="text-center">Кандидатствай с файл</h5>
+                        }
+                        @*if (Model.GalleryImages is not null)
+                        {
+                            <br>
+                             <h4>Галерия</h4>
+                             <br>
+                            <div class="row images-outer">
+                                @await foreach (var item in Model.GalleryImages)
+                                {
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <figure class="image">
+                                            <a href="@Model.GalleryPath\@item" class="lightbox-image" data-fancybox="gallery">
+                                                <img class="bordered lazyload" data-src="@Model.GalleryPath\@item" alt="">
+                                            </a>
+                                        </figure>
+                                    </div>
+                                }
+                            </div>
+                        }*@
                         <br>
-                        <drop-down-list asp-for="@Model.resumeFilesId" asp-items="resumeFiles" />
+                <h4>Описание</h4>
+                @Html.Raw(@Sanitizer.Sanitize(@Model.Description))
+              </div>
+
+              <!-- Other Options -->
+            <partial name="../Shared/Partials/_SocialSharingPartial" model='Model.Name' />
+
+               @if (await Model.JobsByCompany.AnyAsync())
+                    {
+                        <!-- Related Jobs -->
+                        <div class="related-jobs">
+                            <div class="title-box">
+                                <h3>Подобни обяви</h3>
+                            </div>
+                @await foreach (var item in Model.JobsByCompany)
+                      {
+
+                     <!-- Job Block -->
+                     <div class="job-block col-lg-4 col-md-6 col-sm-12">
+                     <div class="inner-box">
+                    <div class="content">
+                      <span class="company-logo"><img class="rounded-full" src="@SiteImageUrl@item.CompanyLogo" alt=""></span>
+                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                      <ul class="job-info">
+                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                        @if (item.MaxSalary > 0)
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                         }
+
+                         else
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                         }
+                        
+                      </ul>
+                      <ul class="job-other-info">
+                        <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
+                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                      </ul>
+
+                      @{string iconType2 = @item.isInFavourites ? "las" : "lar";}
+                      <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                        <span class="@iconType2 la-heart" id="@item.Id-heartIcon"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                            }
+
+                        </div>
                     }
                 </div>
-                <div class="modal-footer">
-                    <div class="wrap">
-                        @if (Model.resumeFilesId is null)
-                        {
-                            <a asp-area="Identity" asp-page="/Resume/All" class="btn btn-warning btn-fill col-lg-pull-3" id="MessageSubmit">Качи нов файл</a>
 
-                        }
-                        else
-                        {
-                            <button type="submit" asp-for="@Model.resumeFilesId" class="button" id="SubmitApply">Кандидатствай сега</button>
-                        }
+            <div class="sidebar-column col-lg-4 col-md-12 col-sm-12">
+              <aside class="sidebar">
+                <div class="btn-box">
+                  <a class="theme-btn btn-style-one call-modal" data-modal="#apply-modal">Кандидатствай</a>
+                  <a class="raport-btn call-modal" data-modal="#raport-modal" data-toggle="tooltip" data-placement="bottom" title="Докладвай обявата"><i class="flaticon-cancel"></i></a>
+                  @{string iconType = @Model.isInFavourites ? "las" : "lar";}
+                      <button type="button" value='Submit' onclick="CheckAvailability(@Model.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                        <i class="@iconType la-heart" id="@Model.Id-heartIcon" style="line-height:unset;"></i>
+                      </button>
+
+                </div>
+
+                <div class="sidebar-widget">
+                  <!-- Job Overview -->
+                  <h4 class="widget-title">Детайли</h4>
+                  <div class="widget-content">
+                    <ul class="job-overview">
+                     @if (Model.ExprienceLevels > 0)
+                         {
+                      <li>
+                        <i class="icon icon-case icon-custom-color"></i>
+                        <h5>Ниво:</h5>
+                        <span>@Model.ExprienceLevels.GetDisplayName()</span>
+                      </li>
+                         }
+                      <li>
+                        <i class="icon icon-one-finger-click icon-custom-color"></i>
+                        <h5>Преглеждания</h5>
+                        <span>@Model.Views</span>
+                      </li>
+                      <li>
+                        <i class="icon icon-location"></i>
+                        <h5>Адрес:</h5>
+                        <span>@Model.Adress</span>
+                      </li>
+                      <li>
+                        <i class="icon icon-user-2"></i>
+                        <h5>Категория:</h5>
+                        <span>@Model.CategoryName</span>
+                      </li>
+                      <li>
+                        <i class="icon icon-rate"></i>
+                        <h5>Заплащане:</h5>
+                        <span>на @Model.SalaryType.GetDisplayName()</span>
+                      </li>
+                      @if (Model.WorkType != null)
+                      {
+                      <li>
+                        <i class="icon icon-rate"></i>
+                        <h5>Тип:</h5>
+                        <span>@Model.WorkType.Replace(",", "; ")</span>
+                      </li>
+                      }
+                    </ul>
+                  </div>
+
+                  <!-- Map Widget
+                  <h4 class="widget-title">Job Location</h4>
+                  <div class="widget-content">
+                    <div class="map-outer">
+                      <div class="map-canvas" data-zoom="12" data-lat="-37.817085" data-lng="144.955631" data-type="roadmap" data-hue="#ffc400" data-title="Envato" data-icon-path="images/resource/map-marker.png" data-content="Melbourne VIC 3000, Australia<br><a href='mailto:info@youremail.com'>info@youremail.com</a>">
+                      </div>
                     </div>
-                    <div class="clearfix"></div>
+                  </div> -->
+
+                  <!-- Job Skills -->
+                  <h4 class="widget-title">Умения</h4>
+                  <div class="widget-content">
+                    <ul class="job-skills">
+
+                         @if (Model.SkillsMapped is not null)
+                                {
+                                    @await foreach (var skill in Model.SkillsMapped)
+                                    {
+                                        <li><a>@skill.Title</a></li>
+                                    }
+                                }
+
+                    </ul>
+                  </div>
+
+                  
+                  <!-- Job Languages -->
+                  <h4 class="widget-title">Езици</h4>
+                  <div class="widget-content">
+                    <ul class="job-skills">
+
+                         @if (Model.LanguagesMapped is not null)
+                                {
+                                    @await foreach (var skill in Model.LanguagesMapped)
+                                    {
+                                        <li><a>@skill.Name</a></li>
+                                    }
+                                }
+
+                    </ul>
+                  </div>
                 </div>
-            </div>
 
-        </div>
-    </div>
-</form>
+                <div class="sidebar-widget company-widget">
+                  <div class="widget-content">
+                    <div class="company-title">
+                      <div class="company-logo"><img class="lazyload" data-src="@SiteImageUrl@Model.company.Logo" alt=""></div>
+                      <h5 class="company-name">@Model.company.Title</h5>
+                      <a asp-controller="Company" asp-action="Details" asp-route-id="@Model.company.Id" class="profile-link">Прегледай профил в сайта</a>
+                    </div>
 
-<form asp-controller="Message" asp-action="Report" asp-route-postname="@Model.Name" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div id="reportModal" class="modal fade" role="dialog" data-backdrop="false">
-        <div class="modal-dialog modal-md">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-
-                </div>
-
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Обява:</label><br>
-                                <strong>@Model.Name</strong>
-                            </div>
+                    <ul class="company-info">
+                      <li>Дата на регистрация: <span>@Model.company.Date.ToString("yyyy")</span></li>
+                      <li>Номер: <a href="tel:@Model.company.PhoneNumber"><span>@Model.company.PhoneNumber</span></a></li>
+                      <li>Емайл: <a href="mailto:@Model.company.Email"><span>@Model.company.Email</span></a></li>
+                      <li>Град: <span>@Model.company.LocationId</span></li>
+                      <li>Адрес: <span>@Model.company.Adress</span></li>
+                      <li>Социална медия:
+                        <div class="social-links">
+                          <a href="@Model.company.Facebook"><i class="fab fa-facebook-f"></i></a>
+                          <a href="@Model.company.Twitter"><i class="fab fa-twitter"></i></a>
+                          <a href="@Model.company.Linkdin"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Причина*</label>
-                                <textarea asp-for="Message.Description" class="form-control text required" rows="10" cols="50" style="height:auto;max-width:95%;" required="required" aria-required="true" placeholder="Въведете причината, поради която докладвате тази обява. Опитайте се да дадете колкото се може повече подробности."> </textarea>
-                                <span asp-validation-for="Message.Description" class="text-danger"></span>
-                            </div>
+                      </li>
+                    </ul>
+
+                    <div class="btn-box">
+                        <a class="theme-btn btn-style-three">
+                         <div class="star-rating">
+        <span class="fa fa-star" data-rating="1"></span>
+        <span class="fa fa-star" data-rating="2"></span>
+        <span class="fa fa-star" data-rating="3"></span>
+        <span class="fa fa-star" data-rating="4"></span>
+        <span class="fa fa-star" data-rating="5"></span>
+        <input type="hidden" name="whatever1" class="rating-value" value="@Model.company.Rating">
+      </div>
+                    </a></div>
+                  </div>
+                </div>
+                @*
+                <div class="sidebar-widget contact-widget">
+                  <h4 class="widget-title">Contact Us</h4>
+                  <div class="widget-content">
+                    <!-- Comment Form -->
+                    <div class="default-form">
+                      <!--Comment Form-->
+                      <form>
+                        <div class="row clearfix">
+                          <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <input type="text" name="username" placeholder="Your Name" required>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <input type="email" name="email" placeholder="Email Address" required>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <textarea class="darma" name="message" placeholder="Message"></textarea>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <button class="theme-btn btn-style-one" type="submit" name="submit-form">Send Message</button>
+                          </div>
                         </div>
+                      </form>
                     </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger btn-fill pull-right" id="MessageSubmit">Докладвай</button>
-                    <div class="clearfix"></div>
-                </div>
+                  </div>
+                </div>*@
+              </aside>
             </div>
-
+          </div>
         </div>
-    </div>
-</form>
+      </div>
+    </section>
+    <!-- End Job Detail Section -->
+    <partial name="../Shared/Partials/_ApplyRaportPartial" model='new ApplyRaportViewModel(){Id = Model.Id, Name = Model.Name, resumeFilesId = Model.resumeFilesId, Message = Model.Message, ReturnUrl = Model.ReturnUrl }' />

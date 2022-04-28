@@ -35,16 +35,33 @@
 }
 
 .search-results .search-listing > hr {
-    margin: 0;
+    /* margin: 0;*/
+
+    border: 0px solid;
 }
 
 .search-results .search-listing-details {
     display: flex;
     justify-content: space-between;
+    /*padding: 2.5rem 1rem;*/
     padding: 1.5rem 0;
     position: relative;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+    transition: transform 300ms;
+    cursor: pointer;
 }
-
+    .search-results .search-listing-details:hover {
+        transform: translate3d(0, -5px, 0);
+        box-shadow: 1px 2px 17px rgba(0, 0, 0, 0.4);
+    }
+.search-results .search-listing-details .listing-link {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
     .search-results .search-listing-details hr {
         background-color: #e6e6eb;
     }
@@ -54,24 +71,28 @@
     }
 
     .search-results .search-listing-details .job-link-title {
-        color: #0064c8;
-        color: var(--cta-links-idle);
+        color: var(--Gray);
         font-family: "Montserrat", sans-serif;
         font-size: 18px;
         font-weight: 700;
         margin-bottom: 0.3rem;
         padding: 0;
     }
+        .search-results .search-listing-details .job-link-title a {
+            text-decoration: none;
+        }
 
+            .search-results .search-listing-details .job-link-title a:hover {
+                text-decoration: none;
+                color: var(--Blue2);
+            }
         .search-results .search-listing-details .job-link-title.inactive,
         .search-results .search-listing-details .job-link-title.inactive * {
-            color: #64646e;
-            color: var(--text-default);
+            color: var(--Gray);
         }
 
         .search-results .search-listing-details .job-link-title * {
-            color: #0064c8;
-            color: var(--cta-links-idle);
+            color: var(--Gray);
             font-family: "Montserrat", sans-serif;
             font-size: 18px;
             font-weight: 700;
@@ -91,24 +112,27 @@
     }
 
     .search-results .search-listing-details .search-listing-left {
-        width: 120px;
+        /*width: 120px;
         height: 75px;
         margin-right: 1rem;
+            */
     }
 
-        .search-results .search-listing-details .search-listing-left .image-wrapper {
-            height: 75px;
-            border-radius: 6px;
-            border: 1px solid #979797;
-            display: flex;
-            align-items: center;
-            overflow: auto;
+
+    .search-results .search-listing-details .search-listing-left .image-wrapper {
+        height: 75px;
+        border-radius: 6px;
+        border: 1px solid #979797;
+        display: flex;
+        align-items: center;
+        overflow: auto;
+    }
+
+        .search-results .search-listing-details .search-listing-left .image-wrapper img {
+            height: auto;
+            width: 100%;
         }
-            .search-results .search-listing-details .search-listing-left .image-wrapper img {
-                height: auto;
-                width: 100%;
-            }
-           /* .search-results .search-listing-details .search-listing-left .image-wrapper .overlay {
+    /* .search-results .search-listing-details .search-listing-left .image-wrapper .overlay {
                 display: flex;
                 align-items: center;
                 position: absolute;
@@ -144,18 +168,115 @@
                     color: #ff0043;
                 }
 */
-.search-results .search-listing-details .search-listing-center {
-    display: flex;
-    flex: 1 1;
-    flex-direction: column;
-    z-index: 1;
-}
+    .search-results .search-listing-details .search-listing-center {
+        display: flex;
+        flex: 1 1;
+        flex-direction: column;
+        z-index: 1;
+        padding-left:15px;
+    }
 
     .search-results .search-listing-details .search-listing-right {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
+        width: 100px;
     }
+
+
+    .search-results .search-listing-details .search-listing-left .avatar-wrapper {
+        /* margin-top: -20px;*/
+        /* margin-bottom: 0.5rem;
+            width: 75px;
+            height: 75px;
+            margin-right: 0;
+            display: flex;
+            align-items: center;
+            overflow: auto;*/
+
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        /*width: 165px;
+        padding-right: 25px;
+        padding-left: 15px;
+        margin-top: -21px;
+            */
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: center;
+        -webkit-justify-content: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        -ms-flex-align: center;
+        align-items: center;
+        border-right: 1px solid #f8f8f8;
+    }
+
+        .search-results .search-listing-details .search-listing-left .avatar-wrapper .avatar-imgw {
+            /* width: 100%;
+                height: 100%;
+                   */
+            -o-object-fit: contain;
+            object-fit: contain;
+            align-self: center;
+        }
+
+            .search-results .search-listing-details .search-listing-left .avatar-wrapper .overlay {
+                display: flex;
+                align-items: center;
+                position: absolute;
+                opacity: 0;
+                transition: .3s ease;
+            }
+
+            .search-results .search-listing-details .search-listing-left .avatar-wrapper:hover {
+                background-color: rgba(0, 0, 0, 0.5);
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.65);
+            }
+
+                .search-results .search-listing-details .search-listing-left .avatar-wrapper:hover .overlay {
+                    opacity: 1;
+                }
+
+            .search-results .search-listing-details .search-listing-left .avatar-wrapper .avatar-img .icon {
+                font-size: 2em;
+                position: absolute;
+                transform: translate(-50%, -0%);
+                -ms-transform: translate(-50%, -0%);
+                text-align: center;
+                align-self: center;
+            }
+
+                .search-results .search-listing-details .search-listing-left .avatar-wrapper .avatar-img .icon i {
+                    /* background: linear-gradient(to right, #ff512f 30%, #dd2476 90%);
+            background: -webkit-gradient(linear, left top, left bottom, from(#ba5370), to(#f4e2d8));
+               */
+                    color: #ff0043;
+                }
+
+
+
+
+            .search-results .search-listing-details .search-listing-left .avatar-wrapper .border {
+                border-width: 3px !important;
+            }
+
+            .search-results .search-listing-details .search-listing-left .avatar-wrapper .rounded {
+                border-radius: 8px !important;
+            }
+
+            .search-results .search-listing-details .search-listing-left .avatar-wrapper .avatar-title {
+                font-size: 24px;
+            }
+
+
 
         .search-results .search-listing-details .search-listing-right .image-wrapper {
             margin-bottom: 0.5rem;
@@ -167,10 +288,11 @@
             align-items: center;
             overflow: auto;
         }
-        .search-results .search-listing-details .search-listing-right .image-wrapper img {
-        height: auto;
-        width: 100%;
-    }
+
+            .search-results .search-listing-details .search-listing-right .image-wrapper img {
+                height: auto;
+                width: 100%;
+            }
 
         .search-results .search-listing-details .search-listing-right time {
             font-family: "Roboto", sans-serif;
@@ -185,169 +307,236 @@
             color: var(--text-less-prominent);
         }
 
-@media screen and (max-width: 991px) {
-    .search-results .search-listing-details .search-listing-right .green-arrow {
-        display: none;
-    }
+    @media screen and (max-width: 991px) {
+        .search-results .search-listing-details .search-listing-right .green-arrow {
+            display: none;
+        }
 
-    .search-results .search-listing-details .search-listing-right .search-options-link {
-        font-size: 0.9rem;
-    }
+        .search-results .search-listing-details .search-listing-right .search-options-link {
+            font-size: 0.9rem;
+        }
 
-    .search-results .search-listing-details .search-listing-right time {
-        font-size: 10px;
-    }
-}
-
-.search-results .search-listing-details .job-link-salary {
-    font-weight: 600;
-}
-
-.search-results .search-listing-details .job-link-location {
-    font-size: 0.9rem;
-    margin-bottom: 0.3rem;
-}
-
-.search-results .search-listing-details svg {
-    margin-right: 0.1rem;
-}
-
-.search-results .search-listing-details time {
-    margin-bottom: 0.5rem;
-}
-
-.search-results li {
-    list-style-type: none;
-}
-
-@media screen and (max-width: 991px) {
-    .search-results .search-listing-details .job-link-title {
-        font-size: 1rem;
-    }
-
-    .search-results .search-listing-details .job-link-location {
-        display: inline-flex;
-        flex-direction: column;
-        font-size: 0.8rem;
-        margin-bottom: 0;
-    }
-
-    .search-results .search-listing-details .job-location-separator {
-        display: none;
-    }
-
-    .search-results .search-listing-details time {
-        order: 1;
-        font-size: 0.7rem;
-    }
-
-    .search-results .search-listing-details svg {
-        margin-top: 0.1rem;
-        margin-bottom: auto;
+        .search-results .search-listing-details .search-listing-right time {
+            font-size: 10px;
+        }
     }
 
     .search-results .search-listing-details .job-link-salary {
-        font-size: 0.8rem;
-        font-weight: 700;
-        line-height: 1.17;
-        letter-spacing: 0.5px;
-    }
-}
-/*Search Options*/
-@media screen and (max-width: 991px) {
-    .search-results .search-listing-details .search-listing-right .green-arrow {
-        display: none;
+        font-weight: 600;
     }
 
-    .search-results .search-listing-details .search-listing-right .search-options-link {
+    .search-results .search-listing-details .job-link-location {
         font-size: 0.9rem;
+        margin-bottom: 0.3rem;
     }
 
-    .search-results .search-listing-details .search-listing-right time {
-        font-size: 10px;
-    }
-}
-.search-options-link {
-    z-index: 2;
-    color: #0064c8;
-    color: var(--cta-links-idle);
-    cursor: pointer;
-}
-
-    .search-options-link:hover {
-        text-decoration: underline;
+    .search-results .search-listing-details svg {
+        margin-right: 0.1rem;
     }
 
-.search-options {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    position: relative;
-}
-
-    .search-options .search-options-bg {
-        background-color: rgba(250, 150, 0, 0.25);
-        border-radius: 10px;
+    .search-results .search-listing-details time {
+        margin-bottom: 0.5rem;
     }
 
-    .search-options .search-options-top {
-        display: flex;
-        justify-content: space-between;
-        background-color: #f5f5fa;
-        padding: 1rem 1.2rem;
-        border-radius: 10px;
+    .search-results li {
+        list-style-type: none;
     }
 
-        .search-options .search-options-top .search-options-count {
-            font-family: "Montserrat", sans-serif;
-            margin-bottom: 0.8rem;
-            font-size: 20px;
-            font-weight: 800;
-            font-stretch: normal;
-            font-style: normal;
-            line-height: normal;
-            letter-spacing: 0.25px;
-            color: #64646e;
-            color: var(--text-default);
+    @media screen and (max-width: 991px) {
+        .search-results .search-listing-details .job-link-title {
+            font-size: 1rem;
         }
 
-@media screen and (max-width: 991px) {
-    .search-options .search-options-top .search-options-count {
-        font-size: 20px;
-        letter-spacing: -0.25px;
+        .search-results .search-listing-details .job-link-location {
+            display: inline-flex;
+            flex-direction: column;
+            font-size: 0.8rem;
+            margin-bottom: 0;
+        }
+
+        .search-results .search-listing-details .job-location-separator {
+            display: none;
+        }
+
+        .search-results .search-listing-details time {
+            order: 1;
+            font-size: 0.7rem;
+        }
+
+        .search-results .search-listing-details svg {
+            margin-top: 0.1rem;
+            margin-bottom: auto;
+        }
+
+        .search-results .search-listing-details .job-link-salary {
+            font-size: 0.8rem;
+            font-weight: 700;
+            line-height: 1.17;
+            letter-spacing: 0.5px;
+        }
     }
-}
+    /*Search Options*/
+    @media screen and (max-width: 991px) {
+        .search-results .search-listing-details .search-listing-right .green-arrow {
+            display: none;
+        }
 
-.search-options .search-options-buttons {
-    display: flex;
-    align-items: flex-start;
-}
+        .search-results .search-listing-details .search-listing-right .search-options-link {
+            font-size: 0.9rem;
+        }
 
-.search-options .search-options-bottom {
-    padding: 0.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-}
+        .search-results .search-listing-details .search-listing-right time {
+            font-size: 10px;
+        }
 
-@media screen and (max-width: 991px) {
-    .search-options .search-options-top .search-options-count {
-        font-size: 1.25rem;
+        .search-results .search-listing {
+            overflow: hidden;
+        }
     }
-}
-.search-page .search-options input {
-    border: 1px solid #0064c8;
-    font-weight: 700;
-    border-radius: 3px;
-    min-width: unset;
-    padding: 0.5rem 1rem;
-    background-color: transparent;
-    font-size: 0.9rem;
-    line-height: 1;
-}
 
-    .search-page .search-options input:hover {
-        color: #fff !important;
-        background-color: rgba(0, 129, 210, 0.85) !important;
-        border: 1px solid rgba(0, 129, 210, 0.85) !important;
-        text-decoration:none;
+    .search-options-link {
+        z-index: 2;
+        color: #0064c8;
+        color: var(--cta-links-idle);
+        cursor: pointer;
+    }
+
+        .search-options-link:hover {
+            text-decoration: underline;
+        }
+
+    .search-options {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        position: relative;
+    }
+
+        .search-options .search-options-bg {
+            background-color: rgba(250, 150, 0, 0.25);
+            border-radius: 10px;
+        }
+
+        .search-options .search-options-top {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f5f5fa;
+            padding: 1rem 1.2rem;
+            border-radius: 10px;
+        }
+
+            .search-options .search-options-top .search-options-count {
+                font-family: "Montserrat", sans-serif;
+                margin-bottom: 0.8rem;
+                font-size: 20px;
+                font-weight: 800;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: 0.25px;
+                color: #64646e;
+                color: var(--text-default);
+            }
+
+    @media screen and (max-width: 991px) {
+        .search-options .search-options-top .search-options-count {
+            font-size: 20px;
+            letter-spacing: -0.25px;
+        }
+    }
+
+    .search-options .search-options-buttons {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .search-options .search-options-bottom {
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    @media screen and (max-width: 991px) {
+        .search-options .search-options-top .search-options-count {
+            font-size: 1.25rem;
+        }
+    }
+
+    .search-options .search-options-link {
+        border: 1px solid #0064c8;
+        font-weight: 700;
+        border-radius: 3px;
+        min-width: unset;
+        padding: 0.5rem 1rem;
+        background-color: transparent;
+        font-size: 0.9rem;
+        line-height: 1;
+    }
+
+        .search-options .search-options-link:hover {
+            color: #fff !important;
+            background-color: rgba(0, 129, 210, 0.85) !important;
+            border: 1px solid rgba(0, 129, 210, 0.85) !important;
+            text-decoration: none;
+        }
+
+    .search-options .simpleInput {
+        border: 0;
+        font-weight: 700;
+        border-radius: 3px;
+        min-width: unset;
+        padding: 0.5rem 1rem;
+        background-color: transparent;
+        font-size: 0.9rem;
+        line-height: 1;
+    }
+
+    .selected {
+        animation: slide-in 0.5s forwards;
+        -webkit-animation: slide-in 0.5s forwards;
+    }
+
+    .dismiss {
+        animation: slide-out 0.5s forwards;
+        -webkit-animation: slide-out 0.5s forwards;
+    }
+
+    @keyframes slide-in {
+        0% {
+            -webkit-transform: translateX(100%);
+        }
+
+        100% {
+            -webkit-transform: translateX(0%);
+        }
+    }
+
+    @-webkit-keyframes slide-in {
+        0% {
+            transform: translateX(100%);
+        }
+
+        100% {
+            transform: translateX(0%);
+        }
+    }
+
+    @keyframes slide-out {
+        0% {
+            transform: translateX(0%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    @-webkit-keyframes slide-out {
+        0% {
+            -webkit-transform: translateX(0%);
+        }
+
+        100% {
+            -webkit-transform: translateX(100%);
+        }
     }

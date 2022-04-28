@@ -9,23 +9,22 @@
     using HireMe.Core.Helpers;
     using Microsoft.EntityFrameworkCore;
     using HireMe.Entities.Input;
-    using HireMe.Data;
     using System;
     using HireMe.Entities.Enums;
-    using System.IO;
-    using Microsoft.Extensions.Configuration;
     using HireMe.ViewModels.Company;
     using HireMe.Mapping.Utility;
 
     public class CompanyService : ICompanyService
     {
+        private readonly IBaseService baseService;
         private readonly IRepository<Company> companyRepository;
-        private readonly string _FileDir;
-        public CompanyService(IConfiguration config, IRepository<Company> companyRepository, FeaturesDbContext _context)
+
+        public CompanyService(
+            IRepository<Company> companyRepository,
+            IBaseService baseService)
         {
             this.companyRepository = companyRepository;
-            _FileDir = config.GetValue<string>("StoredImagesPath");
-         //   this.SeedTest(_context);
+            this.baseService = baseService;
         }
 
         public async Task<OperationResult> Create(CreateCompanyInputModel viewModel, bool authenticEIK, User user)
@@ -35,6 +34,8 @@
 
             await this.companyRepository.AddAsync(company);
             var result = await companyRepository.SaveChangesAsync();
+
+            result.Id = company.Id;
             return result;
         }
 
@@ -42,6 +43,7 @@
         {
             Company entityId = await companyRepository.GetByIdAsync(id);
 
+            baseService.DeleteCompanyResources(entityId);
             companyRepository.Delete(entityId);
 
             var result = await companyRepository.SaveChangesAsync();
@@ -62,7 +64,7 @@
             {
                 await foreach (var item in entity)
                 {
-                    Delete((_FileDir + item.Logo));
+                    baseService.DeleteCompanyResources(item);
                     companyRepository.Delete(item);
                 }
             }
@@ -70,11 +72,12 @@
             var result = await companyRepository.SaveChangesAsync();
             return result;
         }
+
         public async Task<OperationResult> Update(CreateCompanyInputModel viewModel, bool authenticEIK, User user)
         {
             var existEntity = await companyRepository.GetByIdAsync(viewModel.Id);
 
-            existEntity.Update(viewModel, ApproveType.Waiting, authenticEIK, user);
+            existEntity.Update(viewModel, ApproveType.Success, authenticEIK, user);
 
             this.companyRepository.Update(existEntity);
 
@@ -85,14 +88,13 @@
 
         public IQueryable<Company> GetAllAsNoTracking()
         {
-            return companyRepository.Set().AsNoTracking();
+            return companyRepository.Set().AsQueryable().AsNoTracking();
         }
 
         public IAsyncEnumerable<Company> GetAllByApprove(ApproveType approve)
         {
             var ent = GetAllAsNoTracking()
                 .Where(x => x.isApproved == approve)
-                .AsQueryable()
                 .AsAsyncEnumerable();
 
             return ent;
@@ -101,7 +103,7 @@
         {
             var ent = GetAllAsNoTracking().Where(x => x.isApproved == ApproveType.Success);
 
-         /*   if (ent.Any(x => (x.Promotion > 0)))
+            if (ent.Any(x => (x.Promotion > 0)))
             {
                 ent.OrderByDescending(x => x.Promotion);
             }
@@ -110,7 +112,7 @@
                 ent.OrderByDescending(x => x.Rating);
             }
             else ent.OrderByDescending(x => x.Id);
-         */
+         
             var data = ent.Take(entitiesToShow).AsAsyncEnumerable(); 
             return data;
         }
@@ -123,6 +125,7 @@
                    .Take(entitiesToShow)
                    .AsAsyncEnumerable();
         }
+
         /*public IAsyncEnumerable<Company> GetAllByPosterOnly(string id)
         {
             var entity = GetAllAsNoTracking()
@@ -158,62 +161,42 @@
             var ent = await companyRepository.Set().FirstOrDefaultAsync(j => j.Id == id);
             return ent;
         }
+
         public async Task<bool> IsValid(int Id)
         {
             var ent = await this.companyRepository.Set().AnyAsync(x => x.Id == Id);
             return ent;
         }
 
-        public void SeedTest(FeaturesDbContext dbContext)        {            var test = new List<Company>();            for (int i = 0; i < 50000; i++)            {
+   /*     public void SeedTest()        {            var test = new List<Company>();            for (int i = 0; i < 50000; i++)            {
                 test = new List<Company>                {
                 new Company
                 {                Title = "test Company",                isApproved =  ApproveType.Success,                PosterId = "da3bb2af-d040-4b34-aa04-9edcfe117e80",                Adress = "Младост 4",                PhoneNumber = "13123 13213",                Date = DateTime.Now,                LocationId = "София",                About = "sexsexsexsex",                Email = "supp@gmail.com",                Private = false,                isAuthentic_EIK = true                }               };
                 dbContext.Company.AddRange(test);            }
            
-            dbContext.SaveChanges();        }        public int RandomNumber(int min, int max)        {            Random random = new Random();            return random.Next(min, max);        }
+            dbContext.SaveChanges();        }*/        public int RandomNumber(int min, int max)        {            Random random = new Random();            return random.Next(min, max);        }
 
-        public async Task<bool> AddRatingToCompany(int Id, int rating)
+        public async Task<bool> AddRatingToCompany(Company entity, int rating)
         {
-            var job = await companyRepository.Set().FirstOrDefaultAsync(j => j.Id == Id).ConfigureAwait(false);
-
-            if (job == null)
+            if (entity == null)
                 return false;
 
             int maxRating = 5;
 
             if (rating < maxRating)
             {
-                job.RatingVotes += rating;
+                entity.RatingVotes += rating;
             }
 
-            if (job.Rating < (double)maxRating)
+            if (entity.Rating < (double)maxRating)
             {
-                job.Rating += ((job.Rating * job.RatingVotes) + rating) / (job.RatingVotes + 1);
+                entity.Rating += ((entity.Rating * entity.RatingVotes) + rating) / (entity.RatingVotes + 1);
 
                 await companyRepository.SaveChangesAsync();
                 return true;
             }
 
             return false;
-        }
-        private bool Delete(string fullpath)
-        {
-            if (!File.Exists(fullpath))
-            {
-                return false;
-            }
-
-            try
-            {
-                File.Delete(fullpath);
-                return true;
-            }
-            catch (Exception e)
-            {
-            }
-
-
-            return false;
-        }
+        }     
     }
 }

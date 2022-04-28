@@ -9,12 +9,14 @@ namespace HireMe.Services.Interfaces
 {
     public interface IBaseService
     {
-
         Task<OperationResult> Approve(int Id, PostType postType, ApproveType type);
+
+        Task<string> UploadFileAsGuestAsync(IFormFile file, string jobTitle, string email);
+        Task<string> MultipleUploadFileAsync(string folderName, int height, int width, List<IFormFile> files);
 
         Task<string> UploadFileAsync(IFormFile file, string oldFile, User user);
 
-        Task<string> UploadImageAsync(IFormFile file, string oldFile, User user);
+        Task<string> UploadImageAsync(IFormFile file, string oldFile, bool isCompany, User user);
 
         Task<string> fileScanner(string fileName, string filePath);
 
@@ -22,6 +24,9 @@ namespace HireMe.Services.Interfaces
 
         void ToastNotify(ToastMessageState state, string title, string message, int duration);
 
-        void ToastNotifyLog(User user, ToastMessageState state, string title, string message, string errorpage, int duration);
+        Task ToastNotifyLogAsync(User user, ToastMessageState state, string title, string message, string errorpage, int duration);
+
+        OperationResult DeleteCompanyResources(Company company);
+        OperationResult DeleteUserResources(User user, bool allImages);
     }
 }

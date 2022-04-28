@@ -1,179 +1,170 @@
-@inject ICategoriesService CategoriesService
-@inject IJobsService JobsService
-@inject ICompanyService CompanyService
-@inject IFavoritesService FavoritesService
-@inject ILocationService LocationService
-@inject IConfiguration Config
+﻿@inject IConfiguration config
+@model IndexViewModel
 
-@inject SignInManager<User> SignInManager
-@inject UserManager<User> UserManager
-
-@model FavoritesViewModel
-
-@{ var user = await UserManager.GetUserAsync(User);
-                string SiteImageUrl = Config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
-
-                var posterId = UserManager.GetUserId(User);
-
-                var topCompanies = CompanyService.GetTop(5);
-                var lastJobs = JobsService.GetLast(10); }
-
-<style>
-    .text-letblue {
-        color: #55a8fd;
-    }
-
-    .text-red {
-        color: #ff0000;
-    }
-
-    .text-purple {
-        color: #8b83f4;
-    }
-
-    .label-beginner {
-        display: inline-block;
-        font-size: 12px;
-        font-weight: 500;
-        color: aliceblue;
-        border-radius: 10px;
-        padding: 4px 10px;
-        background-color: #56d48f;
-    }
-
-    .button-apply {
-        width: 100px;
-        height: 40px;
-        font-family: 'Roboto', sans-serif;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 2.5px;
-        font-weight: 500;
-        color: #fff;
-        background-color: #007bff;
-        border: none;
-        border-radius: 45px;
-        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease 0s;
-        cursor: pointer;
-        outline: none;
-    }
-
-        .button-apply:hover {
-            background-color: #0094ff;
-            color: #fff;
-            transform: translateY(-7px);
-        }
-</style>
-<section class="desktop-only ftco-section bg-light">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-9 pr-lg-5">
-
-                <div class="row justify-content-center pb-3">
-                    <div class="col-md-12 heading-section ftco-animate">
-                        <span class="subheading">Наскоро Добавени Обяви</span>
-                        <h2 class="mb-4">Обяви За Работа</h2>
-                    </div>
-                </div>
-
-                <div class="row">
-
-                    @{ await foreach (var item in lastJobs)
-                       {
-                        <div class="col-md-12 ftco-animate">
-
-                            <div class="job-post-item p-4 d-block d-lg-flex align-items-center">
-
-                                <div class="one-third mb-4 mb-md-0">
-                                    <div class="job-post-item-header align-items-center">
-                                        <span class="subadge">@item.WorkType</span>
-
-                                        <div class="icon2 text-left d-flex justify-content-start align-items-start">
-                                            <span class="label-beginner">
-                                                <i class="fa fa-level-up"></i>
-                                                <b>@item.ExprienceLevels.GetDisplayName()</b>
-                                            </span>
-                                        </div>
-                                        <h2 class="mr-3 text-black">
-                                            <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
-                                        </h2>
-
-                                    </div>
-                                    <div class="job-post-item-body d-block d-md-flex">
-                                        <div class="mr-3"><span class="text-danger icon-my_location"></span> @item.Adress</div>
-                                        <div class="mr-3"><span class="text-info icon-location_city"></span> @item.LocationId</div>
-                                        <div class="mr-3"><span class="icon-calendar text-danger"></span>@item.CreatedOn.ToString("dd/MM/yyyy")</div>
-
-                                        @if (item.MinSalary > 0 || item.MaxSalary > 0)
-                                        {
-                        <div class="mr-3">
-                            <span class="text-success icon-money"></span> @item.MinSalary - @item.MaxSalary / @item.SalaryType
-                        </div> }
-                                        else
-                                        {
-                        <div class="mr-3">
-                            <span class="text-success icon-money"></span> <strong>По Договаряне</strong>
-                        </div>}
-                                    </div>
-                                </div>
-
-
-
-
-                                <div class="one-forth ml-auto d-flex align-items-center mt-4 md-md-0">
-                                    <div>
-                                        @if (SignInManager.IsSignedIn(User))
-                                        {
-                        <div class="icon text-center d-flex justify-content-center align-items-center icon mr-2">
-                            @if (user?.FavouriteJobs?.IndexOf(item.Id.ToString()) > -1) //user.FavouriteJobs.Contains(item.Id.ToString()))
-                            {
-        <a asp-controller="Jobs" asp-action="RemoveFromFavourite" asp-route-id="@item.Id">
-            <span class="icon-heart"></span>
-        </a> }
-                            else
-                            {
-        <a asp-controller="Jobs" asp-action="AddToFavourite" asp-route-id="@item.Id">
-            <span class="icon-heart-o"></span>
-        </a>}
-                        </div>}
-                                    </div>
-                                    <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" class="btn button-apply" target="_self">Виж</a>
-                                </div>
-                            </div>
-                        </div><!-- end --> } }
-
-
-
-
-
-                </div>
-            </div>
-
-
-
-            <div class="col-lg-3 sidebar">
-                <div class="row justify-content-center pb-3">
-                    <div class="col-md-12 heading-section ftco-animate">
-                        <a asp-controller="Company" asp-action="Index"><h2 class="mb-4">Топ Компании</h2></a>
-                    </div>
-                </div>
-
-                @{ await foreach (var item in topCompanies)
-                                {
-                    <div class="sidebar-box ftco-animate">
-                        <div class="">
-                            <a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id" class="company-wrap">
-                                <img src="@SiteImageUrl@item.Logo" width="150" height="100" class="img-responsive img-fluid">
-                            </a>
-                            <div class="text p-3">
-                                <h3><a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id">@item.Title</a></h3>
-                                
-                            </div>
-                        </div>
-                    </div>
-                                    <hr> } }
-            </div>
+@{
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+}
+<!-- Job Section -->
+    <section class="layout-pt-120 layout-pb-120">
+      <div class="auto-container">
+        <div class="sec-title text-center">
+          <h2>Препоръчани обяви</h2>
+          <div class="text">Разберете стойността си и намерете работата, която отговаря на изискванията за живота ви.</div>
         </div>
-    </div>
-</section>
+
+        <div class="default-tabs tabs-box">
+          <!--Tabs Box-->
+          <div class="tab-buttons-wrap">
+            <ul class="tab-buttons -pills-condensed -blue">
+                @if (Model.JobsLast is not null && await Model.JobsLast.AnyAsync())
+                {
+              <li class="tab-btn active-btn" data-tab="#tab1">последни добавени</li>
+                }
+              @if (Model.JobsTop is not null && await Model.JobsTop.AnyAsync())
+                {
+              <li class="tab-btn" data-tab="#tab2">с висок рейтинг</li>
+                }
+              @*if (await Model.JobsByCompany.AnyAsync())
+                {
+              <li class="tab-btn" data-tab="#tab3">îò íàé-äîáðà ôèðìà</li>
+                }*@
+            </ul>
+          </div>
+
+
+          <div class="tabs-content pt-50 wow fadeInUp">
+          @if (await Model.JobsLast.AnyAsync())
+                {
+                    <!--Last jobs-->
+                    <div class="tab active-tab" id="tab1">
+                        <div class="row">
+
+                   @await foreach (var item in Model.JobsLast)
+                    {
+                     <!-- Job Block -->
+                     <div class="job-block col-lg-4 col-md-6 col-sm-12">
+                     <div class="inner-box">
+                    <div class="content">
+                      <span class="company-logo"><img class="rounded-full lazyload" data-src="@Model.PictureUrl@item.CompanyLogo" alt=""></span>
+                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                      <ul class="job-info">
+                        <li><span class="icon flaticon-briefcase"></span>@item.LocationId</li>                       
+                        @if (item.MaxSalary > 0)
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                         }
+
+                         else
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                        }
+                        
+                      </ul>
+                      <ul class="job-other-info">
+                        <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
+                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                      </ul>
+                       @{string iconType = @item.isInFavourites ? "las" : "lar";}
+                       <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                          <span class="@iconType la-heart" id="@item.Id-heartIcon"></span>
+                       </button>
+                    </div>
+                  </div>
+                </div>
+                }
+
+
+
+              </div>
+            </div>
+            }
+
+            @if (await Model.JobsTop.AnyAsync())
+                {
+                 <!--Jobs Top-->
+                   <div class="tab" id="tab2">
+                  <div class="row">
+                  @await foreach (var item in Model.JobsTop)
+                    {
+                     <!-- Job Block -->
+                     <div class="job-block col-lg-4 col-md-6 col-sm-12">
+                     <div class="inner-box">
+                    <div class="content">
+                       <span class="company-logo"><img class="rounded-full lazyload" data-src="@Model.PictureUrl@item.CompanyLogo" alt=""></span>
+                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                      <ul class="job-info">
+                        <li><span class="icon flaticon-briefcase"></span>@item.LocationId</li>                       
+                        @if (item.MaxSalary > 0)
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                         }
+
+                         else
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                        }
+                        
+                      </ul>
+                      <ul class="job-other-info">
+                        <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
+                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                      </ul>
+                       @{string iconType = @item.isInFavourites ? "las" : "lar";}
+                       <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                          <span class="@iconType la-heart" id="@item.Id-heartIcon"></span>
+                       </button>
+                    </div>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+            }
+
+             @*if (await Model.JobsByCompany.AnyAsync())
+                {
+                    <!--Tab-->
+                    <div class="tab" id="tab3">
+                        <div class="row">
+                @await foreach (var item in Model.JobsByCompany)
+                {
+                     <!-- Job Block -->
+                     <div class="job-block col-lg-4 col-md-6 col-sm-12">
+                     <div class="inner-box">
+                    <div class="content">
+                      <span class="company-logo"><img class="rounded-full lazyload" data-src="@Model.PictureUrl@item.CompanyLogo" alt=""></span>
+                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                      <ul class="job-info">
+                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                        @if (item.MaxSalary > 0)
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                         }
+
+                         else
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>Íå å ïîñî÷åíî</li>
+                         }
+                        
+                      </ul>
+                      <ul class="job-other-info">
+                        <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
+                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                      </ul>
+                       @{string iconType = @item.isInFavourites ? "las" : "lar";}
+                       <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn">
+                          <span class="@iconType la-heart" id="@item.Id-heartIcon"></span>
+                       </button>
+                    </div>
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+            }*@
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Job Section -->

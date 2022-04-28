@@ -1,0 +1,81 @@
+﻿@inject IConfiguration config
+@inject UserManager<User> UserManager
+
+@model IndexViewModel
+@{
+    User userId;
+    string FullImage;
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+    string SiteUrl = config.GetSection("MySettings").GetSection("SiteUrl").Value;
+}   
+
+<!-- About Section -->
+    <section class="about-section-two">
+      <div class="auto-container">
+        <div class="row">
+          <!-- Content Column -->
+          <!-- Content Column -->
+          <div class="content-column col-lg-6 col-md-12 col-sm-12 order-2">
+            <div class="inner-column wow fadeInRight">
+              <div class="sec-title">
+                <h2>Запознайте се с <br>най-добрите ни родни таланти.</h2>
+                <div class="text">Разгледайте всички, които са отворени за нови позиции в мрежата.</div>
+              </div>
+              <ul class="list-style-one">
+                <li>Кандидати от цялата ни страна</li>
+                <li>Талантливи</li>
+                <li>Потвърдени</li>
+              </ul>
+              <a href="#" class="theme-btn btn-style-one">Добави CV</a>
+            </div>
+          </div>
+
+
+          <!-- Image Column -->
+          <div class="image-column col-lg-6 col-md-12 col-sm-12">
+            <figure class="image-box wow fadeInLeft"><img class="lazyload" data-src="https://creativelayers.net/themes/superio/images/resource/image-3.png" alt=""></figure>
+      @if (Model.LastContestants is not null)
+      {
+                    <!-- Count Employers -->
+               <div class="applicants-list wow fadeInUp">
+               <div class="title-box">
+               <h4>Кандидати</h4>
+              </div>
+        <ul class="applicants">
+
+        @await foreach (var item in Model.LastContestants)
+        {
+            userId = await UserManager.FindByIdAsync(item.PosterID);
+
+            if (!(userId is null))
+                FullImage = (userId?.PictureName is not null && userId.PictureName.Contains("https://")) ? userId?.PictureName : (config.GetSection("MySettings").GetSection("UserPicturePath").Value + userId?.PictureName); //userId.PictureName.Contains("https://") ? userId?.PictureName : SiteImageUrl + userId?.PictureName;
+            else
+                FullImage = "~/uploads/Images/100x100.jpg";
+
+                <li class="applicant" href="@SiteUrl/candidates/info/@item.Id">
+                  <figure class="image">
+                @if (userId?.PictureName is not null)
+                {
+                    <img class="lazyload" data-src="@FullImage" />
+                }
+                  </figure>
+                  <h4 class="name">
+                      @if(item.FullName?.Length >= 19)
+                      {
+                       item.FullName?.Substring(0, 19);
+                      } else {
+                      @item.FullName;
+                      }     
+                  </h4>
+                  <span class="designation">@item.Speciality</span>
+                </li>
+            }
+
+              </ul>
+            </div>
+         }
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End About Section -->

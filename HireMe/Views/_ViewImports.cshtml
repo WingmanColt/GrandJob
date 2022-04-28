@@ -6,9 +6,11 @@
 @using HireMe.Core.Extensions
 @using HireMe.Services
 @using HireMe.Services.Interfaces
+@using HireMe.Entities
 @using HireMe.Entities.Enums
 @using HireMe.Entities.Input
 @using HireMe.Entities.Models
+@using HireMe.Entities.View
 @using HireMe.ViewModels
 @using HireMe.ViewModels.Accounts
 @using HireMe.ViewModels.Categories
@@ -22,14 +24,18 @@
 @using HireMe.ViewModels.Location
 @using HireMe.ViewModels.Language
 @using HireMe.ViewModels.Components
+@using HireMe.ViewModels.PartialsVW
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Http
 @using Microsoft.Extensions.Configuration
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Hosting;
 @using System.Threading.Tasks
 @using System.Threading
 @using Ganss.XSS
+@using NToastNotify.Components;
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, HireMe.Core
+

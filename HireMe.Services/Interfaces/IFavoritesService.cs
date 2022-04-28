@@ -8,12 +8,13 @@
 
     public interface IFavoritesService
     {
-        Task<bool> AddToFavourite(User user, PostType postType, string postId);
-        Task<bool> RemoveFromFavourite(User user, PostType postType, string postId);
+        Task<bool> UpdateFavourite(User user, PostType postType, string postId);
+        Task<bool> RemoveAllFavourites(User user);
+       // Task<bool> RemoveFromFavourite(User user, PostType postType, string postId);
 
         IAsyncEnumerable<TViewModel> GetFavouriteBy<TViewModel>(User user, PostType postType);
         Task<int?> GetFavouriteByCount(User user, PostType postType);
 
-        Task<bool> isInFavourite(User user, PostType postType, int id);
+        bool isInFavourite(User user, PostType postType, string id);
     }
 }

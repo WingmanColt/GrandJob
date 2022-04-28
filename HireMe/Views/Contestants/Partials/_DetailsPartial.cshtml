@@ -1,0 +1,238 @@
+﻿@inject IConfiguration config
+@inject UserManager<User> UserManager
+@inject IContestantsService ContestantsService
+@inject IHtmlSanitizer Sanitizer
+
+
+@model ContestantViewModel
+
+
+@{
+    // Resume
+    string SiteResumeUrl = config.GetSection("MySettings").GetSection("SiteResumeUrl").Value;
+    string resumFullPath = SiteResumeUrl + StringHelper.Filter(Model.conUser.Email) + Model.ResumeFileId;
+
+    // Image
+    string _ImagePath = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+    string SiteImageUrl = (Model.conUser?.PictureName is not null && Model.conUser.PictureName.Contains("https://")) ? Model.conUser?.PictureName : (_ImagePath + Model.conUser?.PictureName);
+                                                                                                                //string imageFullPath = SiteImageUrl + conUser?.PictureName;
+    bool isMobile = MobileDetector.IsMobile(Context);
+    string modalSize = isMobile ? "modal-sm" : "modal-md";
+
+}
+
+<div class="job-overview">
+
+
+    <div id="shareModal" class="modal fade" role="dialog" data-backdrop="false">
+        <div class="modal-dialog @modalSize">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    Сподели
+                    <svg data-dismiss="modal" arial-label="Close" class="svg-class close-2" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M15 9l-6 6M9 9l6 6" />
+                    </svg>
+                </div>
+
+                <div class="modal-body">
+                    @{await Html.RenderPartialAsync("../Partials/_SocialSharingPartial", Model.FullName);}
+
+                </div>
+                <div class="modal-footer">
+                    <button class="content-button status-button open exit" data-dismiss="modal" arial-label="Close">Готово</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+        <form asp-controller="Message" asp-action="ReportContestant" asp-route-postname="@Model.FullName" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div id="reportModal" class="modal fade" role="dialog" data-backdrop="false">
+            <div class="modal-dialog @modalSize">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                                 Докладвай
+                                <svg data-dismiss="modal" arial-label="Close" class="svg-class close-2" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M15 9l-6 6M9 9l6 6" />
+                                </svg>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Потребител:</label><br>
+                                        <strong>@Model.FullName</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Причина*</label>
+                                        <textarea asp-for="Message.Description" class="form-control text required" rows="10" cols="50" style="height:auto;max-width:95%;" required="required" aria-required="true" placeholder="Въведете причината, поради която докладвате тази обява. Опитайте се да дадете колкото се може повече подробности."> </textarea>
+                                        <span asp-validation-for="Message.Description" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button class="content-button status-button open exit" data-dismiss="modal" arial-label="Close">Затвори</button>
+                            <button type="submit" class="content-button status-button">Продължи</button>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+    </form>
+
+
+
+    <div class="job-explain">
+
+        @{
+
+
+            <div class="job-logos">
+               <div class="author-img__wrapper author-img__details" >
+
+                            @if (Model.conUser?.PictureName is null)
+                            {
+                                <i class="author-img imagesIcon"></i>
+                            }
+                            else
+                            {
+                                <img class="author-img lazyload" data-src="@SiteImageUrl" width="140" height="140" />
+                            }
+               </div>
+            </div>
+            <div class="job-explain-content">
+                <div class="job-title-wrapper">
+                    <div class="job-card-title job-card-title-center">@Model.FullName</div>
+                    <div class="job-social">
+                        @{
+                            if (Model.Facebook is not null)
+                            {
+                                <a target="_self" href="http://facebook.com/@Model.Facebook"><i class="facebookIcon"></i></a>
+                            }
+                            if (Model.Twitter is not null)
+                            {
+                                <a target="_self" href="http://twitter.com/@Model.Twitter"><i class="twitterIcon"></i></a>
+                            }
+                            if (Model.Linkdin is not null)
+                            {
+                                <a target="_self" href="http://linkedin.com/in/@Model.Linkdin"><i class="linkedinIcon"></i></a>
+                            }
+                            if (Model.Github is not null)
+                            {
+                                <a target="_self" href="http://github.com/@Model.Github"><i class="githubIcon"></i></a>
+                            }
+                            if (Model.Dribbble is not null)
+                            {
+                                <a target="_self" href="http://dribbble.com/@Model.Dribbble"><i class="dribbbleIcon"></i></a>
+                            }
+                        }
+                    </div>
+                    <div class="job-action">
+                        <svg data-toggle="modal" data-target="#apply" class="svg-class" viewBox="-76 1 511 511.99999" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="a"><stop offset="0" stop-color="#e93e3a" /><stop offset=".352" stop-color="#ed683c" /><stop offset=".706" stop-color="#f3903f" /><stop offset="1" stop-color="#fdc70c" /></linearGradient><linearGradient id="b" gradientTransform="matrix(.658401 0 0 -.658401 -76.300564 503.032967)" gradientUnits="userSpaceOnUse" x1="388.8206" x2="388.8206" xlink:href="#a" y1="-22.5755" y2="806.4938" /><linearGradient id="c" gradientTransform="matrix(.658401 0 0 -.658401 -76.300564 503.032967)" gradientUnits="userSpaceOnUse" x1="479.5454" x2="479.5454" xlink:href="#a" y1="-22.5755" y2="806.4938" /><linearGradient id="d" gradientTransform="matrix(.658401 0 0 -.658401 -76.300564 503.032967)" gradientUnits="userSpaceOnUse" x1="257.315" x2="257.315" xlink:href="#a" y1="-22.5755" y2="806.4938" /><path d="m341.832031 34.132812h-128c0-18.851562-15.28125-34.132812-34.132812-34.132812-18.851563 0-34.132813 15.28125-34.132813 34.132812h-128c-9.425781 0-17.066406 7.640626-17.066406 17.066407v443.734375c0 9.425781 7.640625 17.066406 17.066406 17.066406h324.265625c9.425781 0 17.066407-7.640625 17.066407-17.066406v-443.734375c0-9.425781-7.640626-17.066407-17.066407-17.066407zm-162.132812-17.066406c9.425781 0 17.066406 7.640625 17.066406 17.066406h-34.132813c0-9.425781 7.640626-17.066406 17.066407-17.066406zm45.773437 34.132813v17.066406h-91.546875v-17.066406zm116.359375 443.734375h-324.265625v-443.734375h93.867188v25.601562c0 4.710938 3.820312 8.53125 8.535156 8.53125h119.464844c4.714844 0 8.535156-3.820312 8.535156-8.53125v-25.601562h93.867188v443.734375zm0 0" fill="url(#b)" /><g fill="url(#c)"><path d="m154.101562 204.800781h170.664063v17.066407h-170.664063zm0 0" /><path d="m154.101562 170.667969h170.664063v17.066406h-170.664063zm0 0" /><path d="m154.101562 324.265625h170.664063v17.066406h-170.664063zm0 0" /><path d="m154.101562 290.132812h170.664063v17.066407h-170.664063zm0 0" /><path d="m154.101562 443.734375h170.664063v17.066406h-170.664063zm0 0" /><path d="m154.101562 409.601562h170.664063v17.066407h-170.664063zm0 0" /></g><path d="m119.367188 142.132812c-1.207032-3.347656-4.375-5.585937-7.933594-5.597656h-68.265625c-4.714844 0-8.535157 3.820313-8.535157 8.53125v68.265625c0 4.714844 3.820313 8.535157 8.535157 8.535157h68.265625c4.710937 0 8.535156-3.820313 8.535156-8.535157v-47.664062l31.632812-31.632813-12.066406-12.066406zm-16.46875 62.667969h-51.199219v-51.199219h51.199219v5l-17.066407 17.066407-11.03125-11.035157-12.066406 12.066407 17.066406 17.066406c3.332031 3.332031 8.734375 3.332031 12.066407 0l11.03125-11.03125zm0 0" fill="url(#d)" /><path d="m119.367188 261.597656c-1.207032-3.347656-4.375-5.582031-7.933594-5.597656h-68.265625c-4.714844 0-8.535157 3.820312-8.535157 8.535156v68.265625c0 4.714844 3.820313 8.535157 8.535157 8.535157h68.265625c4.710937 0 8.535156-3.820313 8.535156-8.535157v-47.667969l31.632812-31.632812-12.066406-12.066406zm-16.46875 62.667969h-51.199219v-51.199219h51.199219v5l-17.066407 17.066406-11.03125-11.03125-12.066406 12.066407 17.066406 17.066406c3.332031 3.328125 8.734375 3.328125 12.066407 0l11.03125-11.035156zm0 0" fill="url(#d)" /><path d="m139.535156 360.898438-20.167968 20.164062c-1.207032-3.34375-4.375-5.582031-7.933594-5.597656h-68.265625c-4.714844 0-8.535157 3.824218-8.535157 8.535156v68.265625c0 4.714844 3.820313 8.535156 8.535157 8.535156h68.265625c4.710937 0 8.535156-3.820312 8.535156-8.535156v-47.667969l31.632812-31.632812zm-36.636718 82.835937h-51.199219v-51.199219h51.199219v5l-17.066407 17.066406-11.03125-11.035156-12.066406 12.066406 17.066406 17.066407c3.332031 3.332031 8.734375 3.332031 12.066407 0l11.03125-11.035157zm0 0" fill="url(#d)" /></svg>
+                        <svg data-toggle="modal" data-target="#shareModal" class="svg-class" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><g fill="#ffc107"><path d="m512 85.332031c0 47.128907-38.203125 85.335938-85.332031 85.335938-47.128907 0-85.335938-38.207031-85.335938-85.335938 0-47.128906 38.207031-85.332031 85.335938-85.332031 47.128906 0 85.332031 38.203125 85.332031 85.332031zm0 0" /><path d="m512 426.667969c0 47.128906-38.203125 85.332031-85.332031 85.332031-47.128907 0-85.335938-38.203125-85.335938-85.332031 0-47.128907 38.207031-85.335938 85.335938-85.335938 47.128906 0 85.332031 38.207031 85.332031 85.335938zm0 0" /><path d="m170.667969 256c0 47.128906-38.207031 85.332031-85.335938 85.332031-47.128906 0-85.332031-38.203125-85.332031-85.332031s38.203125-85.332031 85.332031-85.332031c47.128907 0 85.335938 38.203125 85.335938 85.332031zm0 0" /></g><path d="m426.667969 170.667969c-47.0625 0-85.335938-38.273438-85.335938-85.335938 0-47.058593 38.273438-85.332031 85.335938-85.332031 47.058593 0 85.332031 38.273438 85.332031 85.332031 0 47.0625-38.273438 85.335938-85.332031 85.335938zm0-149.335938c-35.285157 0-64 28.714844-64 64 0 35.285157 28.714843 64 64 64 35.285156 0 64-28.714843 64-64 0-35.285156-28.714844-64-64-64zm0 0" /><path d="m426.667969 512c-47.0625 0-85.335938-38.273438-85.335938-85.332031 0-47.0625 38.273438-85.335938 85.335938-85.335938 47.058593 0 85.332031 38.273438 85.332031 85.335938 0 47.058593-38.273438 85.332031-85.332031 85.332031zm0-149.332031c-35.285157 0-64 28.714843-64 64 0 35.285156 28.714843 64 64 64 35.285156 0 64-28.714844 64-64 0-35.285157-28.714844-64-64-64zm0 0" /><path d="m85.332031 341.332031c-47.058593 0-85.332031-38.269531-85.332031-85.332031s38.273438-85.332031 85.332031-85.332031c47.0625 0 85.335938 38.269531 85.335938 85.332031s-38.273438 85.332031-85.335938 85.332031zm0-149.332031c-35.285156 0-64 28.714844-64 64s28.714844 64 64 64c35.285157 0 64-28.714844 64-64s-28.714843-64-64-64zm0 0" /><path d="m152.128906 233.28125c-3.925781 0-7.679687-2.175781-9.558594-5.890625-2.625-5.289063-.492187-11.6875 4.777344-14.335937l207.765625-103.871094c5.269531-2.667969 11.671875-.46875 14.316407 4.777344 2.644531 5.269531.492187 11.671874-4.777344 14.316406l-207.765625 103.871094c-1.515625.769531-3.136719 1.132812-4.757813 1.132812zm0 0" /><path d="m359.871094 403.945312c-1.597656 0-3.21875-.359374-4.757813-1.128906l-207.742187-103.871094c-5.269532-2.648437-7.402344-9.046874-4.777344-14.316406 2.644531-5.246094 9.042969-7.421875 14.3125-4.777344l207.746094 103.871094c5.269531 2.644532 7.402344 9.046875 4.777344 14.316406-1.878907 3.730469-5.652344 5.90625-9.558594 5.90625zm0 0" /></svg>
+                        <svg data-toggle="modal" data-target="#reportModal" class="svg-class" viewBox="0 -18 511.99857 511" xmlns="http://www.w3.org/2000/svg"><path d="m497.199219 406.867188c14.277343 26.644531-5.019531 58.890624-35.253907 58.890624h-411.878906c-30.238281 0-49.535156-32.246093-35.257812-58.890624l205.972656-375.273438c15.085938-28.125 55.421875-28.125 70.507812 0zm0 0" fill="#ff523d" /><path d="m256.035156 50.488281 205.917969 375.277344h-411.886719zm0 0" fill="#fff" /><path d="m236.039062 165.804688h39.992188v139.976562h-39.992188zm0 0" fill="#3a5576" /><path d="m256.035156 345.777344c11.046875 0 19.996094 8.949218 19.996094 19.996094 0 11.046874-8.949219 19.996093-19.996094 19.996093-11.050781 0-19.996094-8.949219-19.996094-19.996093 0-11.046876 8.945313-19.996094 19.996094-19.996094zm0 0" fill="#3a5576" /><path d="m340.792969 275.785156c-5.519531 0-10 4.480469-10 10 0 5.519532 4.480469 10 10 10s9.996093-4.480468 9.996093-10c0-5.519531-4.476562-10-9.996093-10zm0 0" /><path d="m5.996094 402.144531c-17.835938 33.289063 6.25 73.613281 44.070312 73.613281h411.878906c37.757813 0 61.949219-40.242187 44.019532-73.699218l-205.863282-375.191406c-8.859374-16.511719-25.332031-26.367188-44.066406-26.367188-18.71875 0-35.179687 9.839844-44.042968 26.320312l-205.949219 375.234376c-.015625.03125-.03125.058593-.046875.089843zm17.605468 9.488281 205.945313-375.230468c.011719-.027344.027344-.054688.042969-.082032 5.316406-9.910156 15.199218-15.824218 26.445312-15.824218 11.242188 0 21.128906 5.914062 26.488282 15.90625l205.863281 375.1875c10.703125 19.972656-3.75 44.167968-26.441407 44.167968h-411.878906c-22.667968 0-37.132812-24.144531-26.464844-44.125zm0 0" /><path d="m50.066406 435.761719h411.886719c7.585937 0 12.421875-8.148438 8.765625-14.808594l-205.917969-375.273437c-1.757812-3.199219-5.117187-5.1875-8.765625-5.1875-3.648437 0-7.011718 1.988281-8.765625 5.1875l-205.96875 375.273437c-3.652343 6.652344 1.167969 14.808594 8.765625 14.808594zm205.96875-364.488281 189.027344 344.492187h-378.105469zm0 0" /><path d="m276.03125 155.804688h-39.992188c-5.523437 0-10 4.476562-10 10v139.976562c0 5.523438 4.476563 10 10 10h39.992188c5.519531 0 10-4.476562 10-10v-139.976562c0-5.523438-4.480469-10-10-10zm-10 139.980468h-19.996094v-119.984375h19.996094zm0 0" /><path d="m256.035156 335.777344c-16.539062 0-29.996094 13.457031-29.996094 29.996094 0 16.539062 13.457032 29.996093 29.996094 29.996093 16.539063 0 29.996094-13.457031 29.996094-29.996093 0-16.539063-13.457031-29.996094-29.996094-29.996094zm0 39.996094c-5.515625 0-10-4.488282-10-10 0-5.511719 4.484375-10 10-10 5.511719 0 9.996094 4.488281 9.996094 10 0 5.511718-4.484375 10-9.996094 10zm0 0" /><path d="m403.945312 381.046875-34.863281-65.058594c-2.609375-4.867187-8.667969-6.703125-13.535156-4.089843-4.867187 2.605468-6.699219 8.667968-4.089844 13.535156l34.863281 65.058594c2.609376 4.871093 8.667969 6.699218 13.535157 4.089843 4.867187-2.609375 6.699219-8.667969 4.089843-13.535156zm0 0" /></svg>
+                    </div>
+                </div>
+                <div class="job-subtitle-wrapper-listing">
+                    <div class="company-name">@Model.Speciality <span class="comp-location"><b>@Model.LocationId</b></span></div>
+                    <div class="posted">Публикувана на <b>@Model.CreatedOn.ToString("MM MMMM")</b></div>
+                </div>
+                <div class="explain-bar">
+                    <div class="explain-contents">
+                        <div class="explain-title">Преглеждания</div>
+                        <div class="explain-subtitle">@Model.RatingVotes</div>
+                    </div>
+                    <div class="explain-contents">
+                        <div class="explain-title">Стаж</div>
+                        <div class="explain-subtitle">@Model.Experience г.</div>
+                    </div>
+                    <div class="explain-contents">
+                        <div class="explain-title">Тип работа</div>
+                        <div class="explain-subtitle">Не е посочено.</div>
+                    </div>
+                    <div class="explain-contents">
+                        <div class="explain-title">Заплащане</div>
+                        <div class="explain-subtitle">
+                            @if (Model.payRate > 0)
+                            {
+                                <p>мин. @Model.payRate лв.</p>
+                            }
+                            else
+                            {
+                                <b>Не е посочено</b>
+                            }
+                        </div>
+                    </div>
+                </div>
+                        <div class="overview-text">
+                            <div class="overview-text-header">Подходящ тип работа</div>
+                            @if (Model.WorkType is not null)
+                            {
+                                <div class="overview-text-subheader">
+                                    @Model.WorkType?.Replace(",", "; " + Environment.NewLine)
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="overview-text-subheader">
+                                    Не е посочено
+                                </div>
+                            }
+
+                        </div>
+
+                @if (Model.SkillsMapped is not null)
+                {
+                    <div class="overview-text">
+                        <div class="overview-text-header">Умения</div>
+                        <div class="overview-text-subheader">
+                            @await foreach (var skill in Model.SkillsMapped)
+                            {
+                                <button class="search-buttons detail-button">@skill.Title</button>
+                            }
+                        </div>
+                    </div>
+                }
+
+                @if (Model.LanguagesMapped is not null)
+                {
+                    <div class="overview-text">
+                        <div class="overview-text-header">Езици</div>
+                        <div class="overview-text-subheader">
+                            @await foreach (var skill in Model.LanguagesMapped)
+                            {
+                                <button class="search-buttons detail-button">@skill.Name</button>
+                            }
+                        </div>
+
+                    </div>
+                }
+                <div class="overview-text">
+                    <div class="overview-text-header">Описание</div>
+                    <div class="overview-text-item">@Html.Raw(@Sanitizer.Sanitize(@Model.Description))</div>
+                </div>
+
+            </div>
+        }
+    </div>
+
+</div>
+<script>
+     $(".overlay-app").removeClass("is-active");
+</script>

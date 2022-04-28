@@ -4,12 +4,18 @@
     ViewData["Title"] = "Потвърждаване";
 }
 
-<h2>@ViewData["Title"]</h2>
 <div>
-    <p>
-        Успешно потвърждаване !
-    </p>
-    <p>
+    <h2 style="color:#fff;">
+        Успешно потвърдихте.
+    </h2> 
+    <b style="color:#fff;">
         Благодарим, за отделеното време.
-    </p>
+    </b>
+    <br>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-back-home mt-4 animated fadeInUp">
+        <span class="btn-label mr-2">
+            <i class="flaticon-home"></i>
+        </span>
+        Върни се назад
+    </a>
 </div>

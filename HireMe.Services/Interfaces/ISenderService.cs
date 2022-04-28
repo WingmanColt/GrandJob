@@ -1,4 +1,4 @@
-﻿using SendGrid;
+﻿using HireMe.Core.Helpers;
 using System.Threading.Tasks;
 
 namespace HireMe.Services.Interfaces
@@ -6,6 +6,6 @@ namespace HireMe.Services.Interfaces
 
     public interface ISenderService
     {
-        Task<Response> SendEmailAsync(string email, string subject, string message);
+        Task<OperationResult> SendEmailAsync(string email, string subject, string message);
     }
 }

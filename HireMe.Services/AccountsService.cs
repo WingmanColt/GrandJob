@@ -6,9 +6,10 @@
     using HireMe.Entities.Models;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using HireMe.Entities.Enums;
+    using System.Linq;
 
     public class AccountsService : IAccountsService
     {
@@ -87,6 +88,15 @@
             }
 
             return query.Select(x => x.UserName).FirstOrDefault();
+        }
+
+        public IQueryable<User> GetAllAdmins()
+        {
+            var query = GetAllAsNoTracking()
+           .Where(x => (x.Role == Roles.Admin) || x.Role == Roles.Moderator);
+         //  .Select(x => x.Id);
+
+            return query;
         }
         public void PromoteUser(string userId)
         {

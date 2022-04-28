@@ -1,6 +1,8 @@
 ﻿namespace HireMe.Entities.Input
 {
     using HireMe.Entities.Enums;
+    using Microsoft.AspNetCore.Http;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class CreateJobInputModel : BaseInputModel
@@ -58,13 +60,20 @@
         [Display(Name = "Ключови думи")]
         public string TagsId { get; set; }
 
+        public bool isArchived { get; set; }
 
         public ApproveType isApproved { get; set; }
 
-        public bool isArchived { get; set; }
 
         [Display(Name = "Вид:")]
         public string WorkType { get; set; }
+
+        public ICollection<IFormFile> files { get; set; }
+
+        //Custom
+        public double Rating { get; set; }
+        public uint Views { get; set; }
+        public uint ApplyCount { get; set; }
 
     }
 }

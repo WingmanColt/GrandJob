@@ -7,7 +7,8 @@
 
     public interface ILanguageService
     {
-        IAsyncEnumerable<Language> GetAll(string LanguageId);
+        IAsyncEnumerable<T> GetAll<T>(string LanguageId, bool isMapped);
+        IAsyncEnumerable<T> GetAllById<T>(string LanguageId, bool isMapped);
         Task<OperationResult> SeedLanguages();
 
     }

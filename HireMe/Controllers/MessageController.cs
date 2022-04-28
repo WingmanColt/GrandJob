@@ -48,6 +48,7 @@ namespace HireMe.Controllers
             else
                 return RedirectToAction("Index", "Home");
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> SendContestant(string receiver, ContestantViewModel input)
         {
@@ -67,7 +68,7 @@ namespace HireMe.Controllers
             await this._messageService.Create(input.MessageInputModel.Title, input.MessageInputModel.Description, user.Id, receiverId.Id);
             return Redirect($"/identity/messenger/index");
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Send(string receiver, CreateMessageInputModel input)
         {
@@ -86,7 +87,25 @@ namespace HireMe.Controllers
             await this._messageService.Create(input.Title, input.Description, user.Id, receiverId.Id);
             return Redirect($"/identity/messenger/index");
         }
+        [HttpPost]
+        public async Task<IActionResult> SendMessageByTask(CreateMessageInputModel input, string receiver)
+        {
+            var user = await _userManager.GetUserAsync(User);
+           
+            if (user == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
 
+           /* if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }*/
+
+            await this._messageService.Create(input.Title, input.Description, user.Id, receiver);
+            return Redirect($"/identity/messenger/index");
+        }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Report(string postName, JobsViewModel input)
         {
@@ -106,9 +125,32 @@ namespace HireMe.Controllers
                 await this._messageService.CreateReport(postName, input.Message.Description, user.Id, admin.UserName);
             }
 
-            return LocalRedirect($"/Jobs/Details/{input.Id}");
+            return RedirectToAction("Index", "Jobs", new { Id = input.Id });
         }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ReportContestant(string fullName, ContestantViewModel input)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
 
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            var usersInRole = await _userManager.GetUsersInRoleAsync("Admin");
+            foreach (var admin in usersInRole)
+            {
+                await this._messageService.CreateReport(fullName, input.Message.Description, user.Id, admin.UserName);
+            }
+
+            return RedirectToAction("Index", "Contestants", new { Id = input.Id });
+        }
+        [Authorize]
         public async Task<IActionResult> ReportMessage(int id)
         {
             var user = await _userManager.GetUserAsync(User);

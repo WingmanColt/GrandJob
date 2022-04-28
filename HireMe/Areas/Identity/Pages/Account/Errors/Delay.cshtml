@@ -1,0 +1,37 @@
+﻿@page
+
+@{
+    ViewData["Title"] = "Достъпът е забранен";
+    Layout = "Layout/_Delay";
+}
+
+
+<div class="wrapper not-found">
+    <h2 class="animated fadeIn text-danger">@ViewData["Title"]</h2>
+    <ul id="countdown">
+        <li id="days">
+            <div class="number">00</div>
+            <div class="label">Дни</div>
+        </li>
+        <li id="hours">
+            <div class="number">00</div>
+            <div class="label">Часа</div>
+        </li>
+        <li id="minutes">
+            <div class="number">00</div>
+            <div class="label">Минути</div>
+        </li>
+        <li id="seconds">
+            <div class="number">00</div>
+            <div class="label">Секунди</div>
+        </li>
+    </ul>
+    <br>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-back-home mt-4 animated fadeInUp">
+        <span class="btn-label mr-2">
+            <i class="flaticon-home"></i>
+        </span>
+        Върни се назад
+    </a>
+
+</div>

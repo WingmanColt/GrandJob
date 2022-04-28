@@ -1,4 +1,6 @@
-﻿@inject SignInManager<User> SignInManager
+﻿@inject IConfiguration _config
+
+@inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
 @inject INotificationService _notifyService
@@ -7,16 +9,25 @@
 
 @{
     var user = await UserManager.GetUserAsync(User);
+    string name = user?.FirstName?.Substring(0, 1) + user?.LastName?.Substring(0, 1);
+
 
     int notifyCount = await _notifyService.GetNotificationsCount(user);
     int messagesCount = await _messageService.GetMessagesCountBy_Receiver(user);
     int? favCount = await _favoritesService.GetFavouriteByCount(user, PostType.All);
 
     int notify;
-    if(user is not null)
-        notify = user.ActivityReaded ? 0: 1;
+    if (user is not null)
+        notify = user.ActivityReaded ? 0 : 1;
     else
         notify = 0;
+
+
+    bool isMobile = MobileDetector.IsMobile(Context);
+    string returnUrl = Url.PageLink();
+
+    string SiteImageUrl = user?.PictureName is not null && user.PictureName.Contains("https://") ? user.PictureName : _config.GetSection("MySettings").GetSection("UserPicturePath").Value;//user.isExternal ? null : _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string drop = isMobile ? "dropup" : "dropdown";
 }
 
 <link type="text/css" href="~/customCSS/Base/MobileNav.min.css" rel="stylesheet" asp-append-version="true" />
@@ -24,79 +35,147 @@
 <style>
     .dropup .dropdown-menu {
         top: auto !important;
-        margin-bottom: .125rem;
+        margin-bottom: .135rem;
+    }
+
+    .userPanel {
+        top: -2rem !important;
+        position: absolute !important;
+        z-index: 999999 !important;
     }
 </style>
 
-<div class="customMenu">
+<div class="customMenu round-top-edges">
 
     <a asp-controller="Home" asp-action="Index" class="item">
-        <i class="fas fa-home"></i>
+        <i class="fas fa-home"><span>Начало</span></i>
     </a>
     <a class="item navbar-toggler sidenav-toggler" role="button">
-        <i class="fas fa-search"></i>
+        <i class="fas fa-bars"><span>Меню</span></i>
     </a>
-    <div class="dropup">
-        <a role="button" class="item dropdown-toggle hidden-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-plus-square"></i>
-        </a>
-        <div class="dropdown-menu">
-
-            @if (User.IsInRole("Admin"))
-            {
-                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
-                <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
-                <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
-            }
-            @if (User.IsInRole("User"))
-            {
-                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
-                <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/All">Качи CV/Резюме</a>
-            }
-            @if (User.IsInRole("Contestant"))
-            {
-                <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
-                <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/All">Качи CV/Резюме</a>
-            }
-            @if (User.IsInRole("Employer"))
-            {
-                <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
-                <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
-            }
-
-        </div>
-    </div>
     @if (SignInManager.IsSignedIn(User))
     {
-<a class="item notifications quick-sidebar-toggler" href="#" role="button">
-    <i class="fas fa-bell"></i>
-    @if (notify > 0)
-    {
-        <div class="popUp" id="tooltip" style="transform:scale(@notify)">
-            @if (messagesCount > 0)
-            {
-                <div class="item-tooltip"><i class="far fa-comment-dots"></i>@messagesCount</div>
-            }
-            @if (favCount > 0)
-            {
-                <div class="item-tooltip"><i class="far fa-heart"></i> @favCount</div>
-            }
-            @if (notifyCount > 0)
-            {
-                <div class="item-tooltip"><i class="far fa-bell"></i> @notifyCount</div>
-            }
-        </div>
-    }
+        <div class="dropup">
+            <a role="button" class="item" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="far fa-plus-square"><span>Добави</span></i>
+            </a>
+            <div class="dropdown-menu">
 
-</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                    <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                    <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                }
+                @if (User.IsInRole("User"))
+                {
+                    <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/All">Качи CV/Резюме</a>
+                }
+                @if (User.IsInRole("Contestant"))
+                {
+                    <a class="dropdown-item" asp-controller="Contestants" asp-action="Create">Добави кандидатура</a>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/All">Качи CV/Резюме</a>
+                }
+                @if (User.IsInRole("Employer"))
+                {
+                    <a class="dropdown-item" asp-controller="Company" asp-action="Create">Добави фирма</a>
+                    <a class="dropdown-item" asp-controller="Jobs" asp-action="Create">Добави обява</a>
+                }
+
+            </div>
+        </div>
     }
     else
     {
-        <a asp-area="Identity" asp-page="/Account/Manage/Index" class="item notifications">
-            <i class="fas fa-bell"></i>
+        <a asp-area="Identity" asp-page="/Account/Login" class="item notifications">
+            <i class="far fa-plus-square"><span>Добави</span></i>
         </a>
     }
-    <a asp-area="Identity" asp-page="/Account/Manage/Index" class="item">
-        <i class="fas fa-user-circle"></i>
-    </a>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <a class="item notifications quick-sidebar-toggler" href="#" role="button">
+            @if (notify > 0)
+            {
+                <i class="fas fa-bell" style="color:indianred"><span>Известия</span></i>
+            }
+            else
+            {
+                <i class="far fa-bell"><span>Известия</span></i>
+            }
+        </a>
+    }
+    else
+    {
+
+        <a asp-area="Identity" asp-page="/Account/Login" class="item notifications">
+            @if (notify > 0)
+            {
+                <i class="fas fa-bell" style="color:indianred"><span>Активност</span></i>
+            }
+            else
+            {
+                <i class="far fa-bell"><span>Известия</span></i>
+            }
+            
+        </a>
+    }
+    @*<a asp-controller="Home" asp-action="Index" class="item">
+            <i class="fas fa-user-circle"></i> <span>Профил</span>
+        </a>
+    *@
+
+    <!--User Profile-->
+    <div class="item @drop hidden-caret">
+
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+            @*<div class="avatar-sm">
+            <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
+        </div>*@
+            <i class="far fa-user-circle"> <span>Профил</span></i> 
+        </a>
+
+        <ul class="dropdown-menu dropdown-user round-edges userPanel center animated fadeIn">
+            <li>
+                <div class="user-box">
+
+                    @if (user?.PictureName is null)
+                    {
+                        <div class="avatar-lg">
+                            <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="avatar-lg">
+                            <img data-src="@SiteImageUrl@user?.PictureName" alt="User picture" class="avatar-img rounded lazyload">
+                        </div>
+                    }
+
+                    <div class="u-text">
+                        <h4>@user?.FirstName @user?.LastName</h4>
+                        <p class="text-rank" style="color:@user?.Role.GetDescription()">@user?.Role.GetDisplayName()</p>
+                        <b class="fas fa-coins" style="color:darkgoldenrod"></b> <b>@user?.Balance</b>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="dropdown-divider"></div>
+                <a asp-area="Identity" asp-page="/Account/Manage/EditProfile" class="dropdown-item">Редактирай профил</a>
+                <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="dropdown-item">Актулизирай паролата</a>
+                <div class="dropdown-divider"></div>
+                @if (user.Role.Equals(Roles.Admin))
+                {
+                    <form asp-page="/Account/Manage/Admin" asp-page-handler="Sync" asp-route-returnUrl="@returnUrl" method="post">
+                        <button type="submit" class="btn btn-outline-primary dropdown-item">Sync Database</button>
+                    </form>
+                    <div class="dropdown-divider"></div>
+                }
+                <a asp-area="Identity" asp-page="/Account/Logout" class="dropdown-item">
+                    Излез
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>

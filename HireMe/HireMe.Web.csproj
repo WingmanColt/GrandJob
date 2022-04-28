@@ -1,0 +1,115 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+	<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <UserSecretsId>845e6b76-b252-434f-8d8e-d7e16b3ce373</UserSecretsId>
+    <StartupObject>HireMe.Program</StartupObject>
+    <NoWin32Manifest>true</NoWin32Manifest>
+	<AllowUntrustedCertificate>True</AllowUntrustedCertificate>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="uploads\**" />
+    <Compile Remove="Views\Home\IOS\**" />
+    <Compile Remove="wwwroot\Home\**" />
+    <Content Remove="uploads\**" />
+    <Content Remove="Views\Home\IOS\**" />
+    <Content Remove="wwwroot\Home\**" />
+    <EmbeddedResource Remove="uploads\**" />
+    <EmbeddedResource Remove="Views\Home\IOS\**" />
+    <EmbeddedResource Remove="wwwroot\Home\**" />
+    <None Remove="uploads\**" />
+    <None Remove="Views\Home\IOS\**" />
+    <None Remove="wwwroot\Home\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+    <Content Remove="compilerconfig.json" />
+    <Content Remove="launchSettings.json" />
+    <Content Remove="wwwroot\customJS\jobs\filter\worktypeSelect.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\customCSS\Dashboard\plugins\Using\boards.min.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\customCSS\wizard.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\customJS\jobs\filter\worktypeSelect.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="4.0.1" />
+    <PackageReference Include="AspNet.Security.OAuth.LinkedIn" Version="6.0.5" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
+    <PackageReference Include="HtmlSanitizer" Version="7.1.488" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="6.0.0" />
+    <PackageReference Include="Modernizr" Version="2.8.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NToastNotify" Version="8.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\UserProfile\Pictures\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="launchSettings.json" />
+    <None Include="bundleconfig.json" />
+    <None Include="compilerconfig.json" />
+    <None Include="wwwroot\customJS\jobs\filter\worktypeSelect.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HireMe.Data\HireMe.Data.csproj" />
+    <ProjectReference Include="..\HireMe.Firewall\HireMe.Firewall.csproj" />
+    <ProjectReference Include="..\HireMe.Mapping\HireMe.Mapping.csproj" />
+    <ProjectReference Include="..\HireMe.Payments\HireMe.Payments.csproj" />
+    <ProjectReference Include="..\HireMe.Services\HireMe.Services.csproj" />
+    <ProjectReference Include="..\HireMe.ViewModels\HireMe.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Home\Errors.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="wwwroot\customJS\account\register\validationRules - Copy.min.js">
+      <DependentUpon>validationRules.min.js</DependentUpon>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <TypeScriptTarget>ES2020</TypeScriptTarget>
+    <TypeScriptJSXEmit>React</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+
+</Project>

@@ -9,7 +9,7 @@
     ViewData["Title"] = "Включи съобщенията";
     ViewData["Sidebar"] = "sidebar_minimize";
     Layout = "Layout/_Email";
-
+    
     var context = HttpContext.Request;
     var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
     var returnUrl = loc.AbsoluteUri;

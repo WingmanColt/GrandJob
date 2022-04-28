@@ -1,0 +1,179 @@
+﻿@inject IConfiguration config
+@inject UserManager<User> UserManager
+
+@model IndexViewModel
+@{
+    User userId;
+    string FullImage;
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+    string SiteUrl = config.GetSection("MySettings").GetSection("SiteUrl").Value;
+
+}
+<style>
+    .dropmaxdown {
+        transform: translate3d(36vw, 0, 0) !important;
+        z-index: 101;
+    }
+</style>
+@*
+  <div id="home-us">
+<div class="t-header new-campaign-homepage new-branding-banner">
+<div class="full" id="covid">
+<div class="t-header_container full-width-mobile no-marge col-12">
+<div class="t-header_content header-content-left col big" id="header-content-left">
+<h1 class="b">Find your next job, fast.</h1>
+<div class="big-sub-title center-mobile pb10">Search by skills. View salaries. One-click apply.</div>
+<div class="tabs dn">
+<a class="tab active" aria-hidden="true" tabindex="-1" href="https://www.careerbuilder.com/#">Job Title</a>
+<a class="tab" aria-hidden="true" tabindex="-1" href="https://www.careerbuilder.com/#">Commute Time</a>
+</div>
+<div class="dn-i" id="country_code">US</div>
+<div aria-live="off" class="sr-only" id="ac_text_hint">0 suggestions are available, use up and down arrow to navigate them</div>
+
+
+<form id="job-search-form" class="form form-collapse " action="https://www.careerbuilder.com/jobs?keywords=&amp;location=hays%2Cks" accept-charset="UTF-8" method="get">
+<div aria-expanded="false" aria-haspopup="listbox" aria-owns="eac-container-Keywords" class="field relative autocomplete-accessibility">
+<div class="easy-autocomplete" style="width: 331px;"><input type="text" name="keywords" id="Keywords" value="" class="autocomplete-accessibility-input" placeholder="Job Title, Skills or Military Code" autocomplete="off" data-enable-keywords-autocomplete="true" aria-label="Job search keywords" aria-autocomplete="list" aria-controls="eac-container-Keywords"><div class="easy-autocomplete-container" id="eac-container-Keywords"><ul></ul></div></div>
+</div>
+<div aria-expanded="false" aria-haspopup="listbox" aria-owns="eac-container-Location" class="field relative location-find autocomplete-accessibility">
+<div class="easy-autocomplete" style="width: 331px;"><input type="text" name="location" id="Location" value="hays,ks" class="autocomplete-accessibility-input" placeholder="City, State or Zip" autocomplete="off" aria-label="Job search location" aria-autocomplete="list" aria-controls="eac-container-Location"><div class="easy-autocomplete-container" id="eac-container-Location"><ul></ul></div></div>
+<a class="btn detect-location" data-disable-with="&lt;i class=&#39;fa fa-refresh fa-spin np&#39;&gt;&lt;/i&gt;" aria-label="Your location" href="javascript: void(0)"><i aria-hidden="true" class="fa fa-map-marker np"></i>
+</a></div>
+<div class="field">
+<button type="submit" id="sbmt" class="btn btn-linear btn-linear-green" aria-label="Search Jobs" data-gtm="search_form_find_jobs_btn_clicked"><span class="submit-text" data-gtm="search_form_find_jobs_btn_clicked">Search Jobs</span>
+<i class="fa fa-search submit-icon" data-gtm="search_form_find_jobs_btn_clicked"></i>
+</button></div>
+<div class="trigger-mobile-form-collapse">
+<span>hays,ks</span>
+</div>
+</form>
+
+
+<div class="form-bottom hide-mobile">
+<div class="form">
+<a id="post-a-job" class="link-cta" href="https://hiring.careerbuilder.com/post-jobs">Post a Job
+<i class="fa fa-arrow-right"></i>
+</a></div>
+<div class="form">
+<ul class="field">
+<li>
+<input type="checkbox" name="cb-work-home-remote" id="cb-work-home-remote" value="true" class="big is_current_position">
+<label for="cb-work-home-remote">Work from Home/Remote</label>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="t-header_content bg-light-blue-all col small center-mobile header-content-right" id="header-content-right">
+<h2 class="fw-normal-i hide-mobile">
+Make your search
+<span class="b i">easy.</span>
+</h2>
+<div class="sub-title">
+<h2 class="b">Upload Your Resume</h2>
+<div class="small-font">Don't have a resume? Build one in 3 steps.</div>
+</div>
+<a class="btn btn-linear btn-width btn-linear-blue btn-top-seperate" data-gtm="homepage|add-resume-btn" href="https://www.careerbuilder.com/resume/new"><span>Upload/Build Resume</span>
+</a></div>
+</div>
+
+
+
+</div>
+</div>
+</div>*@
+
+
+
+@if (Model.TopCategories is not null)
+{
+
+<div class="content-section-row">
+
+    <ul>
+        @await foreach (var item in Model.TopCategories)
+        {
+            <li class="dropdown" style="top:0">
+
+                <div class="adobe-product">
+                    <div class="products" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="@item.Icon" style="padding-right:3%; font-size:1.5rem"></i>
+                        @item.Title_BG
+                    </div>
+
+                </div>
+                <ul class="dropmaxdown" style="width:10rem; position:fixed;">
+
+                    <li> <a asp-controller="Jobs" asp-action="Index" asp-route-categoryid="@item.Id" asp-route-Internship="intern"><i class="internIcon" style="background-size: 1.5rem"></i> Стаж</a> </li>
+                    <li> <a asp-controller="Jobs" asp-action="Index" asp-route-categoryid="@item.Id"><i class="briefcaseIcon" style="background-size: 1.5rem"></i> Обяви</a> </li>
+                    <li> <a asp-controller="Contestants" asp-action="Index" asp-route-categoryid="@item.Id"><i class="usersIcon" style="background-size: 1.5rem"></i> Хора</a> </li>
+                </ul>
+
+                <div class="button-wrapper">
+                    <div class="menu">
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+    @if (Model.LastContestants is not null)
+    {
+<div class="chart-container">
+    <div class="applicants">
+        @await foreach (var item in Model.LastContestants)
+        {
+            userId = await UserManager.FindByIdAsync(item.PosterID);
+            if (!(userId is null))
+                FullImage = (userId?.PictureName is not null && userId.PictureName.Contains("https://")) ? userId?.PictureName : (config.GetSection("MySettings").GetSection("UserPicturePath").Value + userId?.PictureName); //userId.PictureName.Contains("https://") ? userId?.PictureName : SiteImageUrl + userId?.PictureName;
+            else
+                FullImage = "~/uploads/Images/100x100.jpg";
+
+            <div class="applicant-line" href="@SiteUrl/candidates/info/@item.Id">
+
+                @if (userId?.PictureName is null)
+                {
+                    <i class="author-img imagesIcon"></i>
+                }
+                else
+                {
+                    <img class="author-img lazyload" data-src="@FullImage" width="52" height="52" />
+                }
+
+                <div class="applicant-info">
+                    <b>@item.FullName</b>
+                    <br>
+                    <p>@item.Speciality</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+    }
+</div>
+}
+
+
+@if (Model.TopCompanies is not null)
+{
+    <div class="content-section">
+        <div class="content-section-title">ТОП Фирми</div>
+        <div class="companies-card">
+            @await foreach (var item in Model.TopCompanies)
+            {
+                <div class="company-card" href="@SiteUrl/company/details/@item.Id">
+                        @if (item.Logo is null)
+                        {
+                            <i class="icon imagesIcon"></i>
+                        }
+                        else
+                        {
+                            <img class="icon lazyload" data-src="@Model.PictureUrl@item.Logo" width="85" height="35" />
+                        }
+                </div>
+            }
+        </div>
+    </div>
+    
+}
+
+

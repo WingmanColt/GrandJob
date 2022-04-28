@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace HireMe.Entities.Enums
 {
-    public enum WorkType 
+    public enum WorkType : int
     {
         [Display(Name = "Подходяща за начинаещи")]
         Internship = 1,

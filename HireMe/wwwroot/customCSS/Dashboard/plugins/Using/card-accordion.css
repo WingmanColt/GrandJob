@@ -37,6 +37,8 @@
     .accordion .card .card-body {
         border-top: 1px solid #ebebeb;
         padding: 30px;
+        line-break: auto;
+        letter-spacing: 1px;
     }
 
 .accordion.accordion-danger .card .card-header,
@@ -74,6 +76,7 @@
 
 .accordion.accordion-secondary .card .card-header {
     color: #716aca;
+    font-size: 1.2rem;
 }
 
     .accordion.accordion-secondary .card .card-header .btn-link {

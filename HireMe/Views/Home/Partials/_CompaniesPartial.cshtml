@@ -1,0 +1,53 @@
+﻿@inject IConfiguration config
+@model IndexViewModel
+@{
+    string SiteUrl = config.GetSection("MySettings").GetSection("SiteUrl").Value;
+}
+
+<!-- Top Companies -->
+ @if (await Model.TopCompanies.AnyAsync())
+{
+    <section class="top-companies">
+        <div class="auto-container">
+        <div class="sec-title">
+          <h2>Фирми с висок рейтинг</h2>
+          <div class="text">Някои от фирмите, на които сме помогнали да наемат отлични кандидати през годините.</div>
+        </div>
+
+        <div class="carousel-outer wow fadeInUp">
+
+          <div class="companies-carousel owl-carousel owl-theme default-dots">
+          @await foreach (var item in Model.TopCompanies)
+            {
+            <!-- Company Block -->
+            <div class="company-block" href="@SiteUrl/company/details/@item.Id">
+              <div class="inner-box">
+                <figure class="image">
+                 @if (item.Logo is not null)
+                   {
+                    <img class="lazyload" data-src="@Model.PictureUrl@item.Logo" />
+                   }
+                 </figure>
+                <a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id" class="name">@item.Title</a>
+                <div class="location"><i class="flaticon-map-locator"></i> @item.LocationId</div>
+                <a href="#" class="theme-btn btn-style-three">
+        <div class="star-rating">
+        <span class="fa fa-star" data-rating="1"></span>
+        <span class="fa fa-star" data-rating="2"></span>
+        <span class="fa fa-star" data-rating="3"></span>
+        <span class="fa fa-star" data-rating="4"></span>
+        <span class="fa fa-star" data-rating="5"></span>
+        <input type="hidden" name="whatever1" class="rating-value" value="@item.Rating">
+      </div>
+                </a>
+              </div>
+            </div>
+            }
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+    }
+    <!-- End Top Companies -->

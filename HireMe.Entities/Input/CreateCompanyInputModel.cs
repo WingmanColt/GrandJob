@@ -3,6 +3,7 @@
     using HireMe.Entities.Enums;
     using Microsoft.AspNetCore.Http;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class CreateCompanyInputModel : BaseInputModel
@@ -72,10 +73,23 @@
         public PromotionEnum Promotion { get; set; }
 
         public DateTime Date { get; set; }
+
+        [Display(Name = "Лого:")]
         public IFormFile FormFile { get; set; }
+
+        [Display(Name = "Галерия:")]
+        public string GalleryImages { get; set; }
 
         [Display(Name = "ЕИК/Булстат:")]
         public string EIK { get; set; }
+
+        public ApproveType isApproved { get; set; }
+        public double Rating { get; set; }
+
+        [Display(Name = "Категория:")]
+        public int CategoryId { get; set; }
+
+        public List<IFormFile> files { get; set; }
 
     }
 }

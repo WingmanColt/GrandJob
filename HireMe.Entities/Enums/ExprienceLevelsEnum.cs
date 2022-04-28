@@ -30,6 +30,11 @@ namespace HireMe.Entities.Enums
             return attr != null ? attr.Description : enu.ToString();
         }
 
+        public static string GetShortName(this Enum enu)
+        {
+            var attr = GetDisplayAttribute(enu);
+            return attr != null ? attr.ShortName : enu.ToString();
+        }
         private static DisplayAttribute GetDisplayAttribute(object value)
         {
             Type type = value.GetType();

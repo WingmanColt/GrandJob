@@ -99,16 +99,12 @@
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace
 }
 
-@media screen and (min-width: 320px) and (max-width: 767px) and (orientation: landscape) {
-    html {
-        transform: rotate(-90deg);
-        transform-origin: left top;
-        width: 100vh;
-        overflow-x: hidden;
-        position: absolute;
-        top: 100%;
-        left: 0;
-    }
+@font-face {
+    font-family: 'Pacifico';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Pacifico Regular'), local('Pacifico-Regular'), url(https://fonts.gstatic.com/s/pacifico/v12/FwZY7-Qmy14u9lezJ-6H6MmBp0u-.woff2) format('woff2');
+    font-display: swap;
 }
 body {
    background: #f9fbfd;
@@ -220,34 +216,70 @@ td {
     font-display: swap;
 }
 body {
-   font-size: 13px;
-   color: #575962;
+    font-size: 14px !important;
+    color: #575962;
 }
 
-.h1,
+
 h1 {
-   font-size: 1.625rem;
+    font-size: 1.602em;
 }
-.h2,
+
 h2 {
-   font-size: 1.25rem;
+    font-size: 1.424em;
 }
-.h3,
+
 h3 {
-   font-size: 1.0625rem;
+    font-size: 1.266em;
 }
-.h4,
+
 h4 {
-   font-size: 0.9375rem;
+    font-size: 1.125em;
 }
-.h5,
+
 h5 {
-   font-size: 0.8125rem;
+    font-size: 0.889em;
 }
-.h6,
+
 h6 {
-   font-size: 0.725rem;
+    font-size: 0.79em;
 }
+
+@media (min-width: 48em) {
+    h1 {
+        font-size: 2.441em;
+    }
+
+    h2 {
+        font-size: 1.953em;
+    }
+
+    h3 {
+        font-size: 1.563em;
+    }
+
+    h4 {
+        font-size: 1.25em;
+    }
+}
+
+@media (min-width: 62em) {
+    html,
+    body {
+        font-size: 16px !important;
+    }
+}
+
+@media (min-width: 75em) {
+    html,
+    body {
+        font-size: 14px;
+        line-height: 1.42857;
+        /*color: #333333;
+        background-color: #fff*/
+    }
+}
+
 p {
    font-size: 13px;
    line-height: 1.82;
@@ -1068,6 +1100,13 @@ body {
                         border-radius: 0px 10px 10px 0px;
                     }
 
+
+                        .page-with-aside .page-aside .aside-nav .nav > li.active i,
+                        .page-with-aside .page-aside .aside-nav .nav > li:focus i,
+                        .page-with-aside .page-aside .aside-nav .nav > li:hover i {
+                            color: #4d7cfe;
+                        }
+
             .page-with-aside .page-aside .aside-nav input[type=submit] {
                 background: none;
                 border-radius: 0;
@@ -1098,10 +1137,6 @@ body {
                 font-size: 20px;
                 margin-right: 15px;
                 color: #a1a2a6;
-            }
-
-            .page-with-aside .page-aside .aside-nav .nav > li i {
-                color: #000;
             }
 
 
@@ -1618,6 +1653,10 @@ body {
         .card .card-body {
             padding: 1.25rem;
         }
+            .card .card-table {
+                padding: 0;
+                word-wrap:normal;
+            }
 
             .card .card-body .subtitle {
                 font-size: 16px;
@@ -2673,7 +2712,7 @@ body {
             margin-bottom: 15px;
         }
 
-    .table {
+   /* .table {
         color: #555 !important;
     }
 
@@ -2840,7 +2879,7 @@ body {
         -webkit-overflow-scrolling: touch;
         -ms-overflow-style: -ms-autohiding-scrollbar;
     }
-
+       */
     .navbar .navbar-nav .nav-item {
         margin-right: 20px;
         margin-top: -12px;
@@ -3065,7 +3104,6 @@ body {
             padding: 15px 20px;
             color: #575962;
             border-width: 0;
-            font-size: 1.5em;
             font-weight: 600;
         }
 
@@ -4990,6 +5028,16 @@ body {
 .white-rounded-space {
     border-radius: 8px 8px 8px 8px;
 }
+
+.badge-success {
+    background-color: #2bc911;
+}
+
+.badge-danger {
+    background-color: #9d0f0f;
+}
+
+/*Tables custom*/
 .table .thead-dark th {
     color: #dee2e6;
     background-color: #424141;
@@ -5002,10 +5050,76 @@ tr:hover {
     background-color: lightyellow;
 }
 
-.badge-success {
-    background-color: #2bc911;
+table {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
 }
 
-.badge-danger {
-    background-color: #9d0f0f;
+thead {
+    flex: 0 0 auto;
+}
+
+tbody {
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+tr {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
+/*Avatar*/
+.author-img {
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    padding: 4px;
+    border-radius: 50%;
+    object-fit: cover;
+    float: right;
+    box-shadow: 0 .2rem 2rem 0.2rem var(--theme-main-shadow-color);
+}
+
+.author-img__wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.author-img__wrapper svg {
+    width: 16px;
+    padding: 2px;
+    background-color: #fff;
+    color: #0daabc;
+    border-radius: 50%;
+    border: 2px solid #0daabc;
+    position: absolute;
+    bottom: 5px;
+    right: 0;
+}
+.author-img__wrapper2 {
+    width: 200px;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    margin: 10px;
+    padding: 10px;
+}
+
+    .author-img__wrapper2 .fa-coins {
+        position: absolute;
+        bottom: 0;
+        left: 110px;
+        color: var(--theme-color);
+    }
+
+.text-rank {
+    color: var(--theme-color);
+}
+
+.text-name {
+    color: var(--theme-color);
+    font-size: 1.4rem;
 }

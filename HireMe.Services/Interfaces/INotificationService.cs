@@ -9,7 +9,8 @@
 
     public interface INotificationService
     {
-        Task<OperationResult> Create(string title, string url, DateTime start, NotifyType type, string icon, User user);
+        Task<OperationResult> Create(string title, string url, DateTime start, NotifyType type, string icon, string receiverId, string senderId);
+        Task<bool> CreateForAdmins(string title, string url, DateTime start, NotifyType type, string icon, string senderId);
         Task<OperationResult> Delete(int iD);
 
         IAsyncEnumerable<Notification> GetAllBy(User user);

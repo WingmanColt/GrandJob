@@ -1,0 +1,188 @@
+@inject IConfiguration _config
+@inject UserManager<User> _userManager
+@inject SignInManager<User> _signInManager
+@inject IFavoritesService _favouriteService
+
+@{
+    var user = await _userManager.GetUserAsync(User);
+    string name = user?.FirstName?.Substring(0, 1) + user?.LastName?.Substring(0, 1);
+    int? favCount = await _favouriteService.GetFavouriteByCount(user, PostType.All);
+
+    string siteUrl = _config.GetSection("MySettings").GetSection("SiteUrl").Value;
+    string SiteImageUrl = (user?.PictureName is not null && user.PictureName.Contains("https://")) ? user?.PictureName : (_config.GetSection("MySettings").GetSection("UserPicturePath").Value + user?.PictureName);
+
+    var context = Context.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+}
+
+<div class="header border-gradient border-gradient-blue">
+    <img src="https://i.imgur.com/n9t98rW.png" height="81" width="200" />
+    <div class="menu-circle">
+       @* <svg viewBox="0 0 444.04691 444.04691" fill="currentColor">
+            <path d="m444.046875 421.421875-186.910156-186.910156c47.839843-59.847657 40.59375-146.644531-16.507813-197.734375-57.101562-51.089844-144.167968-48.671875-198.34375 5.507812-54.179687 54.175782-56.597656 141.242188-5.507812 198.34375 51.089844 57.101563 137.886718 64.347656 197.734375 16.507813l186.910156 186.910156zm0 0" />
+        </svg>
+        GrandJob
+        *@
+        
+    </div>
+    <div class="header-menu">
+        <a class="menu-link is-active desktop-only" href="#" style="font-size: 1rem;">Кариерно развитие</a>
+        @*
+            <a class="menu-link notify" href="#">Работа</a>
+            <a class="menu-link" href="#">Кандидати</a>
+            <a class="menu-link notify" href="#">Фирми</a>
+        *@
+    </div>
+   @* <div class="search-bar">
+        <form asp-controller="Jobs" asp-action="Index" method="get" id="homeSearchForm">
+            <input asp-for="SearchString" type="text" class="searchBarInput" placeholder="Позиция или ключова дума">
+            <a href="#" onclick="$('#homeSearchForm').submit();" class="submit-btn"><i class="fas fa-check-circle"></i></a>
+        </form>
+    </div>*@
+
+    <div class="header-profile menu-custom">
+        @if (!_signInManager.IsSignedIn(User))
+        {
+            <div class="dropdown dropdown2" style="top:unset;">
+
+                <div class="menu-custom_icon dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Регистрирай се
+                </div>
+                <ul class="dropmaxdown2">
+                    <li><a asp-area="Identity" asp-page="/Account/Register">Като Кандидат</a></li>
+                    <li><a asp-area="Identity" asp-page="/Account/RegisterAsEmployer">Като Работодател</a></li>
+                </ul>
+            </div>
+
+            <a asp-area="Identity" asp-page="/Account/Login" class="menu-custom_item" style="margin: 30px;">Влез</a>
+        }
+        else
+        {
+            <!--User Profile-->
+            <div class="dropdown" style="top:unset; z-index:100005;">
+                <div class="user-settings" data-toggle="dropdown" href="#" aria-expanded="false">
+                    <div class="author-img__wrapper">
+
+                        @if (user?.PictureName is null)
+                        {
+                            <i class="author-img imagesIcon"></i>
+                        }
+                        else
+                        {
+                            <img class="author-img lazyload" data-src="@SiteImageUrl" width="40" height="40" />
+                        }
+                    </div>
+                    <div class="user-name">@user?.FirstName</div>
+                    <svg viewBox="0 0 492 492" fill="currentColor">
+                        <path d="M484.13 124.99l-16.11-16.23a26.72 26.72 0 00-19.04-7.86c-7.2 0-13.96 2.79-19.03 7.86L246.1 292.6 62.06 108.55c-5.07-5.06-11.82-7.85-19.03-7.85s-13.97 2.79-19.04 7.85L7.87 124.68a26.94 26.94 0 000 38.06l219.14 219.93c5.06 5.06 11.81 8.63 19.08 8.63h.09c7.2 0 13.96-3.57 19.02-8.63l218.93-219.33A27.18 27.18 0 00492 144.1c0-7.2-2.8-14.06-7.87-19.12z"></path>
+                    </svg>
+                </div>
+
+                <ul class="dropmaxdown-user round-edges" style="max-width:360px; height:550px;">
+                    <li class="user-box">
+                        <div class="author-img__wrapper author-img__wrapper2" >
+
+                            @if (user?.PictureName is null)
+                            {
+                                <i class="author-img imagesIcon"></i>
+                            }
+                            else
+                            {
+                                <img class="author-img lazyload" data-src="@SiteImageUrl" width="52" height="52" />
+                            }
+                             <a class="coinsIcon" ><b class="text-rank" style="margin-left: 30px;">@user?.Balance</b></a>
+                        </div>
+                    </li>
+                     <li>
+                          <h4 class="dropdown-item text-name">@user?.FirstName @user?.LastName</h4>
+                          </li>
+                          <li>
+                          <p class="dropdown-item text-rank" style="color:@user?.Role.GetDescription()">@user?.Role.GetDisplayName()</p>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Manage/Index" class="dropdown-item">Контролен панел</a>
+                    </li>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Manage/EditProfile" class="dropdown-item">Редактирай профил</a>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="dropdown-item">Актулизирай паролата</a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    @if (user.Role.Equals(Roles.Admin))
+                    {
+                        <li>
+                            <form asp-page="/Account/Manage/Admin" asp-page-handler="Sync" asp-route-returnUrl="@returnUrl" method="post">
+                                <button type="submit" class="btn btn-outline-primary dropdown-item">Sync Database</button>
+                            </form>
+                        </li>
+                        <li>
+                            <div class="dropdown-divider"></div>
+                        </li>
+                    }
+
+                     @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                            {
+
+                                <li> <a class="dropdown-item" asp-controller="Company" asp-action="Create"><i class="plusIcon" style="color:#808080"></i> Добави фирма</a> </li>
+                                <li><a class="dropdown-item" asp-controller="Jobs" asp-action="Create"><i class="plusIcon" style="color:#808080"></i> Добави обява</a> </li>
+
+                                <li> <a class="dropdown-item" asp-controller="Contestants" asp-action="Create"><i class="plusIcon" style="color:#808080"></i> Добави кандидатура</a> </li>
+                                <li> <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/Index"><i class="uploadIcon" style="color:#808080"></i> Добави CV</a> </li>
+
+                            }
+                            @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                            {
+                                 <li><a class="dropdown-item" asp-controller="Contestants" asp-action="Create"><i class="plusIcon" style="color:#808080"></i> Добави кандидатура</a> </li>
+                                 <li> <a class="dropdown-item" asp-area="Identity" asp-page="/Resume/Index"><i class="uploadIcon" style="color:#808080"></i> Добави CV</a> </li>
+                            }
+                            @if (user.Role.Equals(Roles.Employer))
+                            {
+                                <li> <a class="dropdown-item" asp-controller="Company" asp-action="Create"><i class="plusIcon" style="color:#808080"></i> Добави фирма</a> </li>
+                                <li> <a class="dropdown-item" asp-controller="Jobs" asp-action="Create"><i class="plusIcon" style="color:#808080"></i> Добави обява</a> </li>
+                            }
+                            @if (user.Role.Equals(Roles.Recruiter))
+                            {
+                                <li> <a class="dropdown-item" asp-controller="Jobs" asp-action="Create"><i class="plusIcon" style="color:#808080"></i> Добави обява</a> </li>
+                            }
+                       <li>
+                            <div class="dropdown-divider"></div>
+                        </li>
+                    <li>
+                        <a asp-area="Identity" asp-page="/Account/Logout" class="dropdown-item">
+                            <i class="backIcon" style="background-color:darkred"></i> Излез
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="notify">
+                <div class="notify-reddot"></div>
+                <svg viewBox="0 0 24 24" fill="currentColor" class="quick-sidebar-toggler">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M18.707 8.796c0 1.256.332 1.997 1.063 2.85.553.628.73 1.435.73 2.31 0 .874-.287 1.704-.863 2.378a4.537 4.537 0 01-2.9 1.413c-1.571.134-3.143.247-4.736.247-1.595 0-3.166-.068-4.737-.247a4.532 4.532 0 01-2.9-1.413 3.616 3.616 0 01-.864-2.378c0-.875.178-1.682.73-2.31.754-.854 1.064-1.594 1.064-2.85V8.37c0-1.682.42-2.781 1.283-3.858C7.861 2.942 9.919 2 11.956 2h.09c2.08 0 4.204.987 5.466 2.625.82 1.054 1.195 2.108 1.195 3.745v.426zM9.074 20.061c0-.504.462-.734.89-.833.5-.106 3.545-.106 4.045 0 .428.099.89.33.89.833-.025.48-.306.904-.695 1.174a3.635 3.635 0 01-1.713.731 3.795 3.795 0 01-1.008 0 3.618 3.618 0 01-1.714-.732c-.39-.269-.67-.694-.695-1.173z" />
+                </svg>
+            </div>
+
+            /*<div class="notify">
+                <div class="notify-reddot"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
+                    <path d="M10.688 95.156C80.958 154.667 204.26 259.365 240.5 292.01c4.865 4.406 10.083 6.646 15.5 6.646 5.406 0 10.615-2.219 15.469-6.604 36.271-32.677 159.573-137.385 229.844-196.896 4.375-3.698 5.042-10.198 1.5-14.719C494.625 69.99 482.417 64 469.333 64H42.667c-13.083 0-25.292 5.99-33.479 16.438-3.542 4.52-2.875 11.02 1.5 14.718z" />
+                    <path d="M505.813 127.406a10.618 10.618 0 00-11.375 1.542C416.51 195.01 317.052 279.688 285.76 307.885c-17.563 15.854-41.938 15.854-59.542-.021-33.354-30.052-145.042-125-208.656-178.917a10.674 10.674 0 00-11.375-1.542A10.674 10.674 0 000 137.083v268.25C0 428.865 19.135 448 42.667 448h426.667C492.865 448 512 428.865 512 405.333v-268.25a10.66 10.66 0 00-6.187-9.677z" />
+                </svg>
+            </div>*/
+
+
+
+
+        }
+    </div>
+
+</div>
+
+

@@ -4,6 +4,8 @@
     using System;
     using HireMe.Entities.Enums;
     using HireMe.Entities.Models;
+    using System.Threading.Tasks;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class NotificationsViewModel : IMapFrom<Notification>
     {
@@ -13,7 +15,9 @@
         public string Url { get; set; }
         public DateTime Date { get; set; }
         public NotifyType Type { get; set; }
-        public string UserId { get; set; }
+        public string SenderId { get; set; }
+        public string ReceiverId { get; set; }
         public string Icon { get; set; }
+        public Task<User> userSender { get; set; }
     }
 }

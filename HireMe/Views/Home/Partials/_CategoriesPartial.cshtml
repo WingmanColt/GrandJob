@@ -1,0 +1,112 @@
+﻿@model IndexViewModel    
+
+<!-- Job Categories -->
+@if (Model.TopCategories is not null)
+{
+    <section class="job-categories desktop-only">
+      <div class="auto-container">
+        <div class="sec-title text-center">
+          <h2>Популярни индустрии</h2>
+         @* <div class="text">2020 jobs live - 293 added today.</div>*@
+        </div>
+        <div class="row wow fadeInUp">
+
+       @await foreach (var item in Model.TopCategories)
+        {
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon @item.Icon"></span>
+                <h4><a href="#">@item.Title_BG</a></h4>
+              </div>
+            </div>
+          </div>
+
+          }
+       
+
+          @*
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon flaticon-promotion"></span>
+                <h4><a href="#">Marketing</a></h4>
+                <p>86 open positions)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon flaticon-vector"></span>
+                <h4><a href="#">Design</a></h4>
+                <p>43 open positions)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon flaticon-web-programming"></span>
+                <h4><a href="#">Development</a></h4>
+                <p>(12 open positions)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon flaticon-headhunting"></span>
+                <h4><a href="#">Human Resource</a></h4>
+                <p>55 open positions)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon flaticon-rocket-ship"></span>
+                <h4><a href="#">Project Management</a></h4>
+                <p>(2 open positions)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon flaticon-support-1"></span>
+                <h4><a href="#">Customer Service</a></h4>
+                <p>(2 open positions)</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon flaticon-first-aid-kit-1"></span>
+                <h4><a href="#">Health and Care</a></h4>
+                <p>(25 open positions)</p>
+              </div>
+            </div>
+          </div>
+
+          *@
+        </div>
+      </div>
+    </section>
+    }
+    <!-- End Job Categories -->

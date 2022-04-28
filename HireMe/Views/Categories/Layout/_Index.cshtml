@@ -1,37 +1,38 @@
-﻿@{
-    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+﻿@inject SignInManager<User> _signInManager
+@{
+    Layout = "~/Views/Home/_PageLayout.cshtml";
 }
 
-<link href="~/customCSS/Categories/Index.min.css" rel="stylesheet">
-<style>
-    .text-letblue {
-        color: #55a8fd;
-    }
-</style>
+<div class="wrapper">
+    <partial name="../Home/IOSPartials/_LeftSidePartial" />
 
-<div id="root">
-    <div class="app heading-sticky" style="background-color: rgb(255, 255, 255);">
+    <div class="main-container">
 
-        <!-- Menu Area -->
-        <div class="header header-bg round-bottom-edges fixed-top" style="background: -webkit-gradient(linear, left top, right top, from(#207dff), to(#a16ae8));"></div>
-        <div class="header round-bottom-edges fixed-top" style="background-color: transparent;">
-            <partial name="../Home/customPartials/_MenuPartial" />
+        <div class="main-header">
+            <div class="header-menu">
+                <a class="main-header-link" asp-controller="Home" asp-action="Index">Начало</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index" asp-route-Internship="intern">Стажове</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index">Работа</a>
+                <a class="main-header-link" asp-controller="Contestants" asp-action="Index">Хора</a>
+            </div>
         </div>
 
-        <!-- Content Area -->
-        <div class="page-content scroll-holder container-fluid pull-content">
-            @RenderBody()
-        </div>
 
-        <!-- Footer Area -->
-        <partial name="../Home/customPartials/_FooterPartial" />
+        @if (_signInManager.IsSignedIn(User))
+        {
+            @await Component.InvokeAsync("_Activity")
+        }
+        <div class="content-wrapper" style="padding:unset;">
+            <div class="mobile-only content-section-title text-center">
+                <button label="Филтрирай" type="button" class="btn btn-sm btn-outline-primary filter-sidebar-toggler">
+                    Филтрирай
+                </button>
+            </div>
+            <div class="content-section">
+                @RenderBody()
+            </div>
+        </div>
     </div>
 </div>
-
-@section Scripts {
-
-
-}
-
 
 

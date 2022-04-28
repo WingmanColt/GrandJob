@@ -1,0 +1,414 @@
+
+.t-header {
+    padding: 105px 0;
+    background-image: url(https://d1d8tdgb57avhs.cloudfront.net/assets/us/us_home-9b6871214c875d43e0672289738d447fcdf9461c6c493e6429af292ae04b7bc3.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+    z-index: 3
+}
+
+    .t-header.new-campaign-homepage {
+        background-image: url(https://d1d8tdgb57avhs.cloudfront.net/assets/home/cb_hispanic_heritage-1f485d0bafbb76f75155652db711d6c919f7f82171a6a685b309c37254761a09.jpg)
+    }
+
+    .t-header.new-branding-banner {
+        background-image: url(https://d1d8tdgb57avhs.cloudfront.net/assets/home/cb_brand_refresh_banner-8de60da8b7da6cd5d0e6c3752231dac6eea09fe5ab145374d35ee3165c968a8d.jpg)
+    }
+
+.t-header_container {
+    box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.1);
+    background: #FFF;
+    border-radius: 5px;
+    position: relative;
+    z-index: 2
+}
+
+.t-header_content {
+    padding: 64px 32px 32px 32px
+}
+
+    .t-header_content.col.big {
+        width: 66% !important
+    }
+
+    .t-header_content.col.small {
+        width: 34% !important;
+        min-height: 294px;
+        padding-top: 64px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px
+    }
+
+    .t-header_content h1 {
+        font-size: 1.3rem
+    }
+
+    .t-header_content .big-sub-title {
+        color: #0F1744;
+        font-size: 2rem;
+        margin-bottom: 15px
+    }
+
+    .t-header_content h4 {
+        font-size: 18px
+    }
+
+    .t-header_content .sub-title {
+        font-size: 1.7rem;
+        color: #0F1744
+    }
+
+        .t-header_content .sub-title .small-font {
+            font-size: 1rem
+        }
+
+    .t-header_content .col.small {
+        width: 29% !important
+    }
+
+        .t-header_content .col.small .btn,
+        .t-header_content .col.small #jrp-pagination a,
+        #jrp-pagination .t-header_content .col.small a,
+        .t-header_content .col.small .form .field.check-as-button input[type=checkbox] + label,
+        .form .field.check-as-button .t-header_content .col.small input[type=checkbox] + label,
+        .t-header_content .col.small .form .field.check-as-button input[type=radio] + label,
+        .form .field.check-as-button .t-header_content .col.small input[type=radio] + label {
+            margin-top: 10px
+        }
+
+    .t-header_content .col.big {
+        width: 69% !important
+    }
+
+.t-header #post-a-job {
+    margin-top: 25px
+}
+
+    .t-header #post-a-job i {
+        margin-left: 5px
+    }
+
+.t-header h3 {
+    margin-top: 5px
+}
+
+.t-header .form-bottom .form {
+    width: calc(39% - 1px);
+    float: left
+}
+
+.t-header.default {
+    background-image: url(https://d1d8tdgb57avhs.cloudfront.net/assets/us/us_home-9b6871214c875d43e0672289738d447fcdf9461c6c493e6429af292ae04b7bc3.png) !important
+}
+.full-width-mobile {
+    width: 100% !important
+}
+
+.col-2.no-marge > a,
+.col-2.no-marge > .col {
+    width: 50%
+}
+
+    .col-2.no-marge > a:nth-child(odd),
+    .col-2.no-marge > .col:nth-child(odd) {
+        margin-right: 0 !important
+    }
+    .col-2.no-marge > a:nth-child(2n+1), .col-2.no-marge > .col:nth-child(2n+1) {
+        margin-right: 0 !important;
+    }
+.col-2 > a, .col-2 .col, .col-2 .collapse {
+    float: left;
+    width: 45%;
+    min-height: 1px;
+}
+        .t-header_content {
+    padding: 64px 32px 32px 32px
+}
+    .t-header_content .col.big {
+        width: 69% !important
+    }
+            .t-header_content.col.small {
+                width: 34% !important;
+                min-height: 294px;
+                padding-top: 64px;
+                border-top-right-radius: 5px;
+                border-bottom-right-radius: 5px;
+            }
+.header-content-left #job-search-form.form-material button.btn[type=submit] {
+    padding: 10px 15px
+}
+.header-content-left {
+   float: left;
+   width:50%;
+}
+.header-content-right {
+    float: right;
+    width: 50%;
+}
+.t-header_content .big-sub-title {
+    color: #0F1744;
+    font-size: 2rem;
+    margin-bottom: 15px
+}
+.t-header_content.header-content-right {
+    padding-bottom: 30px !important;
+    padding-top: 30px !important
+}
+.bg-light-blue-all {
+    background-color: #E1F5FE
+}
+
+.pb10 {
+    padding-bottom: 10px
+}
+
+.pb10-i {
+    padding-bottom: 10px !important
+}
+.center-mobile {
+    text-align: center
+}
+.full {
+    max-width: 1440px
+}
+
+
+.t-header.new-campaign-homepage {
+    background-image: url(https://d1d8tdgb57avhs.cloudfront.net/assets/home/cb_hispanic_heritage-1f485d0bafbb76f75155652db711d6c919f7f82171a6a685b309c37254761a09.jpg)
+}
+.t-header.new-branding-banner {
+    background-image: url(https://d1d8tdgb57avhs.cloudfront.net/assets/home/cb_brand_refresh_banner-8de60da8b7da6cd5d0e6c3752231dac6eea09fe5ab145374d35ee3165c968a8d.jpg)
+}
+
+.btn.btn-linear.btn-linear-green,
+.form .field.check-as-button input[type=checkbox] + label.btn-linear.btn-linear-green,
+.form .field.check-as-button input[type=radio] + label.btn-linear.btn-linear-green,
+#jrp-pagination a.btn-linear.btn-linear-green {
+    background-color: #008563;
+    background-image: -webkit-linear-gradient(90deg, #225F4D 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -moz-linear-gradient(90deg, #225F4D 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(90deg, #225F4D 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: linear-gradient(90deg, #225F4D 0%, rgba(255, 255, 255, 0) 100%)
+}
+
+    .btn.btn-linear.btn-linear-green:hover,
+    .form .field.check-as-button input[type=checkbox] + label.btn-linear.btn-linear-green:hover,
+    .form .field.check-as-button input[type=radio] + label.btn-linear.btn-linear-green:hover,
+    #jrp-pagination a.btn-linear.btn-linear-green:hover {
+        background-color: #225F4D
+    }
+
+.btn.btn-linear.btn-linear-blue,
+.form .field.check-as-button input[type=checkbox] + label.btn-linear.btn-linear-blue,
+.form .field.check-as-button input[type=radio] + label.btn-linear.btn-linear-blue,
+#jrp-pagination a.btn-linear.btn-linear-blue {
+    background-color: #2777B4;
+    background-image: -webkit-linear-gradient(90deg, #015A7D 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -moz-linear-gradient(90deg, #015A7D 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: -o-linear-gradient(90deg, #015A7D 0%, rgba(255, 255, 255, 0) 100%);
+    background-image: linear-gradient(90deg, #015A7D 0%, rgba(255, 255, 255, 0) 100%)
+}
+
+    .btn.btn-linear.btn-linear-blue:hover,
+    .form .field.check-as-button input[type=checkbox] + label.btn-linear.btn-linear-blue:hover,
+    .form .field.check-as-button input[type=radio] + label.btn-linear.btn-linear-blue:hover,
+    #jrp-pagination a.btn-linear.btn-linear-blue:hover {
+        background-color: #015A7D
+    }
+#covid h1 {
+    font-size: 1.6rem !important;
+}
+#covid .big-sub-title {
+    font-size: 1.3rem;
+}
+#covid .t-header_container {
+    border-radius: 5px 5px 0 0;
+}
+.t-header_content .big-sub-title {
+    color: #0F1744;
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+.mt0, .t-header .form-bottom #post-a-job {
+    margin-top: 0;
+}
+#home-us #job-search-form {
+    margin-top: 35px
+
+}
+
+#home-us .center h2,
+#home-us .top-sub-title h2 {
+    font-weight: bold;
+    margin-bottom: 30px;
+    font-size: 1.9rem
+}
+
+#home-us .treding-job-wrapper h3,
+#home-us .col-mobile-full h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1px
+}
+#home-us .t-header_content .sub-title,
+#home-us .t-header_content .fw-normal-i,
+#home-us .t-header_content .new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element .link-cta,
+.new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element #home-us .t-header_content .link-cta,
+#home-us .t-header_content .new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element #company .bb-item a,
+.new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element #company .bb-item #home-us .t-header_content a,
+#home-us .t-header_content #company .bb-item .new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element a,
+#company .bb-item .new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element #home-us .t-header_content a,
+#home-us .t-header_content #oc.new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element .link-cta,
+#oc.new-oc-page .salary-container.new-ux .seperate-bottom .horizontal-scroll-element #home-us .t-header_content .link-cta {
+    font-size: 1.12rem
+}
+
+#home-us #job-search-form,
+#jobs-filters #job-search-form {
+    box-shadow: none;
+    margin-top: 0 !important
+}
+
+    #home-us #job-search-form .field input[type=text],
+    #jobs-filters #job-search-form .field input[type=text] {
+        border-radius: 5px !important
+    }
+
+        #home-us #job-search-form .field input[type=text]:focus,
+        #jobs-filters #job-search-form .field input[type=text]:focus {
+            border-radius: 5px !important
+        }
+
+    #home-us #job-search-form .field:nth-of-type(3),
+    #jobs-filters #job-search-form .field:nth-of-type(3) {
+        border: none;
+        width: 100%
+    }
+
+    #home-us #job-search-form .field .trigger-mobile-form-collapse,
+    #jobs-filters #job-search-form .field .trigger-mobile-form-collapse {
+        width: 84%;
+        height: 50px;
+        position: relative;
+        z-index: 5;
+        background: #FFF
+    }
+
+        #home-us #job-search-form .field .trigger-mobile-form-collapse span,
+        #jobs-filters #job-search-form .field .trigger-mobile-form-collapse span {
+            position: absolute;
+            width: 84%;
+            top: 15px;
+            left: 15px;
+            color: #5D677A;
+            font-family: "LatoLight", sans-serif;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        #home-us #job-search-form .field .trigger-mobile-form-collapse:after,
+        #jobs-filters #job-search-form .field .trigger-mobile-form-collapse:after {
+            content: "";
+            display: block;
+            width: 19%;
+            height: 50px;
+            background: transparent;
+            position: absolute;
+            top: 0;
+            right: -52px
+        }
+
+#home-us .blog {
+    min-height: 200px;
+    max-height: 290px
+}
+
+#home-us .t-header {
+    background: #FFF;
+    padding: 20px 0 0 0
+}
+
+    #home-us .t-header.default {
+        background-image: none !important
+    }
+
+    #home-us .t-header #post-a-job {
+        display: none
+    }
+
+#home-us .t-header_container {
+    border-bottom: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none
+}
+
+#home-us .t-header_content {
+    padding: 0 !important
+}
+
+    #home-us .t-header_content .sub-title {
+        font-size: 1.2rem
+    }
+
+    #home-us .t-header_content .big-sub-title {
+        font-size: 1.3rem !important;
+        margin-bottom: 20px !important
+    }
+
+    #home-us .t-header_content.col.big {
+        width: 100% !important
+    }
+
+    #home-us .t-header_content.col.medium {
+        width: 70% !important
+    }
+
+    #home-us .t-header_content.col.small {
+        width: 100% !important;
+        min-height: 0;
+        padding: 20px
+    }
+
+    #home-us .t-header_content h1 {
+        text-align: center;
+        font-size: 1rem
+    }
+
+    #home-us .t-header_content .big-sub-title {
+        text-align: center;
+        font-size: 1.7rem
+    }
+
+    #home-us .t-header_content.bg-light-blue {
+        background: none;
+        padding-top: 20px !important;
+        border-radius: 0;
+        border-top: 1px solid #E9E9E9
+    }
+
+#home-us .bubble-link:not(:nth-child(-n+5)) {
+    display: none
+}
+
+#home-us .top-footer {
+    text-align: center;
+    background-image: url(https://d1d8tdgb57avhs.cloudfront.net/assets/us/footer-mobile-8f362dbc8c8a0c2bd64017114d60ba50bb7216189bb9d133c5c4a4b83949f9e6.png);
+    background-size: cover;
+    padding: 42px 0
+}
+
+    #home-us .top-footer .top-footer-title {
+        font-size: 0.8rem;
+        margin-bottom: 15px
+    }
+
+    #home-us .top-footer .big-top-footer-title {
+        font-size: 1.5rem;
+        font-weight: normal
+    }
+
+    #home-us .top-footer p {
+        text-align: center
+    }

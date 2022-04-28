@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Routing;
+using System;
 using System.Text.RegularExpressions;
 
 namespace HireMe.Utility
@@ -7,8 +8,13 @@ namespace HireMe.Utility
     {
         public string TransformOutbound(object value)
         {
-            // Slugify value
-            return value == null ? null : Regex.Replace(value.ToString(), "([a-z])([A-Z])", "$1-$2").ToLower();
+            if (value == null) { return null; }
+
+            return Regex.Replace(value.ToString(),
+                                 "([a-z])([A-Z])",
+                                 "$1-$2",
+                                 RegexOptions.CultureInvariant,
+                                 TimeSpan.FromMilliseconds(100)).ToLowerInvariant();
         }
     }
 }

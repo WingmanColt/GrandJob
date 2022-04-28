@@ -5,6 +5,8 @@
     using HireMe.Entities.Enums;
     using System;
     using AutoMapper;
+    using System.Collections.Generic;
+    using HireMe.ViewModels.Jobs;
 
     public class CompanyViewModel : BaseViewModel, IMapFrom<Company>//, IHaveCustomMappings
     {
@@ -25,7 +27,7 @@
         public string LocationId { get; set; }
 
         public string Adress { get; set; }
-
+        public string GalleryImages { get; set; }
         public string PhoneNumber { get; set; }
 
         public string Website { get; set; }
@@ -36,7 +38,8 @@
         public double Rating { get; set; }
         public int RatingVotes { get; set; }
         public int VotedUsers { get; set; }
-
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
         public string PosterId { get; set; }
 
         public string Admin1_Id { get; set; }
@@ -51,10 +54,19 @@
 
         public PromotionEnum Promotion { get; set; }
 
-      /*  public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<Company, CompanyViewModel>()
-           .ForMember(dtoo => dtoo.Date, opt => opt.MapFrom(efo => efo.Date.ToString()));
-        }*/
+        public IAsyncEnumerable<CompanyViewModel> Result { get; set; }
+
+        public IAsyncEnumerable<string> GalleryImagesList { get; set; }
+        public string GalleryPath { get; set; }
+
+        public IAsyncEnumerable<JobsViewModel> JobsByCompany { get; set; }
+        public int JobsCount { get; set; }
+        public bool isInFavourites { get; set; }
+
+        /*  public void CreateMappings(IProfileExpression configuration)
+          {
+              configuration.CreateMap<Company, CompanyViewModel>()
+             .ForMember(dtoo => dtoo.Date, opt => opt.MapFrom(efo => efo.Date.ToString()));
+          }*/
     }
 }

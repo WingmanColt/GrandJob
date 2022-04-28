@@ -18,15 +18,11 @@ namespace HireMe.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(CategoriesViewModel viewModel)
         {
-            var entity = _categoriesService.GetAllAsNoTracking();
+            var entity = _categoriesService.GetAllAsNoTracking().AsAsyncEnumerable();
 
-            var Count = await entity.CountAsync().ConfigureAwait(false);
+            viewModel.List = await entity.AnyAsync() ? entity : null;
 
-            var result = entity.AsQueryable().ToAsyncEnumerable();
-
-            viewModel.List = Count > 0 ? result : null;
-
-            return View(viewModel.List);
+            return View(viewModel);
         }
     }
 }

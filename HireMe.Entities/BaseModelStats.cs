@@ -9,5 +9,6 @@ namespace HireMe.Entities
         public DateTime DateTime { get; set; }
 
         public int EntityId { get; set; }
+        public string PosterId { get; set; }
     }
 }

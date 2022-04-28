@@ -26,17 +26,17 @@ namespace HireMe.Entities.Enums
     }
     public enum Roles : int
     {
-        [Display(Name = "Потребител", Description = "#177dff")]
+        [Display(Name = "Потребител", Description = "#177dff", ShortName = "User")]
         User = 0,
-        [Display(Name = "Кандидат", Description = "#ea8323")]
+        [Display(Name = "Кандидат", Description = "#ea8323", ShortName = "Contestant")]
         Contestant = 1,
-        [Display(Name = "Персонал", Description = "#ff006e")]
+        [Display(Name = "Персонал", Description = "#ff006e", ShortName = "Recruiter")]
         Recruiter = 2,
-        [Display(Name = "Работодател", Description = "#9e02e0")]
+        [Display(Name = "Работодател", Description = "#9e02e0", ShortName = "Employer")]
         Employer = 3,
-        [Display(Name = "Модератор", Description = "#16b92b")]
+        [Display(Name = "Модератор", Description = "#16b92b", ShortName = "Moderator")]
         Moderator = 4,
-        [Display(Name = "Администратор", Description = "#c72d2d")]
+        [Display(Name = "Администратор", Description = "#c72d2d", ShortName = "Admin")]
         Admin = 5
             
 

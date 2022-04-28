@@ -1,0 +1,375 @@
+﻿@page "{id:int?}"
+
+@model OperationsModel
+@{
+    ViewData["Title"] = "Кандидатура";
+    Layout = "Layout/_Edit";
+
+
+    var visiblityList = Enum.GetValues(typeof(Visiblity));
+}
+
+
+
+<!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+            @if(@Model.Input?.FullName.Length > 0)
+            {
+          <h3>@Model.Input?.FullName</h3>
+          <div class="text">Редактиране</div>
+            } 
+            else
+            {
+          <h3>Кандидатури</h3>
+          <div class="text">Добавяне</div>
+            }
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+           <form class="default-form" method="post" enctype="multipart/form-data">
+
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Основна информация</h4>
+
+                    <div class="desktop-only">
+                       <a href="" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="fa fa-times" aria-hidden="true"></i></a>
+                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="fa fa-check"></i></button> 
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                     <div asp-validation-summary="All" class="text-danger"></div>
+
+                 
+                    <div class="row">
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.FullName"></label><span class="label-required">*</span>
+                        <input type="text" asp-for="Input.FullName" required>
+                      </div>
+
+                     <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                        <label asp-for="Input.LocationId"></label><span class="label-required">*</span>
+                        <select asp-for="Input.LocationId">
+                        @if (Model.AllLocations is not null)
+                         {
+                          @await foreach (var item in Model.AllLocations)
+                           {
+                             <option value="@item?.Value">@item?.Text</option>
+                           }
+                         }
+                        </select>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                    <label asp-for="Input.Age"></label><span class="label-required">*</span>
+                    <input asp-for="Input.Age" type="date" required />
+                   </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.WorkType"></label><span class="label-required">*</span>
+                        <select class="selectWork" id="id_label_multiple3" multiple="multiple" style="width: 100%">
+                              @if (Model.Input?.WorkType is not null && Model.Worktypes is not null)
+                              {
+                                  foreach (var item in Model.Worktypes)
+                                  {
+                                       <option value="@item?" selected="selected">@item?</option>
+                                  }
+                              }
+                       </select>
+                      <input asp-for="Input.WorkType" type="hidden" id="selectWork_Value" />
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                       <label asp-for="Input.Genders"></label><span class="label-required">*</span>
+                       <select asp-for="Input.Genders" asp-items="Html.GetEnumSelectList<Gender>()" class="chosen-select"></select>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                        <label asp-for="Input.CategoryId"></label><span class="label-required">*</span>
+                        <select class="chosen-select" asp-for="Input.CategoryId">
+                        @if (Model.AllCategories is not null)
+                         {
+                          @await foreach (var item in Model.AllCategories)
+                           {
+                             <option value="@item?.Value">@item?.Text</option>
+                           }
+                         }
+                        </select>
+                      </div>
+
+                    </div>
+                  
+                </div>
+                
+              </div>
+            </div>
+                <hr>
+
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Социална мрежа</h4>
+                </div>
+                 <div class="widget-content">   
+                      <div class="row">
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Website"></label>
+                        <input type="text" asp-for="Input.Website" placeholder="Личен сайт">
+                      </div>
+                        <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Portfolio"></label>
+                        <input type="text" asp-for="Input.Portfolio" placeholder="Блог">
+                      </div>
+
+  
+                       <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Facebook"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-facebook-square" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Facebook" aria-label="https://facebook.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+
+                       <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Linkdin"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-linkedin-in" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Linkdin" aria-label="https://linkdin.com/in/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+
+                       <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Twitter"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-twitter" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Twitter" aria-label="https://twitter.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+
+                    <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Github"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-github" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Github" aria-label="https://github.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+
+                     <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Dribbble"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-dribbble" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Dribbble" aria-label="https://dribbble.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+                    </div>
+            </div>                 
+                </div>
+              </div>
+
+           <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Детайли</h4>
+                </div>
+                 <div class="widget-content">  
+                     <div class="row">
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                         <label>Видимост</label>
+                        <select asp-for="Input.profileVisiblity" asp-items="Html.GetEnumSelectList<Visiblity>()" class="chosen-select"></select>
+                       </div>
+
+                     <div class="form-group col-lg-3 col-md-12">
+                         <label>Опит</label>
+                            <select asp-for="Input.Experience" asp-items="Html.GetEnumSelectList<ExprienceLevels>()" class="chosen-select"></select>
+                       </div>
+
+                       <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                      <label asp-for="Input.payRate"></label>
+                      <input asp-for="Input.payRate"  placeholder="Въведете желаната сума" />
+                      </div>
+
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                      <label asp-for="Input.SalaryType"></label>
+                      <select asp-for="Input.SalaryType" class="chosen-select" asp-items="Html.GetEnumSelectList<SalaryType>()"></select>                     
+                      </div>
+
+
+                                            <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                          <label>Тагове</label>
+                               <select class="selectTags" id="id_label_multiple2" multiple="multiple" style="width: 75%">
+                                
+                                    @if (Model.Skills is not null && Model.Input?.userSkillsId is not null)
+                                    {
+                                        await foreach (var item in Model.Skills)
+                                        {
+                                            <option value="@item?.Id" selected="selected">@item?.Title</option>
+                                        }
+                                    }
+                                
+                            </select>
+                            <input asp-for="Input.userSkillsId" type="hidden" id="selectTags_Value" />
+                      </div>
+
+                       <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                      <label>Езици</label>
+                       <select class="selectLang form-control" id="id_label_multiple55" multiple="multiple" style="width: 75%">
+                                
+                                    @if (Model.Languages is not null && Model.Input?.LanguagesId is not null)
+                                    {
+                                        await foreach (var item in Model.Languages)
+                                        {
+                                            <option value="@item?.Id" selected="selected">@item?.Name</option>
+                                        }
+                                    }
+                               
+                            </select>
+                            <input asp-for="Input.LanguagesId" type="hidden" id="selectLang_Value" />
+                      </div>
+
+                      </div>
+
+                    </div>
+                  
+                </div>
+              </div>
+              
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Резюме</h4>
+                </div>
+                 <div class="widget-content">   
+                      <div class="row">
+                        @if(!String.IsNullOrEmpty(Model.Input?.ResumeFileId))
+                        {
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                        <a class="theme-btn btn-style-three" asp-controller="Resume" asp-action="GetResume" asp-route-id="@Model.Input.ResumeFileId">Прегледай резюме</a>
+                      </div>
+                        }
+
+                        <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                      <input asp-for="Input.FormFile" type="file" id="uploadresume" />
+                      </div>
+                    </div>
+            </div>                 
+                </div>
+              </div>
+
+                         <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Описание</h4>
+                </div>
+                 <div class="widget-content">  
+                     <div class="row">
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                      <label asp-for="Input.Speciality"></label>
+                      <input asp-for="Input.Speciality" aria-describedby="inputGroup-sizing-lg" placeholder="Архитект, Учител" />                  
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                      <label asp-for="Input.About"></label>
+                      <input asp-for="Input.About" aria-describedby="inputGroup-sizing-lg" placeholder="Опишете накратко с какво се занимавате" />                  
+                      </div>
+
+
+                      <!-- Input -->
+                     <div class="col-lg-12 col-md-12">
+                    <textarea asp-for="Input.Description" id="mytextarea" rows="12" cols="12"></textarea>
+                     <strong><i class="label-info fas fa-info-circle"></i> Препоръчваме да използвате минимум 200 думи в описанието.</strong>
+                    </div>
+
+                      </div>
+
+                    </div>
+                  
+                </div>
+              </div>
+             <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Промотиране</h4>
+                </div>
+
+                 <div class="widget-content">  
+                     <div class="row">
+
+                     </div>
+
+                   <div class="row mobile-only">
+                       <div class="form-group col-lg-6 col-md-12">
+                       <a href="" class="theme-btn btn-style-default"><i class="fa fa-times" aria-hidden="true"></i> Затвори</a>
+                       <button type="submit" class="theme-btn btn-style-four"><i class="fa fa-check"></i> Запази</button> 
+                       </div>
+
+                   </div>
+                    </div>
+                  
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+
+

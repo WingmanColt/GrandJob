@@ -1,4 +1,5 @@
-﻿using HireMe.Data;
+﻿using HireMe.Core.Helpers;
+using HireMe.Data;
 using HireMe.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +29,7 @@ namespace HireMe.Controllers.Api
                 dbSet = dbSet.Where(x => x.Title_BG.ToLower().Contains(term.ToLower()));
             }
 
-            var result = await dbSet.Select(x => new { id = x.Id, text = x.Title_BG })
+            var result = await dbSet.OrderBy(x => x.Title_BG).Select(x => new { id = x.Id, text = x.Title_BG })
                 .ToListAsync();
 
             return Json(result);
@@ -45,7 +46,7 @@ namespace HireMe.Controllers.Api
                 dbSet = dbSet.Where(x => x.City.ToLower().Contains(term.ToLower()));
             }
 
-            var result = await dbSet.Select(x => new { id = x.Id, text = x.City })
+            var result = await dbSet.OrderBy(x => x.City).Select(x => new { id = x.Id, text = x.City })
                 .ToListAsync();
 
             return Json(result);
@@ -94,8 +95,12 @@ namespace HireMe.Controllers.Api
             {
                 dbSet = dbSet.Where(x => x.Title.ToLower().Contains(term.ToLower()));
             }
+            else
+            {
+                dbSet = dbSet.OrderBy(x => x.Rating).Take(5);
+            }
 
-            var result = await dbSet.Take(5).Select(x => new { id = x.Id, text = x.Title })
+            var result = await dbSet.Select(x => new { id = x.Id, text = x.Title })
                 .ToListAsync();
 
             return Json(result);

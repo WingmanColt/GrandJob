@@ -1,12 +1,12 @@
 ﻿   $(document).ready(function () {
             $(".selectCategory").select2({
-                placeholder: "Всички",
+                placeholder: "Търси по категория",
                 allowClear: true,
                 theme: "bootstrap",
                 closeOnSelect: true,
                 maximumSelectionLength: 5,
                 minimumInputLength: 0,
-                multiple: true,
+                multiple: false,
                 ajax: {
                     url: "/FeaturesApi/GetCategories",
                     dataType: 'json',
@@ -27,7 +27,7 @@
         });
         $(".selectCategory").on("change", function () {
             var catId = $(this).val();
-            $("#selectLCategory_Value").val(catId);
+            $("#selectCategory_Value").val(catId);
 
 
             var textBoxValueData = $("#selectCategory_Value").val();

@@ -1,17 +1,13 @@
 ﻿namespace HireMe.ViewModels.Contestants
 {
-    using AutoMapper;
-    using AutoMapper.EquivalencyExpression;
     using HireMe.Entities.Enums;
     using HireMe.Entities.Input;
     using HireMe.Entities.Models;
     using HireMe.Mapping.Interface;
+    using HireMe.ViewModels.Message;
     using Microsoft.AspNetCore.Http;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
 
     public class ContestantViewModel : BaseViewModel, IMapFrom<Contestant>//, IHaveCustomMappings
     {
@@ -30,6 +26,7 @@
 
         // Details
         public string About { get; set; }
+        public string Speciality { get; set; }
         public string Description { get; set; }
         public int Experience { get; set; }
         public int payRate { get; set; }
@@ -45,6 +42,8 @@
         public uint Views { get; set; }
 
         public string ResumeFileId { get; set; }
+        public string resumeFullPath { get; set; }
+        public string imageFullPath { get; set; }
 
         // Web presence
         public string Website { get; set; }
@@ -54,7 +53,7 @@
         public string Twitter { get; set; }
         public string Github { get; set; }
         public string Dribbble { get; set; }
-
+        public string Logo { get; set; }
         public PromotionEnum Promotion { get; set; }
 
         public IFormFile FormFile { get; set; }
@@ -63,6 +62,7 @@
         public string userSkillsId { get; set; }
         public string LanguagesId { get; set; }
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
         public string PosterID { get; set; }
 
         // Index
@@ -70,37 +70,46 @@
         public string Sort { get; set; }
         public string ReturnUrl { get; set; }
 
+        public bool isInFavourites { get; set; }
+        public User conUser { get; set; }
+
         public virtual CreateMessageInputModel MessageInputModel { get; set; }
+        public virtual MessageViewModel Message { get; set; }
         public IAsyncEnumerable<ContestantViewModel> Result { get; set; }
 
 
-       // public virtual List<int> MySkills { get; set; } 
+        public IAsyncEnumerable<ContestantDetails> ContestantDetails_Educations { get; set; }
+        public IAsyncEnumerable<ContestantDetails> ContestantDetails_Works { get; set; }
+        public IAsyncEnumerable<ContestantDetails> ContestantDetails_Awards { get; set; }
 
-       /* public void CreateMappings(IProfileExpression configuration)
-        {
-            configuration.CreateMap<Contestant, ContestantViewModel>()
-           // .ForMember(x => x.userSkillsId, opt => opt.MapFrom(model => model))
-            .ForMember(dest => dest.MySkills, opt => opt.MapFrom(src => ToWordsList(src.userSkillsId)));
-            //configuration.CreateMap<Contestant, ContestantViewModel>().ReverseMap();
-            //.AfterMap((Contestant, ContestantViewModel) => ContestantViewModel.MySkills = ConvertToInt(Contestant.userSkillsId?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToList()));
-            // .ForMember(x => x.MySkills, opt => opt.MapFrom(x => x.userSkillsId.Split(',', StringSplitOptions.RemoveEmptyEntries)Select(p => p.Trim()).ToList()));
-            // ContestantViewModel.MySkills = ContestantViewModel.userSkillsId?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToList()
-        }
 
-        public static List<int> ToWordsList(string words)
-        {
-            return string.IsNullOrWhiteSpace(words) ? new List<int>() : words.Split(",").ToList().ConvertAll(int.Parse);
-        }
-        private List<int> ConvertToInt(List<string> stringList)
-        {
-            List<int> intList = new List<int>();
+        // public virtual List<int> MySkills { get; set; } 
 
-            foreach (String s in stringList)
-            {
-                intList.Add(int.Parse(s));
-            }
-            return intList;
-        }*/
+        /* public void CreateMappings(IProfileExpression configuration)
+         {
+             configuration.CreateMap<Contestant, ContestantViewModel>()
+            // .ForMember(x => x.userSkillsId, opt => opt.MapFrom(model => model))
+             .ForMember(dest => dest.MySkills, opt => opt.MapFrom(src => ToWordsList(src.userSkillsId)));
+             //configuration.CreateMap<Contestant, ContestantViewModel>().ReverseMap();
+             //.AfterMap((Contestant, ContestantViewModel) => ContestantViewModel.MySkills = ConvertToInt(Contestant.userSkillsId?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToList()));
+             // .ForMember(x => x.MySkills, opt => opt.MapFrom(x => x.userSkillsId.Split(',', StringSplitOptions.RemoveEmptyEntries)Select(p => p.Trim()).ToList()));
+             // ContestantViewModel.MySkills = ContestantViewModel.userSkillsId?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToList()
+         }
+
+         public static List<int> ToWordsList(string words)
+         {
+             return string.IsNullOrWhiteSpace(words) ? new List<int>() : words.Split(",").ToList().ConvertAll(int.Parse);
+         }
+         private List<int> ConvertToInt(List<string> stringList)
+         {
+             List<int> intList = new List<int>();
+
+             foreach (String s in stringList)
+             {
+                 intList.Add(int.Parse(s));
+             }
+             return intList;
+         }*/
     }
 
 }

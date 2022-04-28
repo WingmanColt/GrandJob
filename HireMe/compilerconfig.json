@@ -1,0 +1,116 @@
+[
+  {
+    "outputFile": "wwwroot/customCSS/Base/pagination.css",
+    "inputFile": "wwwroot/customCSS/Base/pagination.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Base/ios.css",
+    "inputFile": "wwwroot/customCSS/Base/ios.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Dashboard/plugins/Using/Rating.css",
+    "inputFile": "wwwroot/customCSS/Dashboard/plugins/Using/Rating.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Dashboard/plugins/Using/RatingShow.css",
+    "inputFile": "wwwroot/customCSS/Dashboard/plugins/Using/RatingShow.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Base/MobileNav.css",
+    "inputFile": "wwwroot/customCSS/Base/MobileNav.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Base/base.css",
+    "inputFile": "wwwroot/customCSS/Base/base.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Base/MobileNav2.css",
+    "inputFile": "wwwroot/customCSS/Base/MobileNav2.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customJS/account/register/validationRules.es5.js",
+    "inputFile": "wwwroot/customJS/account/register/validationRules.js",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Errors/Countdown.css",
+    "inputFile": "wwwroot/customCSS/Errors/Countdown.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Countdown.css",
+    "inputFile": "wwwroot/customCSS/Countdown.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Base/SearchResults_2.css",
+    "inputFile": "wwwroot/customCSS/Base/SearchResults_2.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/theme_ios/base.css",
+    "inputFile": "wwwroot/theme_ios/base.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/Base/sex.css",
+    "inputFile": "wwwroot/customCSS/Base/sex.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/theme_ios/plugins/select2-theme.css",
+    "inputFile": "wwwroot/theme_ios/plugins/select2-theme.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/вцсдсдд.css",
+    "inputFile": "wwwroot/customCSS/вцсдсдд.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/customCSS/drop.css",
+    "inputFile": "wwwroot/customCSS/drop.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/theme_ios/qdwqwd.css",
+    "inputFile": "wwwroot/theme_ios/qdwqwd.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/theme_ios/plugins/Hexagon.css",
+    "inputFile": "wwwroot/theme_ios/plugins/Hexagon.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  },
+  {
+    "outputFile": "wwwroot/theme_superio/sass/main.css",
+    "inputFile": "wwwroot/theme_superio/sass/main.scss",
+    "sourceMap": false,
+    "useNodeSass": false
+  }
+]

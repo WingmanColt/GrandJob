@@ -5,6 +5,7 @@ namespace HireMe.Entities.Enums
 {
     public enum JobTypeEnum : int
     {
+        [Display(Name = "Не е посочено")]
         None = 0,
 
         [Display(Name = "Пълен работен ден")]

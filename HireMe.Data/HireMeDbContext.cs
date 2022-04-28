@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using HireMe.Entities.Models;
 using HireMe.Entities.Models.Chart;
+    using HireMe.Entities.Models.Benchmark;
 
     public class BaseDbContext : IdentityDbContext<User>
     {
@@ -36,6 +37,17 @@ using HireMe.Entities.Models.Chart;
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Logs> Logs { get; set; }
         public DbSet<JobStats> JobStats { get; set; }
+        public DbSet<Stats> Stats { get; set; }
+        public DbSet<Tasks> Tasks { get; set; }
+        public DbSet<Files> Files { get; set; }
+
+        public DbSet<ContestantDetails> ContestantDetails { get; set; }
+
+        // Benchmark purpose
+        public DbSet<ContestantTest> ContestantTest { get; set; }
+        public DbSet<JobsTest> JobsTest { get; set; }
+        public DbSet<CompanyTest> CompanyTest { get; set; }
+
         /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,10 +59,10 @@ using HireMe.Entities.Models.Chart;
 
         }*/
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
-        }
+        }*/
     }
 
 }

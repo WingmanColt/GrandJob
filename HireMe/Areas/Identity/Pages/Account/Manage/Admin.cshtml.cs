@@ -52,35 +52,35 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             var catategoriesResult = await _categoriesService.SeedCategories();
 
             if(catategoriesResult.Success)    
-                await _notifyService.Create("Categories were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user);
+                await _notifyService.Create("Categories were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user.Id, null).ConfigureAwait(false);
             else
-                await _notifyService.Create($"{catategoriesResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user);
+                await _notifyService.Create($"{catategoriesResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user.Id, null).ConfigureAwait(false);
 
 
             // Locations seed
             var locationsResult = await _locationService.SeedLocation();
 
             if (locationsResult.Success)
-                await _notifyService.Create("Locations were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user);
+                await _notifyService.Create("Locations were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user.Id, null).ConfigureAwait(false);
             else
-                await _notifyService.Create($"{locationsResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user);
+                await _notifyService.Create($"{locationsResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user.Id, null).ConfigureAwait(false);
 
             // Languages seed
             var languagesResult = await _langService.SeedLanguages();
 
             if (languagesResult.Success)
-                await _notifyService.Create("Languages were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user);
+                await _notifyService.Create("Languages were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user.Id, null).ConfigureAwait(false);
             else
-                await _notifyService.Create($"{languagesResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user);
+                await _notifyService.Create($"{languagesResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user.Id, null).ConfigureAwait(false);
 
 
             // Skills seed
             var skillsResult = await _skillsService.SeedSkills();
 
             if (skillsResult.Success)
-                await _notifyService.Create("Skills were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user);
+                await _notifyService.Create("Skills were added succesfuly.", $"categories/index", DateTime.Now, NotifyType.Success, "flaticon-database", user.Id, null).ConfigureAwait(false);
             else
-                await _notifyService.Create($"{skillsResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user);
+                await _notifyService.Create($"{skillsResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user.Id, null).ConfigureAwait(false);
 
             if (!String.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);

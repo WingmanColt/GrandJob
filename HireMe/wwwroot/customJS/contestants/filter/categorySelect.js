@@ -27,7 +27,7 @@
         });
         $(".selectCategory").on("change", function () {
             var catId = $(this).val();
-            $("#selectLCategory_Value").val(catId);
+            $("#selectCategory_Value").val(catId);
 
 
             var textBoxValueData = $("#selectCategory_Value").val();

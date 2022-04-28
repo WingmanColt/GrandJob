@@ -1,11 +1,11 @@
 ﻿   $(document).ready(function () {
             $(".selectCompany").select2({
-                placeholder: "Всички",
+                placeholder: "Фирма",
                 allowClear: true,
                 theme: "bootstrap",
                 closeOnSelect: true,
                 maximumSelectionLength: 1,
-                minimumInputLength: 2,
+                minimumInputLength: 0,
                 multiple: false,
                 ajax: {
                     url: "/FeaturesApi/GetCompanies",

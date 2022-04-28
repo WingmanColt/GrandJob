@@ -80,7 +80,7 @@ namespace HireMe.Areas.Identity.Pages.Messenger
                 //user.LastConntactId = Message.ReceiverId;
                 return Redirect($"/Identity/Messenger/Index");
             }
-            else _baseService.ToastNotifyLog(user, ToastMessageState.Error, "Грешка", $"{result.FailureMessage}", Request.GetDisplayUrl(), 2000);
+            else _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Грешка", $"{result.FailureMessage}", Request.GetDisplayUrl(), 2000);
 
 
             return Page();

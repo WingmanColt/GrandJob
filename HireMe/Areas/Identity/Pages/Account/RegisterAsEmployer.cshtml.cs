@@ -56,20 +56,29 @@ namespace HireMe.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             [EmailUserUnique]
-            [Display(Name = "Email")]
+            [Display(Name = "Емайл")]
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(20, ErrorMessage = "{0}то трябва да е поне {2} и максимум {1} символи.", MinimumLength = 3)]
+            [Display(Name = "Име")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [StringLength(20, ErrorMessage = "{0}та трябва да е поне {2} и максимум {1} символи.", MinimumLength = 3)]
+            [Display(Name = "Фамилия")]
+            public string LastName { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "{0}та трябва да е поне {2} и максимум {1} символи.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Потвърди паролата")]
+            [Compare("Password", ErrorMessage = "Паролите не съвпадат.")]
             public string ConfirmPassword { get; set; }
-
         }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
@@ -104,7 +113,9 @@ namespace HireMe.Areas.Identity.Pages.Account
                     Role = Roles.Employer,
                     UserName = StringHelper.GetUntilOrEmpty(Input.Email, "@"),
                     Email = Input.Email,
-                    PictureName = null
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    PictureName = "200x200.jpg"
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -123,14 +134,13 @@ namespace HireMe.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
 
-                    await _senderService.SendEmailAsync(email,
-                    "Потвърди емайл адрес",
-                     $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Потвърждаване</a>.");
+
+                    await _senderService.SendEmailAsync(email,"Потвърди емайл адрес", callbackUrl);
 
                     await _userManager.RemoveFromRoleAsync(user, "User");
                     await _userManager.AddToRoleAsync(user, "Employer");
 
-                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/editprofile", DateTime.Now, NotifyType.Information, "fas fa-edit", user);
+                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/editprofile", DateTime.Now, NotifyType.Information, "fas fa-edit", user.Id, null).ConfigureAwait(false);
                     _baseService.ToastNotify(ToastMessageState.Alert, "Детайли", "Моля попълнете личните си данни, за да можете да регистрирате вашата фирма.", 9000);
                     _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "се регистрирахте. Благодарим ви за отделеното време !", 5000);
 

@@ -48,8 +48,7 @@ namespace HireMe.Areas.Identity.Pages.Account
             isEmployer = isemployer;
 
             await _sender.SendEmailAsync(email,
-            "Потвърди емайл адрес",
-            $"<a href='{HtmlEncoder.Default.Encode(returnUrl)}'>Потвърждаване</a>.");
+                "Потвърди емайл адрес", HtmlEncoder.Default.Encode(returnUrl));
 
             // Once you add a real email sender, you should remove this code that lets you confirm the account
             DisplayConfirmAccountLink = true;

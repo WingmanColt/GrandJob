@@ -1,7 +1,3 @@
-
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
-
-
 .register-wrapper {
     background: #f6f5f7;
     display: flex;
@@ -9,7 +5,7 @@
     align-items: center;
     flex-direction: column;
     font-family: 'Montserrat', sans-serif;
-    margin: -110px 0 50px;
+   /* margin: -110px 0 50px;*/
 }
 @media screen and (min-width: 992px) {
     .register-wrapper {
@@ -100,8 +96,8 @@
         position: relative;
         overflow: hidden;
         width: 768px;
-        max-width: 100%;
-        min-height: 480px;
+        max-width: 100%;  
+        min-height: 600px;
     }
 
     .register-wrapper .form-container {
@@ -249,7 +245,7 @@
         margin: 20px 0;
     }
 
-        .register-wrapper .social-container a {
+        .register-wrapper .social-container button {
             border: 1px solid #DDDDDD;
             border-radius: 50%;
             display: inline-flex;
@@ -259,3 +255,25 @@
             height: 40px;
             width: 40px;
         }
+
+
+.social-block {
+    display: block;
+    text-align: center;
+    font-weight: normal;
+    font-size: 0.8em;
+    padding-bottom:20px;
+}
+
+.facebook {
+    background-color: #49639F;
+    color: #f9f9f9;
+}
+.google {
+    background-color: #DF4A32;
+    color: #f9f9f9;
+}
+.linkedin {
+    background-color: #2196F3;
+    color: #f9f9f9;
+}

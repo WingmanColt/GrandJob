@@ -40,6 +40,11 @@
                    .ToAsyncEnumerable();
         }
 
+        public async Task<string> GetNameById(int categoryId)
+        {
+            var result = await GetByIdAsync(categoryId);
+            return result?.Title_BG?.Length > 0 ? result?.Title_BG : string.Empty;
+        }
         public IQueryable<Category> GetAllAsNoTracking()
         {
             return categoriesRepository.Set().AsNoTracking();
@@ -68,6 +73,12 @@
 
             var result = await categoriesRepository.SaveChangesAsync();
             return result;
+        }
+
+        public async Task<Category> GetByIdAsync(int id)
+        {
+            var ent = await categoriesRepository.Set().FirstOrDefaultAsync(j => j.Id == id);
+            return ent;
         }
     }
 }

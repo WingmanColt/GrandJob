@@ -23,17 +23,32 @@
 
                     <div class="form-group">
                         <label asp-for="Input.Email"></label>
-                        <input asp-for="Input.Email" class="form-control" autocomplete="on" />
+                        <input asp-for="Input.Email" class="form-control" autocomplete="on" required/>
+                        <i class="fas fa-at"></i>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="Input.Password"></label>
-                        <input asp-for="Input.Password" class="form-control" autocomplete="off" />
+                        <label asp-for="Input.FirstName"></label>
+                        <input asp-for="Input.FirstName" class="form-control" autocomplete="on" required/>
+                         <i class="fas fa-user"></i>
+                    </div>
+
+                   <div class="form-group">
+                        <label asp-for="Input.LastName"></label>
+                        <input asp-for="Input.LastName" class="form-control" autocomplete="on" required/>
+                         <i class="fas fa-user"></i>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Парола</label>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="off" required/>
+                        <i class="fas fa-key"></i>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="Input.ConfirmPassword"></label>
-                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="off" />
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="off" required/>
+                         <i class="fas fa-lock"></i>
                     </div>
 
                     <button type="submit" class="btn btn-success">Регистрация</button>
@@ -60,7 +75,7 @@
                             </form>
                         }
                     }
-                    <a href="#">GrandJob</a>
+                    <a asp-area="Identity" asp-page="/Account/Register">Влез в акаунта си</a>
                 </footer>
             </div>
         </div>

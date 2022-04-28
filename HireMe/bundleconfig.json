@@ -1,0 +1,638 @@
+[
+  {
+    "outputFileName": "wwwroot/customJS/companyForm.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/companyForm.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/Index.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/Index.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/Dashboard/ready.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/Dashboard/ready.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/Dashboard/themra.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/Dashboard/themra.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/azzara.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/azzara.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Jobs/Details.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Jobs/Details.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/fonts.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/fonts.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/filter/langSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/filter/langSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/filter/categorySelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/filter/categorySelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/filter/locationSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/filter/locationSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/filter/tagsSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/filter/tagsSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/filter/worktypeSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/filter/worktypeSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/filter/categorySelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/filter/categorySelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/filter/companySelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/filter/companySelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/filter/langSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/filter/langSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/filter/locationSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/filter/locationSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/filter/tagsSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/filter/tagsSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/filter/worktypeSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/filter/worktypeSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/company/autoComplate.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/company/autoComplate.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/autoComplate.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/autoComplate.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/create/companySelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/create/companySelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/create/langSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/create/langSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/create/tagsSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/create/tagsSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/jobs/create/worktypeSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/jobs/create/worktypeSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/bootstrap/bootstrap.min.css",
+    "inputFiles": [
+      "wwwroot/bootstrap/bootstrap.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/SearchResults.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/SearchResults.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/base.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/base.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/Dashboard/plugin/jquery.validate/jquery-validate.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/Dashboard/plugin/jquery.validate/jquery-validate.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/create/wizard_validation.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/create/wizard_validation.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Contestants/Create.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Contestants/Create.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/create/StepIndicator.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/create/StepIndicator.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/contestants/create/validationRules.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/contestants/create/validationRules.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Contestants/stepIndicator.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Contestants/stepIndicator.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/select2-theme.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/select2-theme.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/company/create/StepIndicator.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/company/create/StepIndicator.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/company/create/validationRules.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/company/create/validationRules.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Contestants/Details.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Contestants/Details.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/sidebarListing.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/sidebarListing.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/Listing.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/Listing.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/userCards.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/userCards.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/select2-theme.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/select2-theme.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/pagination.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/pagination.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/notifications.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/notifications.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/dropdownTheme.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/dropdownTheme.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/Rating.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/Rating.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/RatingShow.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/RatingShow.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/avatar.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/avatar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/quickSideBar.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/quickSideBar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Account/Login.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Account/Login.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Account/Register.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Account/Register.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/MobileNav.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/MobileNav.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/account/register/validationRules.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/account/register/validationRules.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/account/login/validationRules.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/account/login/validationRules.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/filterSideBar.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/filterSideBar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/pdfobject.min.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/pdfobject.min.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/pdfobject.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/pdfobject.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Countdown.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Countdown.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/Dashboard/plugin/dropzone/dropzone.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/Dashboard/plugin/dropzone/dropzone.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/dropzone.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/dropzone.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/rootLight.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/rootLight.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Login/loginPartial.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Login/loginPartial.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/boards.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/boards.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/aside.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/aside.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/SearchResults_2.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/SearchResults_2.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/gallery.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/gallery.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/bootstrap.min.css",
+    "inputFiles": [
+      "wwwroot/bootstrap.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Dashboard/plugins/Using/card-accordion.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Dashboard/plugins/Using/card-accordion.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Base/rootDark.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Base/rootDark.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/base.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/base.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/menu.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/menu.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/rootDark.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/rootDark.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/rootLight.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/rootLight.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/select2.min.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/select2.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/plugins/select2-theme.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/plugins/select2-theme.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/plugins/carousel.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/plugins/carousel.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/plugins/stepIndicator.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/plugins/stepIndicator.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customCSS/Company/Details.min.css",
+    "inputFiles": [
+      "wwwroot/customCSS/Company/Details.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/plugins/filterSideBar.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/plugins/filterSideBar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/plugins/Hexagon.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/plugins/Hexagon.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/master.min.js",
+    "inputFiles": [
+      "wwwroot/theme_ios/master.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_ios/svg.min.css",
+    "inputFiles": [
+      "wwwroot/theme_ios/svg.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/company/filter/locationSelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/company/filter/locationSelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/customJS/company/filter/categorySelect.min.js",
+    "inputFiles": [
+      "wwwroot/customJS/company/filter/categorySelect.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/style.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/style.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/responsive.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/responsive.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/animate.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/animate.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/chosen.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/chosen.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/flaticon.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/flaticon.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/fontawesome-all.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/fontawesome-all.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/icons.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/icons.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/jquery.fancybox.min.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/jquery.fancybox.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/line-awesome.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/line-awesome.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/mmenu.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/mmenu.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/owl.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/owl.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/appear.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/appear.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/jquery.fancybox.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/jquery.fancybox.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/jquery.countdown.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/jquery.countdown.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/jquery.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/jquery.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/knob.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/knob.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/mmenu.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/mmenu.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/mmenu.polyfills.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/mmenu.polyfills.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/owl.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/owl.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/wow.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/wow.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/js/script.min.js",
+    "inputFiles": [
+      "wwwroot/theme_superio/js/script.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/select2-theme2.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/select2-theme2.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/theme_superio/css/select2-theme.min.css",
+    "inputFiles": [
+      "wwwroot/theme_superio/css/select2-theme.css"
+    ]
+  }
+]

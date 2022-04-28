@@ -4,135 +4,236 @@
 @model EditProfileModel
 @{
     ViewData["Title"] = "Профил";
-    Layout = "Layouts/_EditProfile";
-
-    var user = await UserManager.GetUserAsync(User);
-
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 }
 
-<div class="content">
-    <div class="page-inner">
-        <div class="page-header">
-            <h4 class="page-title">@ViewData["Title"]</h4>
-            <ul class="breadcrumbs">
-                <li class="nav-home">
-                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
-                        <i class="flaticon-home"></i>
-                    </a>
-                </li>
-                <li class="separator">
-                    <i class="flaticon-right-arrow"></i>
-                </li>
-                <li class="nav-item">
-                    <a href="#">@ViewData["Title"]</a>
-                </li>
-            </ul>
-        </div>
+<style>
+    .facebook {
+        background-color: #49639F;
+        color: #fff;
+    }
+    .linkedin {
+        background-color: #49639F;
+        color: #fff;
+    }
+    .google {
+        background-color: #DF4A32;
+        color: #fff;
+    }
+</style>
 
+<!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+          <h3>Моят профил</h3>
+          <div class="text">Редактирайте личните си данни.</div>
+        </div>
 
         <div class="row">
-            <div class="col-md-12">
-                <div class="card">
+          <div class="col-lg-12">
 
-
-                    <div class="card-header">
-                        <div class="card-title">Лични данни</div>
-                        @if (!Model.IsEmailConfirmed)
-                        {
-                    <div class="card-category">
-                        
-                        <form asp-page-handler="SendVerificationEmail" method="post">
-                             <h3><i class="fas fa-info-circle" style="color:#ff0000"></i><strong> Вашият е-майл адрес не е потвърден.
-                            <br>Ако пощата ви е празна, моля кликнете тук:</strong> </h3>
-                            <button type="submit" class="btn btn-outline-primary btn-sm">
-                                <span class="link-collapse">към потвърждаване</span>
-                            </button>
-                        </form>
-
-                    </div>
-                        }
-                    </div>
-
-                    <form id="profile" method="post" enctype="multipart/form-data">
-                        <div class="card-body">
-                            <div asp-validation-summary="All" class="text-danger"></div>
-
-                            <div class="form-group form-show-validation row">
-                                <label asp-for="Input.FirstName" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
-                                <div class="col-lg-4 col-md-9 col-sm-8">
-                                    <input asp-for="Input.FirstName" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group form-show-validation row">
-                                <label asp-for="Input.LastName" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
-                                <div class="col-lg-4 col-md-9 col-sm-8">
-                                    <input asp-for="Input.LastName" class="form-control" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group form-show-validation row">
-                                <label asp-for="Input.Username" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
-                                <div class="col-lg-4 col-md-9 col-sm-8">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text" id="username-addon">@@</span>
-                                        </div>
-                                        <input asp-for="Input.Username" class="form-control" aria-label="username" aria-describedby="username-addon" id="username" required>
-                                    </div>
-                                    <small id="message" class="form-text text-muted text-danger"></small>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group row">
-                                <label asp-for="Input.Email" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
-                                <div class="col-lg-4 col-md-9 col-sm-8">
-                                    <input asp-for="Input.Email" class="form-control" disabled>
-                                    <small id="emailHelp" class="form-text text-muted">Вашият емайл не е публично достъпен.</small>
-                                </div>
-                            </div>
-
-                            <div class="separator-solid"></div>
-                            <div class="form-group form-show-validation row">
-                                <label asp-for="Input.Gender" class="col-lg-3 col-md-3 col-sm-4 mt-sm-2 text-right"></label><span class="required-label">*</span>
-                                <div class="col-lg-4 col-md-9 col-sm-8 d-flex align-items-center">
-                                    <select asp-for="Input.Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control" value="@user?.Gender"></select>
-                                </div>
-                            </div>
-
-                            <div class="separator-solid"></div>
-                            <div class="form-group row">
-
-                                
-                                <div class="offset-lg-3">
-                                    <div class="input-file input-file-image">
-                                        <img class="img-upload-preview img-circle" width="100" height="100" src="@Model.Input.Picture" alt="preview">
-                                        <input asp-for="Input.FormFile" type="file" class="form-control form-control-file">
-                                        <label asp-for="Input.FormFile" class="label-input-file btn btn-default btn-round">
-                                            <span class="btn-label">
-                                                <i class="fa fa-file-image"></i>
-                                            </span>
-                                            Прикачи снимка
-                                        </label>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            </div>
-                        <div class="card-action">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button class="btn btn-danger">Отказ</button>
-                                    <button id="btnCheck" type="button" value='Submit' onclick="CheckAvailability()" class="btn btn-success">Актулизирай</button>
-                                    <input type='submit' style='display: none;' />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Профилна снимка</h4>
                 </div>
+
+                <div class="widget-content">
+                  <form class="default-form" id="profile" method="post" enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl">
+                     <div asp-validation-summary="All" class="text-danger"></div>
+
+                  <div class="uploading-outer">
+                    <div class="uploadButton">
+                      <input class="uploadButton-input" asp-for="Input.FormFile" type="file" id="upload" />
+                      <label class="uploadButton-button ripple-effect" for="upload"> <img class="thumb lazyload" data-src="@Model.Input.Picture" alt="Избери"> </label>
+                      <span class="uploadButton-file-name"></span>
+                    </div>
+                    <div class="text">Максималният размер е 2MB, а форматът трябва да е jpg, jpeg или png</div>
+                  </div>
+
+                 
+                    <div class="row">
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.FirstName"></label><span class="label-required">*</span>
+                        <input type="text" asp-for="Input.FirstName" required>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                       <label asp-for="Input.LastName"></label><span class="label-required">*</span>
+                        <input type="text" asp-for="Input.LastName" required>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Email"></label><span class="label-required">*</span>
+                        <input type="text" asp-for="Input.Email" required>
+
+                          <small id="emailHelp">Вашият емайл не е публично достъпен.</small>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Username"></label>
+                        <input asp-for="Input.Username" class="form-control" aria-label="username" aria-describedby="username-addon" id="username" disabled>           
+                       <small id="message" class="form-text text-muted text-danger"></small>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                        <label asp-for="Input.Gender"></label>
+                          <select asp-for="Input.Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="chosen-select" value="@Model.UserEntity?.Gender"></select>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group">
+                        <button type="submit" class="theme-btn btn-style-four">Актулизирай</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
+
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Приложения</h4>
+                </div>
+
+                <div class="widget-content">
+                    <div class="row">
+
+                    @if (Model.CurrentLogins?.Count > 0 && Model.UserEntity.SignInSocialEnable)
+                        {
+    
+                                    @foreach (var login in Model.CurrentLogins)
+                                    {
+   
+                                                @if (Model.ShowRemoveButton)
+                                                {
+                                                    <form id="remove-login" asp-page-handler="RemoveLogin" method="post">
+                                                            <input asp-for="@login.LoginProvider" name="LoginProvider" type="hidden" />
+                                                            <input asp-for="@login.ProviderKey" name="ProviderKey" type="hidden" />
+
+
+                                                            <button type="submit" class="theme-btn btn-style-two @login.ProviderDisplayName.ToLower()" name="provider" title="премахни @login.LoginProvider от твоя акаунт">
+
+                                                                <i class="fab fa-@login.ProviderDisplayName.ToLower() fa-lg"></i>
+
+                                                                Премахни  @login.LoginProvider
+                                                            </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    @: &nbsp;
+                                                }
+      
+                                    }
+ 
+                        }
+                        @if (Model.OtherLogins?.Count > 0 && Model.UserEntity.SignInSocialEnable)
+                        {
+                            <form id="link-login-form" asp-page-handler="LinkLogin" method="post">
+                                <div id="socialLoginList">
+                                    <p>
+                                        @foreach (var provider in Model.OtherLogins)
+                                        {
+                                            <button type="submit" class="theme-btn btn-style-four @provider.DisplayName.ToLower()" name="provider">
+                                                <i class="fab fa-@provider.DisplayName.ToLower() fa-lg"></i>
+                                            </button>
+                                        }
+                                    </p>
+                                </div>
+                            </form>
+                        }
+                        @if (!Model.UserEntity.SignInSocialEnable)
+                        {
+                            <h1>Включете сега:  <a asp-controller="Account" asp-action="SignInSocialEnabling" asp-route-returnUrl="@Model.ReturnUrl" style="text-decoration:none; color:#00ff21;" title="Включване"><span class="fas fa-power-off" style="font-size:22px;"></span></a></h1>
+                        }
+                        
+                    </div>
+                </div>
+              </div>
+            </div>
+
+                        <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Лични данни</h4>
+              </div>
+
+                <div class="widget-content">
+                    <div class="row">
+                    <strong>Вашият акаунт съдържа лични данни, които сте ни дали. Тази страница ви позволява да изтеглите или изтриете тези данни.</strong>
+
+                     <strong style="color:red"> Изтриването на тези данни ще премахне за постоянно вашия акаунт и това не може да бъде възстановено.</strong>
+                     <br>
+                       <form asp-page="DownloadPersonalData" method="post" class="default-form">
+                        <div class="form-group col-lg-12 col-md-12">
+
+                            <button class="theme-btn btn-style-three" type="submit"><i class="fas fa-download"></i>  Изтегли</button>
+
+                            <a asp-area="Identity" asp-page="/Account/Manage/Delete" class="theme-btn btn-style-danger">
+                                    <i class="fas fa-trash-alt"></i>  Изтрий
+                            </a>
+                        </div>
+
+                    </form>
+
+                    </div>
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
         </div>
-    </div>
-</div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+
+
+
+    @section Scripts {
+    <script type="text/javascript">
+        function CheckAvailability() {
+            var $form = $("form#profile");
+
+            var username = $("#username").val();
+            console.log(username);
+            $.ajax({
+                url: '/UsersApi/isUsernameValid/',
+                type: "POST",
+                dataType: "json",
+                data: {
+                    term: username
+                },
+                success: function (response) {
+                    console.log(response);
+                    var message = $("#message");
+                    if (!response) {
+                        message.html("Моля опитайте с друго потребителско име !");
+                    } else {
+                        $form.submit();
+                    }
+                },
+                error: function (e) {
+                    
+                }
+
+            });
+        };
+
+        function ClearMessage() {
+            $("#message").html("");
+        };
+    </script>
+}

@@ -1,0 +1,50 @@
+﻿@page
+@model DeleteModel
+
+@{
+    ViewData["Title"] = "Изтриване на акаунт";
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+}
+
+
+ <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+
+        <!-- Ls widget -->
+        <div class="ls-widget">
+          <div class="widget-title">
+            <h4>Изтриване на акаунт</h4>
+          </div>
+
+          <div class="widget-content">
+               <strong class="text-danger">Сигурни ли сте, че искате да си изтриете акаунта ?</strong>
+               <br>
+            <form class="default-form" method="post">
+              <div class="row">
+
+              <div asp-validation-summary="All" class="text-danger"></div>
+
+                @if (Model.UserEntity?.isExternal == false)
+                 {
+                <!-- Input -->
+                <div class="form-group col-lg-7 col-md-12">
+                 <label asp-for="Input.Password"></label>
+                 <input asp-for="Input.Password" type="password" class="form-control" required>
+                </div>
+                 }
+
+                <!-- Input -->
+                <div class="form-group col-lg-6 col-md-12">
+                  <a asp-area="Identity" asp-page="/Account/Manage/Index" class="theme-btn btn-style-default">Отказ</a>
+                  <input class="theme-btn btn-style-danger" type="submit" value="Изтрийте данните и затворете акаунта ми.">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+
+

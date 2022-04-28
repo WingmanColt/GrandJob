@@ -1,48 +1,58 @@
-﻿@inject IJobsService JobsService
-@inject IContestantsService ContestantsService
+﻿@inject SignInManager<User> _signInManager
 
-@model IAsyncEnumerable<CategoriesViewModel>
+@model CategoriesViewModel
 
-@{
-    ViewData["Title"] = "Всички категории";
+@{ ViewData["Title"] = "Всички индустрии";
     ViewData["Description"] = "Търсете новата си работа по категориите изброени тук.";
     ViewData["Keywords"] = "categories, industry, категории, индустрия";
-    Layout = "Layout/_Index";
-}
+    Layout = "~/Views/Home/_PageLayout.cshtml"; }
 
-    <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-md-7 heading-section text-center">
-                <span class="subheading">Всички категории</span>
-                <h2 class="mb-0">Индустрия</h2>
+<link href="~/theme_ios/plugins/Hexagon.min.css" rel="stylesheet">
+<div class="wrapper">
+    <partial name="../Home/IOSPartials/_LeftSidePartial" />
+
+    <div class="main-container">
+
+        <div class="main-header desktop-only">
+            <div class="header-menu">
+                <a class="main-header-link" asp-controller="Home" asp-action="Index">Начало</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index" asp-route-Internship="intern">Стажове</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index">Работа</a>
+                <a class="main-header-link" asp-controller="Contestants" asp-action="Index">Хора</a>
             </div>
         </div>
-        <div class="row">
-            @{
-                @if (Model != null)
+
+
+        @if (_signInManager.IsSignedIn(User))
+        {
+            @await Component.InvokeAsync("_Activity")}
+    <div class="content-wrapper" style="padding:unset;">
+
+        <div class="grid">
+            <ul id="hexGrid">
+                @if (Model.List != null)
                 {
-                    await foreach (var item in Model)
+                    await foreach (var item in Model.List)
                     {
-                        <div class="col-md-3">
-                            <ul class="category text-center">
-                                <li>
-                                    <i class="text-letblue @item.Icon"></i>
-
-                                    @item.Title_BG<br>
-                                  @*  <a asp-controller="Home" asp-action="SearchJobsCategory" asp-route-categoryId="@item.Id" style="text-decoration: none;">
-                                        <span class="number">@await JobsService.GetAllCountByCondition(item.Id, -1, null, ApproveType.Success)</span> <span>Отворени позиции</span><br>
-                                    </a>
-                                    <a asp-controller="Home" asp-action="SearchContestantCategory" asp-route-categoryId="@item.Id" style="text-decoration: none;">
-                                        <span class="number">@await ContestantsService.GetAllCountByCondition(item.Id, null, ApproveType.Success)</span> <span>Кандидати</span>
-                                    </a>
-                                      *@
-                                    <i class="ion-ios-arrow-forward"></i>
-
-                                </li>
-                            </ul>
-                        </div>
-                        }
+            <li class="hex">
+                <div class="hexIn">
+                    <a class="hexLink" href="#">
+                        <div class='img' style='background-image: url(/theme_ios/assets/categories/svg/@item.Icon.Replace(item.Icon, $"{item.Icon.LastWord()}.svg"));'></div>
+                        <h1 id="demo1">@item.Title_BG</h1>
+                    </a>
+                </div>
+            </li>
                     }
                 }
-            </div>
+
+                            </ul>
+        </div>
+
+
+
     </div>
+        </div>
+    </div>
+
+
+

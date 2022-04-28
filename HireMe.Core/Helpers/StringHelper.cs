@@ -3,9 +3,13 @@
 using System;
     using System.Collections;
     using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
 
     public static class StringHelper 
     {
+        private static readonly char[] DefaultDelimeters = new char[] { ' ', ',', '.', '-', '\n', '\t', '/', '@', '_', '=', ')', '(', '*', '&', '^', '%', '$', '#', '!', '`', '~', '+' };
+
         public static string GetUntilOrEmpty(this string text, string stopAt)
         {
             if (!String.IsNullOrWhiteSpace(text))
@@ -49,7 +53,21 @@ using System;
                 return text; // Text is the first word itself.
             }
         }
-        //bool anyLuck = s.ContainsAny("a", "b", "c");
+        public static string LastWord(this string StringValue)
+        {
+            return LastWord(StringValue, DefaultDelimeters);
+        }
+
+        public static string LastWord(this string StringValue, char[] Delimeters)
+        {
+            int index = StringValue.LastIndexOfAny(Delimeters);
+
+            if (index > -1)
+                return StringValue.Substring(index);
+            else
+                return null;
+        }
+
         public static bool ContainsAny(this string haystack, IList needles)
         {
             foreach (string needle in needles)
@@ -79,7 +97,26 @@ using System;
 
             return text.Split(separator).Select(t => t.Trim()).ToArray();
         }
+        public static string Filter(this string str)
+        {
+            int index = str.IndexOf('@');
 
+            if (index >= 0)
+                str = str.Substring(0, index);
+            return str;
+            //   string res = String.Concat(str?.Trim(DefaultDelimeters)?.Split(' ', StringSplitOptions.RemoveEmptyEntries));/*.Split(DefaultDelimeters))*/;//Regex.Replace(firstWordOnly ? getFirstWord(str) : str, String.Concat(charsToRemove), String.Empty);
+            // return res;
+        }
+        public static string Filter2(this string str)
+        {
+            // for using str = str.GetUntilOrEmpty("@") 
+            string res = String.Concat(str?.Trim(DefaultDelimeters)?.Split(' ', StringSplitOptions.RemoveEmptyEntries));/*.Split(DefaultDelimeters))*/;//Regex.Replace(firstWordOnly ? getFirstWord(str) : str, String.Concat(charsToRemove), String.Empty);
+             return res;
+        }
+        //    public static string RemoveSpecialCharacters(string value)
+        //  {
+        //   return new String(value.ex(DefaultDelimeters).ToArray());
+        //  }
     }
 	
 }

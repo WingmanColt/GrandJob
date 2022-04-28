@@ -1,12 +1,21 @@
 ﻿using HireMe.Core.Helpers;
+using HireMe.Entities;
 using HireMe.Entities.Enums;
 using HireMe.Entities.Input;
 using HireMe.Entities.Models;
+using HireMe.Mapping.Utility;
 using HireMe.Services.Interfaces;
+using HireMe.ViewModels.Company;
+using HireMe.ViewModels.Favorites;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace HireMe.Controllers
@@ -14,116 +23,190 @@ namespace HireMe.Controllers
     public class CompanyController : BaseController
     {
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+
         private readonly ICompanyService _companyService;
         private readonly ILocationService _locationService;
         private readonly IBaseService _baseService;
+        private readonly IFavoritesService _favoriteService;
+
+        private readonly string _GalleryPath;
 
         public CompanyController(
-            IBaseService baseService,
+            IConfiguration config,
             UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            IBaseService baseService,
             ICompanyService companyService,
-            ILocationService locationService)
+            ILocationService locationService,
+            IFavoritesService favoriteService)
         {
-            _baseService = baseService;
             _userManager = userManager;
+            _signInManager = signInManager;
+            _baseService = baseService;
             _companyService = companyService;
             _locationService = locationService;
+            _favoriteService = favoriteService;
+
+            _GalleryPath = config.GetValue<string>("StoredGalleryPath");
         }
 
 
-        [Authorize(Roles = "Admin, Moderator, Employer")]
-        public async Task<IActionResult> Create()
+        [HttpPost]
+        public IActionResult Upload()
+        {
+            var data = Request.Form; //This is 
+            return View();
+        }
+
+        [HttpGet]
+        [Route("companies/all")]
+        public async Task<IActionResult> Index(int currentPage = 1)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
-            }
+            var viewModel = new CompanyViewModel();
 
-            if (user.AccountType == 0)
-            {
-                return Redirect("/Identity/Account/Manage/Pricing");
-            }
+            var entity = _companyService.GetAllAsNoTracking()
+                 .Where(x => (x.isApproved == ApproveType.Success) && x.isAuthentic_EIK)
+                 .Select(x => new Company
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Logo = x.Logo,
+                    LocationId = x.LocationId,
+                    RatingVotes = x.RatingVotes,
+                    Promotion = x.Promotion, 
+                    Rating = x.Rating,
+                    Date = x.Date,
+                    isInFavourites = _favoriteService.isInFavourite(user, PostType.Company, x.Id.ToString())
+                 });
 
-            if (!user.profileConfirmed)
+
+            if (await entity.AnyAsync()) // prevent 'SqlException: The offset specified in a OFFSET clause may not be negative.'
             {
-                _baseService.ToastNotify(ToastMessageState.Error, "Грешка", "Моля попълнете личните си данни преди да продължите.", 7000);
-                return Redirect("/Identity/Account/Manage/EditProfile");
+                int count = await entity.AsQueryable().AsNoTracking().CountAsync().ConfigureAwait(false);
+                viewModel.Pager = new Pager(count, currentPage);
+
+                var result = entity
+                .Skip((viewModel.Pager.CurrentPage - 1) * viewModel.Pager.PageSize)
+                .Take(viewModel.Pager.PageSize);
+
+                viewModel.Result = result.To<CompanyViewModel>().AsAsyncEnumerable();
             }
-            CreateCompanyInputModel viewModel = new CreateCompanyInputModel();
-            viewModel.AllLocations = _locationService.GetAllSelectList();
+            else viewModel.Result = null;
 
             return View(viewModel);
         }
 
+
         [HttpPost]
-        [Authorize(Roles = "Admin, Moderator, Employer")]
-        public async Task<IActionResult> Create(CreateCompanyInputModel Input)
+        [Route("companies/all")]
+        public async Task<IActionResult> Index(CompanyViewModel viewModel, Filter filter, int currentPage = 1)
+        {
+           // var viewModel = new CompanyViewModel();
+           /* {
+                AllLocations = _locationService.GetAllSelectList()
+            };*/
+
+            var entity = _companyService.GetAllAsNoTracking()
+                 .Where(x => (x.isApproved == ApproveType.Success) && x.isAuthentic_EIK)
+                /*.Select(x => new Company
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Logo = x.Logo,
+                    LocationId = x.LocationId,
+                    RatingVotes = x.RatingVotes,
+                    Promotion = x.Promotion,
+                    Adress = x.Adress,
+                    Email = x.Email,
+                    About = x.About,    
+                    GalleryImages = x.GalleryImages,    
+                    PhoneNumber = x.PhoneNumber,
+                    Website = x.Website,
+                    Linkdin = x.Linkdin,
+                    Twitter = x.Twitter,
+                    Facebook = x.Facebook,
+                    Rating = x.Rating
+                })*/;
+
+            if (!String.IsNullOrEmpty(filter.SearchString))
+            {
+                entity = entity.Where(x => x.Title.Contains(filter.SearchString));
+            }
+
+
+            if (!String.IsNullOrEmpty(filter.LocationId))
+            {
+                entity = entity.Where(s => s.LocationId.Equals(filter.LocationId));
+            }
+
+
+            /// !!!! fix after add category to firms !!!!! ///
+            if (filter.CategoryId > 0)
+            {
+                entity = entity.Where(s => s.LocationId.Equals(filter.CategoryId));
+            }
+
+            if (filter.SortBy?.Capacity > 0)
+            {
+                foreach (var item in filter.SortBy)
+                {
+                    if (item.IsChecked)
+                    {
+                        switch (item.Key)
+                        {
+                            case 1:
+                                entity = entity.OrderByDescending(x => x.RatingVotes);
+                                break;
+                            case 2:
+                                entity = entity.OrderBy(x => x.Date);
+                                break;
+                            case 3:
+                                entity = entity.OrderByDescending(x => x.Date);
+                                break;
+                            case 4:
+                                entity = entity.OrderBy(x => x.Date);
+                                break;
+                        }
+                    }
+                }
+            }
+            if (await entity.AnyAsync()) // prevent 'SqlException: The offset specified in a OFFSET clause may not be negative.'
+            {
+                int count = await entity.AsQueryable().AsNoTracking().CountAsync().ConfigureAwait(true);
+                viewModel.Pager = new Pager(count, currentPage);
+
+                var result = entity
+                .Skip((viewModel.Pager.CurrentPage - 1) * viewModel.Pager.PageSize)
+                .Take(viewModel.Pager.PageSize);
+
+                viewModel.Result = result.To<CompanyViewModel>().AsAsyncEnumerable();
+            }
+            else viewModel.Result = null;
+
+            return View(viewModel);
+        }
+
+
+        [AllowAnonymous]
+        [Route("companies/info/{id}")]
+        public async Task<IActionResult> Details(int id, [FromServices] IJobsService _jobsService, [FromServices] ICategoriesService _categoryService, [FromServices] IFavoritesService _favouriteService)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if (user == null)
-            {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
-            }
-
-
-            if (!ModelState.IsValid)
-            {
-                Input.AllLocations = _locationService.GetAllSelectList();
-                return View(Input);
-            }
-
-
-            if (Input.FormFile != null)
-                Input.Logo = await _baseService.UploadImageAsync(Input.FormFile, null, user);
-
-            if (Input.Admin1_Id != null)
-            {
-                var recruiterUser_1 = await _userManager.FindByNameAsync(Input.Admin1_Id);
-                await _userManager.AddToRoleAsync(recruiterUser_1, "Recruiter");
-
-                recruiterUser_1.Role = Roles.Recruiter;
-            }
-
-            if (Input.Admin2_Id != null)
-            {
-                var recruiterUser_2 = await _userManager.FindByNameAsync(Input.Admin2_Id);
-                await _userManager.AddToRoleAsync(recruiterUser_2, "Recruiter");
-
-                recruiterUser_2.Role = Roles.Recruiter;
-            }
-
-            if (Input.Admin3_Id != null)
-            {
-                var recruiterUser_3 = await _userManager.FindByNameAsync(Input.Admin3_Id);
-                await _userManager.AddToRoleAsync(recruiterUser_3, "Recruiter");
-
-                recruiterUser_3.Role = Roles.Recruiter;
-            }
-
-            var result = await _companyService.Create(Input, true, user);
-
-
-            if (result.Success)
-            {
-                _baseService.ToastNotify(ToastMessageState.Warning, "Внимание", "Моля изчакайте заявката ви да се прегледа от администратор.", 7000);
-                _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Фирмата ви е добавена.", 5000);
-                return Redirect($"/identity/companies/index");
-            }
-
-            return View(Input);
-        }
-
-        [AllowAnonymous]
-        public async Task<IActionResult> Details(int id)
-        {
             var company = await _companyService.GetByIdAsyncMapped(id);
-
-            if (company == null)
+            if (company is null)
             {
-                return RedirectToAction("NotFound", "Home");
+                return RedirectToAction("Index", "Company");
             }
+
+            company.JobsByCompany = _jobsService.GetAllByEntity(company.Id, true, 3, _favouriteService, user);
+            company.JobsCount = await _jobsService.GetAllCountBy(company.Id, true).ConfigureAwait(false);
+            company.GalleryImagesList = company.GalleryImages?.Split(',').ToAsyncEnumerable();
+            company.GalleryPath = Path.Combine(_GalleryPath, StringHelper.Filter(company.Email));
+            company.CategoryName = await _categoryService.GetNameById(company.CategoryId);
+
             return this.View(company);
         }
 
@@ -145,38 +228,31 @@ namespace HireMe.Controllers
             var result = await this._baseService.Approve(id, PostType.Company, T);
 
             if (result.Success)
-            {
-                var PosterId = await _userManager.FindByIdAsync(company.PosterId);
-
-                if (!(PosterId is null))
-                {
-                    
+            {                 
                     switch (T)
                     {
                         case ApproveType.Waiting:
-                            await _notifyService.Create("Моля редактирайте вашата фирма отново с коректни данни.", "identity/companies/index", DateTime.Now, NotifyType.Warning, "fas fa-sync-alt", PosterId);
-                            break;
+                            await _notifyService.Create("Моля редактирайте вашата фирма отново с коректни данни.", "identity/companies/index", DateTime.Now, NotifyType.Warning, "fas fa-sync-alt", company.PosterId, user.Id).ConfigureAwait(false);
+                        break;
                         case ApproveType.Rejected:
-                            await _notifyService.Create("Последно добавената ви фирма е отхвърлена.", "identity/companies/index", DateTime.Now, NotifyType.Danger, "fas fa-ban", PosterId);
-                            break;
+                            await _notifyService.Create("Последно добавената ви фирма е отхвърлена.", "identity/companies/index", DateTime.Now, NotifyType.Danger, "fas fa-ban", company.PosterId, user.Id).ConfigureAwait(false);
+                        break;
                         case ApproveType.Success:
-                            await _notifyService.Create("Последно добавената ви фирма е одобрена.", "identity/companies/index", DateTime.Now, NotifyType.Information, "fas fa-check", PosterId);
-                            break;
-                    }
-                   
-                }
-                if (!String.IsNullOrEmpty(returnUrl))
-                    return Redirect(returnUrl);
-                else
-                    RedirectToPage("/Identity/Companies", new { Area = "Identity" });
+                            await _notifyService.Create("Последно добавената ви фирма е одобрена.", "identity/companies/index", DateTime.Now, NotifyType.Information, "fas fa-check", company.PosterId, user.Id).ConfigureAwait(false);
+                        break;
+                    }   
             }
 
-            return View();
+            if (!String.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToPage("/Identity/List/Companies", new { Area = "Identity" });
         }
 
 
         [Authorize]
-        public async Task<ActionResult> UpdateFavourite(int id, string returnUrl, [FromServices] IFavoritesService _favoriteService)
+        [HttpPost]
+        public async Task<ActionResult<FavoritesViewModel>> UpdateFavourite(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -184,15 +260,22 @@ namespace HireMe.Controllers
                 return Redirect("/Identity/Account/Errors/AccessDenied");
             }
 
-            if (!(await _favoriteService.isInFavourite(user, PostType.Company, id)))
-                await _favoriteService.AddToFavourite(user, PostType.Company, id.ToString());
-            else
-                await _favoriteService.RemoveFromFavourite(user, PostType.Company, id.ToString());
+            var entity = await _companyService.GetByIdAsync(id);
+            if (entity == null)
+            {
+                return RedirectToAction("NotFound", "Home");
+            }
 
-            if (!String.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-            else
-                return RedirectToAction("Index", "Home");
+            var existed = await _favoriteService.UpdateFavourite(user, PostType.Company, id.ToString()).ConfigureAwait(false);
+
+            var model = new FavoritesViewModel()
+            {
+                JobCount = await _favoriteService.GetFavouriteByCount(user, PostType.All).ConfigureAwait(false),
+                Company = entity,
+                isExisted = existed
+            };
+
+            return model;
         }
         [HttpPost]
         [Produces("application/json")]

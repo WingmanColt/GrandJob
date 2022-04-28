@@ -1,0 +1,42 @@
+:root {
+    --theme-bg-color: #000000; /* hsla(0, 0%, 18%, 1);*/
+    --theme-bg-color-darker: rgba(16, 18, 27, 0.9);
+    --filter-bg-color: rgb(0, 0, 0);
+    --border-color: rgba(113, 119, 144, 0.25);
+    --theme-color: #f9fafb;
+    --theme-color-darker: #c3c5c9;
+    --logo-color: rgba(246, 247, 249, 0.69);
+    --step-line-color: rgba(246, 247, 249, 0.26);
+    --inactive-color: #FFF;
+    --body-font: "Poppins", sans-serif;
+    --hover-menu-bg: rgba(12, 15, 25, 0.3);
+    --content-title-color: #999ba5;
+    --content-bg: rgba(146, 151, 179, 0.13);
+    --button-inactive: rgba(249, 250, 251, 0.55);
+    --dropdown-bg: #21242d;
+    --dropdown-hover: #2a2e3c;
+    --popup-bg: #161925;
+    --search-bg: #14162b;
+    --alert-bg-color: #292932;
+    --subtitle-color: #C6C6CA;
+    --button-color: #fff;
+    --active-color: #0162ff;
+    --overlay-bg: rgba(36, 39, 59, 0.3);
+    --scrollbar-bg: rgba(1, 2, 3, 0.4);
+    --theme-main-color: rgba(246, 247, 249, 0.26);
+    --theme-main-shadow-color: rgba(0, 123, 255, 0.25);
+    --app-card-image: transperant; /* rgba(146, 151, 179, 0.13);*/
+    --app-card-bg-color: rgba(31, 31, 35, 0.8); /* rgba(146, 151, 179, 0.13);*/
+    --content-wrapper-color: #0000003b;
+    scrollbar-face-color: var(--scrollbar-bg); /* Firefox 63 compatibility */
+    scrollbar-track-color: transparent; /* Firefox 63 compatibility */
+    scrollbar-color: rgba(1, 2, 3, 0.4) transparent;
+    scrollbar-width: thin;
+    --stepindicator-bg: rgba(0, 0, 0, 0.3);
+    --ad-wrapper-color: url("https://www.transparenttextures.com/patterns/carbon-fibre.png"), linear-gradient(to right top, #cf4af3, #e73bd7, #f631bc, #fd31a2, #ff3a8b, #ff4b78, #ff5e68, #ff705c, #ff8c51, #ffaa49, #ffc848, #ffe652); /*linear-gradient(to right top, #4acbf3b0, #23058c, #000, #000, #ffa7001c, #000, #fff0, #080808c4, #f26b6b30, #222121cf, #9317ad8c, #ed34bfe3);*/
+    --category-child-bg: rgba(255, 255, 255, 0.11);
+    --header-BGcolor: #1c1b1b;
+    --mainHeader-BGcolor: #3e3e3e;
+    --header-font-color: #f9fafb;
+    --header-font-color-hover: #babbbbe8;
+}

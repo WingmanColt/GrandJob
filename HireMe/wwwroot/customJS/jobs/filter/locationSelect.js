@@ -1,12 +1,12 @@
 ﻿   $(document).ready(function () {
             $(".selectLocation").select2({
-                placeholder: "Всички",
+                placeholder: "Къде",
                 allowClear: false,
                 theme: "bootstrap",
                 closeOnSelect: true,
                 maximumSelectionLength: 1,
-                minimumInputLength: 1,
-                multiple: true,
+                minimumInputLength: 0,
+                multiple: false,
                 ajax: {
                     url: "/FeaturesApi/GetLocations",
                     dataType: 'json',

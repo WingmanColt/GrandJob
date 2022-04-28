@@ -5,7 +5,6 @@ using HireMe.Core.Helpers;
 using HireMe.Entities.Input;
 using HireMe.Entities.Models.Chart;
 using System.Linq;
-using HireMe.Mapping.Utility;
 using Microsoft.EntityFrameworkCore;
 
 namespace HireMe.Services
@@ -13,47 +12,42 @@ namespace HireMe.Services
 
     public class StatisticsService : IStatisticsService
     {
-        private readonly IRepository<JobStats> jobsStatsRepository;
-        private readonly IDelayedTask _task;
+        private readonly IRepository<Stats> StatsRepository;
 
-        public StatisticsService(IRepository<JobStats> jobsStatsRepository, IDelayedTask task)
+        public StatisticsService(IRepository<Stats> StatsRepository)
         {
-            this.jobsStatsRepository = jobsStatsRepository;
-            _task = task;
+            this.StatsRepository = StatsRepository;
         }
 
-        
 
-        public async Task<OperationResult> Update(JobStatsInputModel viewModel)
+
+        public async Task<OperationResult> Update(StatsInputModel viewModel)
         {
-            JobStats Entity = await jobsStatsRepository.GetByIdAsync(viewModel.Id);
+            Stats Entity = await StatsRepository.GetByIdAsync(viewModel.EntityId);
 
-            if(Entity is null)
+            if (Entity is null)
             {
-                Entity = new JobStats();
+                Entity = new Stats();
                 Entity.Update(viewModel);
-                await jobsStatsRepository.AddAsync(Entity);
-            } else {
+                await StatsRepository.AddAsync(Entity);
+            }
+            else
+            {
                 Entity.Update(viewModel);
-                jobsStatsRepository.Update(Entity);
+                StatsRepository.Update(Entity);
             }
 
-            var result = await jobsStatsRepository.SaveChangesAsync();
+            var result = await StatsRepository.SaveChangesAsync();
             return result;
         }
 
-        public IQueryable<JobStatsInputModel> GetAllTrackingMapped()
+        public IQueryable<Stats> GetAllAsNoTracking(string id)
         {
-            return jobsStatsRepository.Set().To<JobStatsInputModel>();
+            return StatsRepository.Set().Where(p => p.PosterId == id).AsNoTracking();
         }
-        public IQueryable<JobStatsInputModel> GetAllAsNoTrackingMapped()
+        public async Task<Stats> GetByIdAsync(string id)
         {
-            return jobsStatsRepository.Set().AsNoTracking().To<JobStatsInputModel>();
-        }
-        public async ValueTask<T> GetByIdAsync<T>(int id)
-        {
-            var ent = await jobsStatsRepository.Set().Where(p => p.EntityId == id).To<T>().FirstOrDefaultAsync();
-
+            var ent = await StatsRepository.Set().Where(p => p.PosterId == id).FirstOrDefaultAsync();
             return ent;
         }
 

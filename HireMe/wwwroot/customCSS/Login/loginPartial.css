@@ -1,8 +1,10 @@
 ﻿body {
-  font-family: "Open Sans", sans-serif;
-  height: 100vh;
-  background: url("https://i.imgur.com/HgflTDf.jpg") 100% fixed;
-  background-size: cover; 
+    font-family: "Open Sans", sans-serif;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    /*background: url("https://i.imgur.com/HgflTDf.jpg") 100% fixed;
+  background-size: cover; */
 }
 
 @keyframes spinner {
@@ -57,22 +59,24 @@
     transition: border-width 0.2s ease;
     border-radius: 2px;
     color: #ccc; }
-    .login input + i.fa {
-      color: #fff;
-      font-size: 1em;
-      position: absolute;
-      margin-top: -47px;
-      opacity: 0;
-      left: 0;
-      transition: all 0.1s ease-in; }
+    .login input + i {
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1em;
+        position: absolute;
+        left: 0;
+        opacity: 0;
+        transition: all 0.1s ease-in;
+        /*margin-left: -17px;*/
+        margin-top: -36px;
+    }
     .login input:focus {
       outline: none;
       color: #444;
       border-color: #2196F3;
       border-left-width: 35px; }
-      .login input:focus + i.fa {
+      .login input:focus + i {
         opacity: 1;
-        left: 30px;
+        left: 40px;
         transition: all 0.25s ease-out; }
   .login a {
     font-size: 0.8em;
@@ -169,5 +173,9 @@ footer {
 
 .google {
     background-color: #DF4A32;
+    color: #f9f9f9;
+}
+.linkedin {
+    background-color: #2196F3;
     color: #f9f9f9;
 }

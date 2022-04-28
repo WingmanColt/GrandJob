@@ -3,6 +3,7 @@ using HireMe.Entities.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,10 +12,12 @@ namespace HireMe.Controllers.Api
 {
     public class MessageApiController : BaseController
     {
+        private readonly IConfiguration _config;
         private readonly BaseDbContext _contextBase;
 
-        public MessageApiController(BaseDbContext contextBase)
+        public MessageApiController(IConfiguration config, BaseDbContext contextBase)
         {
+            _config = config;
             _contextBase = contextBase ?? throw new ArgumentNullException(nameof(contextBase));
         }
 
@@ -29,8 +32,8 @@ namespace HireMe.Controllers.Api
                    id = x.UserName,
                    firstname = x.FirstName,
                    lastname = x.LastName,
-                   picture = x.PictureName
-                   })
+                   picture = x.PictureName.Contains("https://") ? x.PictureName : _config.GetSection("MySettings").GetSection("UserPicturePath").Value + x.PictureName
+                })
                 
                 .ToListAsync();
 
@@ -51,9 +54,8 @@ namespace HireMe.Controllers.Api
                     id = x.UserName,
                     firstname = x.FirstName,
                     lastname = x.LastName,
-                    picture = x.PictureName
+                    picture = x.PictureName.Contains("https://") ? x.PictureName : _config.GetSection("MySettings").GetSection("UserPicturePath").Value + x.PictureName 
                 })
-
                 .ToListAsync();
 
             return Json(allowedUsers);

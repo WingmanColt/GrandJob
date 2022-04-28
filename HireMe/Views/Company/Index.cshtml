@@ -1,0 +1,114 @@
+﻿@inject IConfiguration config
+@model CompanyViewModel
+@{
+    ViewData["Title"] = "Фирми";
+    ViewData["Description"] = "Търсете най-подходящите фирми от GrandJob. Разгледайте нашата база данни и намерете подходящите обяви за работа.";
+    ViewData["Keywords"] = "company, фирми, добави, фирма, работа";
+
+    Layout = "Layout/_Index";
+
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
+    var startDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+}
+
+    <!--Page Title-->
+    <section class="page-title">
+      <div class="auto-container">
+           @await Component.InvokeAsync("_FilterCompanies")
+      </div>
+    </section>
+
+
+    <!--End Page Title-->
+     <!-- Listing Section -->
+    <section class="ls-section">
+      <div class="auto-container">
+        <div class="filters-backdrop"></div>
+
+        <div class="row">
+
+          <!-- Content Column -->
+          <div class="content-column col-lg-8 col-md-12 col-sm-12">
+            <div class="ls-outer">
+              <button type="button" class="theme-btn btn-style-two toggle-filters">Show Filters</button>
+              @if (Model.Result is not null)
+                    {
+                        <!-- ls Switcher -->
+                        <div class="ls-switcher">
+                            <div class="showing-result">
+                            <div class="text">Показани са <strong>@Model.Pager.PageSize</strong> от <strong>@Model.Pager.TotalItems</strong> обяви</div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+
+                            @await foreach (var item in Model.Result)
+                            {
+                                <!-- Company Block Four -->
+                                <div class="company-block-four col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                                    <div class="inner-box">
+
+                       @{string iconType = @item.isInFavourites ? "las" : "lar";}
+                      <button type="button" value='Submit' onclick="CheckAvailabilityCompany(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                        <i class="@iconType la-heart" id="@item.Id-heartIcon"></i>
+                      </button>
+
+                                        @if (item.Promotion > 0)
+                                        {
+                                            <span class="featured">Препоръчано</span>
+                                        }
+
+                                        @if (item.Date.IsBetween(startDate, DateTime.Today))
+                                        {
+                                            <span class="featured" style="background-color: #ed7d7da1; color: #f90000">НОВО</span>
+                                        }
+
+                                        <span class="company-logo"><img data-src="@SiteImageUrl@item.Logo" class="lazyload" alt=""></span>
+                                        <h4><a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id">@item.Title</a></h4>
+                                        <ul class="job-info">
+                                            <li><span class="icon flaticon-map-locator"></span> @item.LocationId</li>
+                                            <li>        
+                                                <div class="star-rating">
+                                                    <span class="fa fa-star" data-rating="1"></span>
+                                                    <span class="fa fa-star" data-rating="2"></span>
+                                                    <span class="fa fa-star" data-rating="3"></span>
+                                                    <span class="fa fa-star" data-rating="4"></span>
+                                                    <span class="fa fa-star" data-rating="5"></span>
+                                                    <input type="hidden" name="whatever1" class="rating-value" value="@item.Rating">
+                                                </div>
+                                            </li>
+                                          
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="ls-show-more">
+                            <p>Страница @Model.Pager.CurrentPage от @Model.Pager.TotalPages страници</p>
+                            @*<div class="bar"><span class="bar-inner" style="width: 40%"></span></div>*@
+
+                            @{
+                                await Html.RenderPartialAsync("../Partials/_PaginationPartial", Model.Pager);
+                            }
+                        </div>
+                    } else
+                    {
+                        <!-- ls Switcher -->
+                        <div class="ls-switcher">
+                            <div class="showing-result" style="margin-left: 10%">
+                                <h2>Няма намерени фирми по избраните от вас критерии.</h2>
+                            </div>
+                        </div>
+                    }
+                </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--End Listing Page Section -->
+
+       

@@ -8,8 +8,12 @@
 
     public interface IResumeService
     {
-        Task<OperationResult> Create(string title, string fileid, User user);
-        Task<OperationResult> Delete(int iD);
+        Task<OperationResult> Create(string title, string fileid, int jobId, User user);
+        Task<int> CreateAsGuest(string title, string fileid, string email, int jobId, string jobTitle);
+        Task<int> CreateFast(string title, string fileid, int jobId, string lastAppliedJob, User user);
+
+        Task<OperationResult> Update(int id, string lastAppliedJob);
+        Task<OperationResult> Delete(Resume entity);
         Task<OperationResult> DeleteAllBy(User user);
 
         IAsyncEnumerable<Resume> GetAllBy(User user);
@@ -17,6 +21,7 @@
 
         IQueryable<Resume> GetAllAsNoTracking();
 
+        Task<bool> AddRating(Resume entity, double rating);
         Task<Resume> GetByIdAsync(int id);
         Task<int> GetFilesByUserCount(string userId);
 

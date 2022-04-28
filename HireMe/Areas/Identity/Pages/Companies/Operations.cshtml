@@ -1,0 +1,302 @@
+﻿@page "{id:int?}"
+@model OperationsModel
+@{
+    ViewData["Title"] = "Фирма";
+    Layout = "Layout/_Edit";
+}
+
+<!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+            @if(@Model.Input?.Title.Length > 0)
+            {
+          <h3>@Model.Input?.Title</h3>
+          <div class="text">Редактиране</div>
+            } 
+            else
+            {
+          <h3>Кадидатури</h3>
+          <div class="text">Добавяне</div>
+            }
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+           <form class="default-form" method="post" enctype="multipart/form-data">
+
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Основна информация</h4>
+
+                    <div class="desktop-only">
+                        <a href="@Model.ReturnUrl" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="fa fa-times" aria-hidden="true"></i></a>
+                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="fa fa-check"></i></button> 
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                     <div asp-validation-summary="All" class="text-danger"></div>
+
+                  <div class="uploading-outer">
+                    <div class="uploadButton">
+                      <input class="uploadButton-input" asp-for="Input.FormFile" type="file" id="upload" />
+                      <label class="uploadButton-button ripple-effect" for="upload"> <img class="thumb lazyload" data-src="@Model.Input.PictureFullPath" alt="Избери"> </label>
+                      <span class="uploadButton-file-name"></span>
+                    </div>
+
+                    <div class="text">Максималният размер е 2MB, а форматът трябва да е jpg, jpeg или png</div>
+                  </div>
+                   
+                 
+                    <div class="row">
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Title"></label><span class="label-required">*</span>
+                        <input type="text" asp-for="Input.Title" required>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                       <label asp-for="Input.Email"></label><span class="label-required">*</span>
+                        <input type="text" asp-for="Input.Email" required>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.PhoneNumber"></label>
+                        <input type="text" asp-for="Input.PhoneNumber" required>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Adress"></label><span class="label-required">*</span>
+                        <input type="text" asp-for="Input.Adress" required>
+
+                      </div>
+
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                        <label asp-for="Input.LocationId"></label>
+                        <select asp-for="Input.LocationId">
+                        @if (Model.AllLocations is not null)
+                         {
+                          @await foreach (var item in Model.AllLocations)
+                           {
+                             <option value="@item?.Value">@item?.Text</option>
+                           }
+                         }
+                        </select>
+                      </div>
+
+                      <!-- Input -->
+                      <div class="form-group col-lg-3 col-md-12">
+                        <label asp-for="Input.CategoryId"></label>
+                        <select class="chosen-select" asp-for="Input.CategoryId">
+                        @if (Model.AllCategories is not null)
+                         {
+                          @await foreach (var item in Model.AllCategories)
+                           {
+                             <option value="@item?.Value">@item?.Text</option>
+                           }
+                         }
+                        </select>
+                      </div>
+                        <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.About"></label>
+                        <input asp-for="Input.About" required>           
+                      </div>
+                      <hr>
+                     <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <input asp-for="Input.Private">     
+                        <label>Частна фирма</label>
+                      </div>
+                    </div>
+                  
+                </div>
+                
+              </div>
+            </div>
+                <hr>
+
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Социална мрежа</h4>
+                </div>
+                <div class="widget-content">   
+                      <div class="row">
+                      <!-- Input -->
+                      <div class="form-group col-lg-4 col-md-12">
+                        <label asp-for="Input.Website"></label>
+                         <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fa fa-globe" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input type="text" asp-for="Input.Website" placeholder="Личен сайт">
+                      </div>
+                      </div>
+
+                       <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Facebook"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-facebook-square" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Facebook" aria-label="https://facebook.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+
+                       <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Linkdin"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-linkedin-in" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Linkdin" aria-label="https://linkdin.com/in/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+
+                       <!-- Input -->
+                      <div class="form-group col-lg-2 col-md-12">
+                      <label asp-for="Input.Twitter"></label>
+                       <div class="input-group" style="flex-wrap: unset;">
+                         <div class="input-group-prepend">
+                            <a class="btn label-info" rel="publisher" href="#">
+                              <i class="fab fa-twitter" style="font-size:30px"></i>
+                             </a>
+                         </div>
+                        <input asp-for="Input.Twitter" aria-label="https://twitter.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
+                        </div>           
+                      </div>
+
+                    </div>
+            </div>        
+                  
+                </div>
+              </div>
+
+           <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4><i class="label-info fas fa-info-circle"></i> Регистрирани хора от персонала ви</h4>
+                </div>
+                 <div class="widget-content">  
+                  <strong>Ако искате конкретни лица да могат да управляват обявите ви за работа.</strong>
+                  <div class="text">- Моля въведете техните емайл адреси, задължително е да имат регистрация в нашата система.</div>
+                  <a href="#">Прочети повече тук !</a>
+                  <br>
+                    <div class="row">
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Admin1_Id"></label>
+                        <input asp-for="Input.Admin1_Id" onclick="complate('#AutoComplete')" class="form-control" id="AutoComplete" name="AutoComplete" autocomplete="off" />
+                        <input asp-for="Input.Admin1_Id" type="hidden" onclick="complate('#AutoComplete')" id="AutoCompleteHidden" autocomplete="off" />
+                      </div>
+                   </div>
+                   <div class="row">
+                        <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Admin2_Id"></label>
+                        <input asp-for="Input.Admin2_Id" onclick="complate('#AutoComplete2')" class="form-control" id="AutoComplete2" name="AutoComplete" autocomplete="off" />
+                        <input asp-for="Input.Admin2_Id" type="hidden" onclick="complate('#AutoComplete2')" id="AutoComplete2Hidden" autocomplete="off" />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <!-- Input -->
+                      <div class="form-group col-lg-6 col-md-12">
+                        <label asp-for="Input.Admin3_Id"></label>
+                        <input asp-for="Input.Admin3_Id" onclick="complate('#AutoComplete3')" class="form-control" id="AutoComplete3" name="AutoComplete3" autocomplete="off" />
+                        <input asp-for="Input.Admin3_Id" type="hidden" onclick="complate('#AutoComplete3')" id="AutoComplete3Hidden" autocomplete="off" />
+                      </div>
+                    </div>
+
+                    </div>
+                  
+                </div>
+              </div>
+
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Галерия</h4>
+                </div>
+
+                <div class="widget-content">
+
+                    <div class="uploading-outer">
+                    @*<div class="uploadButton">
+                      <input class="uploadButton-input" asp-for="Input.files" type="file" id="upload-gallery" multiple />
+                      <label class="uploadButton-button ripple-effect" for="upload"> <img class="thumb lazyload" data-src="@Model.Input?.Logo" alt="Избери"> </label>
+                      <span class="uploadButton-file-name"></span>
+                    </div>*@
+
+                     <div class="dropzone dz-clickable">
+                       <div class="dz-message" data-dz-message="">
+                       <h4 class="message">Плъзни файловете си тук</h4>
+                        <div class="text">Можете да прикачите няколко снимки едновременно, максимален размер <strong>3MB</strong>, <strong>6</strong> бройки.</div>
+
+                         <br>
+                         <input asp-for="Input.files" type="file" multiple />
+
+                         </div>
+
+                         </div>
+
+                  </div>
+
+            @if (Model.Input.MyGalleryImages is not null)
+            {
+          <div class="carousel-outer wow fadeInUp">
+
+          <div class="companies-carousel owl-carousel owl-theme default-dots">
+                                @await foreach (var item in Model.Input.MyGalleryImages)
+                                {
+                                     <div class="company-block">
+                                        <figure class="image" style="width:unset; height:unset; border-radius:unset;">
+                                            <a href="@Model.Input.GalleryFullPath\@item" class="lightbox-image" data-fancybox="gallery">
+                                                <img class="bordered lazyload" data-src="@Model.Input.GalleryFullPath\@item" alt="">
+                                            </a>
+                                        </figure>
+                                        </div>
+                                }
+                            </div>
+                            </div>
+                    }
+
+                  </div>
+                  
+                      <!-- Input -->
+
+                  <div class="row mobile-only">
+                       <div class="form-group col-lg-6 col-md-12">
+                       <a href="@Model.ReturnUrl" class="theme-btn btn-style-default"><i class="fa fa-times" aria-hidden="true"></i> Затвори</a>
+                       <button type="submit" class="theme-btn btn-style-four"><i class="fa fa-check"></i> Запази</button> 
+                       </div>
+
+                   </div>
+                  </div>
+                  </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->

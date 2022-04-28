@@ -1,19 +1,19 @@
 Aviation, Airports, Airlines#Авиация и Летища#fa fa-plane
 Management and office functions#Административни дейности#fa fa-briefcase
-Аrchitecture, Construction, Urban planning#Архитектура и Строителство#fa fa-building
+Аrchitecture, Construction, Urban planning#Строителство#fa fa-building
 Banks, Lending#Банки, Кредитиране#fa fa-university
-Business and Consultancy#Бизнес и Консултантски услуги#fa fa-coffee
-Design, Creative, Video and Animation#Дизайн и Криейтив#fas fa-camera-retro
+Business and Consultancy#Бизнес#fa fa-coffee
+Design, Creative, Video and Animation#Дизайн#fas fa-camera-retro
 Energy and Utilities (electricity, water, heating, natural gas)#Енергетика и Услуги#fa fa-tint
 Insurance#Застраховане#fas fa-file-invoice
-Healthcare and Pharmacy#Здравеопазване и фармация#fa fa-user-md
+Healthcare and Pharmacy#Здравеопазване#fa fa-user-md
 Art, Entertainment, Promotions#Изкуство, Развлечение#fas fa-fill-drip
-Research and Development services#Изследователска и Развойна дейност#fa fa-search
+Research and Development services#Изследователска дейност#fa fa-search
 Engineers#Инженери#fa fa-universal-access
 Institutions, Public administration#Институции, Държавна администрация#fa fa-circle
-IT - Administrative performance and sales#ИТ - Административни дейности и продажби#fas fa-chart-line	
-IT - Development/Maintenance of Software#ИТ - Разработка/поддръжка на софтуер#fa fa-desktop
-IT - Development/Maintenance of Hardware#ИТ - Разработка/поддръжка на хардуер#fas fa-hdd
+IT - Administrative performance and sales#ИТ - Административни дейности#fas fa-chart-line	
+IT - Development/Maintenance of Software#ИТ - Софтуер#fa fa-desktop
+IT - Development/Maintenance of Hardware#ИТ - Хардуер#fas fa-hdd
 Call Centers#Контакт центрове#fa fa-phone
 Marketing#Маркетинг#fa fa-magic
 Media/Publishing (Press)#Медии, Издателство#fas fa-images
@@ -24,25 +24,25 @@ Education, Courses, Translations#Образование, Курсове, Пре�
 Nonprofit organization#Организации с нестопанска цел#far fa-hand-paper
 Cleaning, Domestic service#Почистване, Услуги за домакинството#fas fa-broom
 Law, Legal Services#Право, Юридически услуги#fa fa-gavel 
-Manufacture – Electronics, Electical engineering, Mechanical engineering#Производство - Електроника, Електротехника, Машиностроене#fa fa-microchip
-Manufacture – Furniture and Carpentry#Производство - Мебели и Дърводелство#fa fa-tree
-Manufacture – Metallurgy and Mining#Производство - Металургия и Минно дело#fa fa-industry 
-Manufacture – Textile and Clothing#Производство - Текстил и Облеклa#fas fa-feather
-Manufacture – Pharmacy#Производство – Фармация#fa fa-stethoscope
-Manufacture – Chemistry and Fuel#Производство - Химия и Горива#fa fa-bolt
-Manufacture – Foods and Drinks#Производство - Храни и Напитки#fas fa-glass-martini-alt
-Manufacture – Others#Производство – Друго#fas fa-hot-tub
+Manufacture – Electronics, Electical engineering, Mechanical engineering#Електроника, Електротехника, Машиностроене#fa fa-microchip
+Manufacture – Furniture and Carpentry#Мебели и Дърводелство#fa fa-tree
+Manufacture – Metallurgy and Mining#Металургия и Минно дело#fa fa-industry 
+Manufacture – Textile and Clothing#Текстил и Облеклa#fas fa-feather
+Manufacture – Pharmacy#Фармация#fa fa-stethoscope
+Manufacture – Chemistry and Fuel#Химия и Горива#fa fa-bolt
+Manufacture – Foods and Drinks#Храни и Напитки#fas fa-glass-martini-alt
+Manufacture – Others#Друго#fas fa-hot-tub
 Reservations and Tourism#Резервации и Туризъм#fas fa-map-marker-alt
 Advertising (PR)#Реклама, PR#fab fa-adversal
-Renovation and Installation Services#Ремонтни и Монтажни дейности#fas fa-wrench
+Renovation and Installation Services#Монтажни дейности#fas fa-wrench
 Restaurants, Catering#Ресторанти, Кетъринг#fas fa-coffee
 Beauty Salons#Салони за красота#fa fa-female
-Agriculture and Forestry, Fishery#Селско и горско стопанство, Рибовъдство#fa fa-paw
+Agriculture and Forestry, Fishery#Селско и горско стопанство#fa fa-paw
 Security and Protection#Сигурност и Охрана#fas fa-shield-alt
 Sports, Chiropractic#Спорт, Кинезитерапия#far fa-futbol
-Accounting, Audit, Finances#Счетоводство, Одит, Финанси#fas fa-money-bill-alt
+Accounting, Audit, Finances#Счетоводство, Финанси#fas fa-money-bill-alt
 Telecommunications - Administrative performance and Sales#Телекомуникации и продажби#fas fa-headphones-alt
-Telecommunications - Engineers and Technicians#Телекомуникации - инженери и техници#fas fa-mobile-alt
+Telecommunications - Engineers and Technicians#Инженери и техници#fas fa-mobile-alt
 Transport, Logistics, Dispatch#Транспорт, Логистика#fas fa-car
 Trading and Sales#Търговия и продажби#fas fa-chart-pie
 Manual Labour#Физически/Ръчен труд#fas fa-users

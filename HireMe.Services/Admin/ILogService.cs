@@ -1,7 +1,6 @@
 ﻿using HireMe.Core.Helpers;
 using HireMe.Entities.Enums;
 using HireMe.Entities.Models;
-using HireMe.ViewModels.Logs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

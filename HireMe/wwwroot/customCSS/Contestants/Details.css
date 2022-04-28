@@ -119,7 +119,7 @@ dd {
 .profile-header .name {
     font-weight: normal;
     margin: 15px 15px 0 0;
-    font-size: 30px;
+    font-size: 1.3rem;
     -webkit-box-flex: 1;
     -webkit-flex-grow: 1;
     -moz-flex-grow: 1;
@@ -128,7 +128,7 @@ dd {
 }
 
 .profile-header .pay_rate {
-    font-size: 20px
+    font-size: .8rem;
 }
 
 .profile-header .speciality {
@@ -247,7 +247,8 @@ dd {
 }
 
 .profile-header-info {
-    padding-top: 15px
+    padding-top: 15px;
+    padding-left: 15px
 }
 
     .profile-header-info dt {
@@ -850,7 +851,7 @@ dd {
     }
     @media screen and (min-width: 991px) {
         .profile-contact {
-            padding-left: 10%
+            padding-left: 15%
         }
         .profile-header .speciality {
             width: 50%;

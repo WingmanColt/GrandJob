@@ -15,5 +15,8 @@
         IAsyncEnumerable<SelectListModel> GetAllSelectList();
 
         Task<OperationResult> SeedCategories();
+        Task<Category> GetByIdAsync(int id);
+
+        Task<string> GetNameById(int categoryId);
     }
 }

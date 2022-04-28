@@ -1,0 +1,6 @@
+:root {
+    scrollbar-face-color: #696969ae; /* Firefox 63 compatibility */
+    scrollbar-track-color: transparent; /* Firefox 63 compatibility */
+    scrollbar-color: #696969ae;
+    scrollbar-width: 6px;
+}

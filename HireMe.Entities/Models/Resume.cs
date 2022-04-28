@@ -1,3 +1,5 @@
+using Ardalis.GuardClauses;
+using HireMe.Entities.Input;
 using System;
 
 namespace HireMe.Entities.Models
@@ -8,7 +10,16 @@ namespace HireMe.Entities.Models
         public string FileId { get; set; }
         public DateTime Date { get; set; }
         public string UserId { get; set; }
+        public double Rating { get; set; }
         public int RatingVotes { get; set; }
         public string LastAppliedJob { get; set; }
+        public int JobId { get; set; }
+        public bool isGuest { get; set; }
+
+        public void Update(CreateResumeInputModel viewModel)
+        {
+            Id = viewModel.Id;
+            LastAppliedJob = viewModel.LastAppliedJob;
+        }
     }
 }

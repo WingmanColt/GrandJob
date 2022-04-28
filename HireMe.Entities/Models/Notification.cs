@@ -1,5 +1,7 @@
 using HireMe.Entities.Enums;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 
 namespace HireMe.Entities.Models
 {
@@ -10,6 +12,10 @@ namespace HireMe.Entities.Models
         public DateTime Date { get; set; }
         public NotifyType Type { get; set; }
         public string Icon { get; set; }
-        public string UserId { get; set; }
+        public string SenderId { get; set; }
+        public string ReceiverId { get; set; }
+
+        [NotMapped]
+        public User userSender { get; set; }
     }
 }

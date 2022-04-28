@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+}
+<style>
+    .pdfobject-container {
+        height: 50rem;
+        border: 1rem solid rgba(0,0,0,.1);
+    }
+</style>
+
+@RenderBody()
+
+@section Scripts {
+    <script src="~/customJS/tinymce/jquery.tinymce.min.js"></script>
+    <script src="~/customJS/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+
+            selector: '#mytextarea',
+            plugins: 'autoresize',
+            autoresize_on_init: false,
+            max_height: 500,
+            min_height: 400
+        });
+    </script>
+}

@@ -1,6 +1,7 @@
 ﻿@inject IConfiguration config
-@inject UserManager<User> UserManager
+
 @inject ICompanyService CompanyService
+@inject ISkillsService _skillService
 @inject IFavoritesService _favoriteService
 
 @model JobsViewModel
@@ -12,219 +13,115 @@
 
     Layout = "Layout/_Index";
 
-    var user = await UserManager.GetUserAsync(User);
-
-    Company company;
-
-    string labelType = "";
-    string SiteImageUrl = config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
-
-    var context = Context.Request;
-    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
-    var returnUrl = loc.AbsoluteUri;
+    IAsyncEnumerable<Skills> skills;
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
 }
 
-<div class="row">
-    <div class="col-wide col">
-
-        <nav class="nav-main px-sm-0 navbar navbar-expand navbar-light round-bottom-edges">
-            <a target="_self" class="navbar-brand" href="/">
-                <img src="~/customCSS/Base/images/logo.png" />
-            </a>
-
-            <div id="filter-Mobile" style="display: none;">
-                <div class="offcanvas-collapse mobile-only navbar-collapse show ios-backdrop" style="left: 0;">
-                    <div class="top-side">
-                        <a target="_self" class="navbar-brand" href="/">
-                            <img src="~/customCSS/Base/images/logo.png" />
-                        </a>
-                        <div class="close-btn" id="close">
-                            <span class="icon ">
-                                <svg width="19" height="19"
-                                     viewBox="0 0 19 19" fill="none">
-                                    <path d="M18.158 16.7433C18.2716 16.8569 18.3189 17.0369 18.1864 17.1694L17.3909 17.9649C17.2914 18.0644 17.0784 18.0502 16.9647 17.9365L0.448715 1.42053C0.297192 1.269 0.320867 1.09381 0.420304 0.994369L1.2158 0.198874C1.34838 0.0662913 1.49043 0.0757614 1.64196 0.227284L18.158 16.7433Z"
-                                          fill="#94E4D6"></path>
-                                    <path d="M16.7433 0.227287C16.8569 0.113645 17.0369 0.0662932 17.1694 0.198876L17.9649 0.994371C18.0644 1.09381 18.0502 1.30689 17.9365 1.42053L1.42053 17.9365C1.269 18.088 1.09381 18.0644 0.994369 17.9649L0.198874 17.1694C0.0662913 17.0369 0.0757614 16.8948 0.227284 16.7433L16.7433 0.227287Z"
-                                          fill="#94E4D6"></path>
-                                </svg>
-                            </span>
-
-
-                        </div>
-                    </div>
-                    <div class="bottom-side navbar-nav">
-                        <div class="filter-content filter" id="filterSidenav">
-                            <partial name="Partials/_FilterPartial" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </div>
-</div>
-
-<div class="search-page row">
-    <div class="desktop-only col-lg-4">
-
-        <h3>Филтри</h3>
-        <div class="filter-content filter" id="filterSidenav2" style="color:black;">
-            <partial name="Partials/_FilterPartial" />
+    <!--Page Title-->
+    <section class="page-title">
+      <div class="auto-container">
+        <div class="title-outer">
+          <h1>Обяви за работа</h1>
+          <ul class="page-breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Начало</a></li>
+            <li>Обяви</li>
+          </ul>
         </div>
-    </div>
+      </div>
+    </section>
+    <!--End Page Title-->
 
-    <div class="col">
-        <div class="search-results" id="jobsContent">
+        <!-- Listing Section -->
+    <section class="ls-section">
+      <div class="auto-container">
+        <div class="filters-backdrop"></div>
 
-            <button id="filterButton" label="Toggle navigation" type="button" class="btn btn-main btn-transparent btn-subcolor unset-width no-wrap btn btn-primary mobile-only">
-                Филтър
-            </button>
+        <div class="row">
+          @await Component.InvokeAsync("_FilterJobs")
 
-            @if (Model.Result != null)
-            {
-                <form asp-controller="Jobs" asp-action="Index" method="get">
 
-                    <div class="search-options">
-                        <div class="search-options-bg">
-                            <div class="search-options-top">
-                                <div>
-                                    <p class="search-options-count">Открихме @*Model.Count*@ подходящи обяви за работа</p>
-                                    <p class="search-options-sort text-small">Сортирай по:<input type="submit" asp-for="Sort" value="Рейтинг" class="search-options-link ml-2 mr-3 font-weight-bold" /> <input type="submit" asp-for="Sort" value="Най-нови" class="search-options-link ml-2 mr-3 font-weight-bold" /> <input type="submit" asp-for="Sort" value="Последни" class="search-options-link ml-2 mr-3 font-weight-bold" /><input type="submit" asp-for="Sort" value="Заплата" class="search-options-link ml-2 mr-3 font-weight-bold" /></p>
-                                </div>
-                                @*<div class="search-options-buttons desktop-only-flex"><button type="button" class="btn btn-main btn-transparent btn-subcolor unset-width btn btn-primary">Сподели</button></div>*@
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                <div class="line"></div>
-                <div class="search-listing">
-                    @await foreach (var item in Model.Result)
+          <!-- Content Column -->
+          <div class="content-column col-lg-8 col-md-12 col-sm-12">
+            <div class="ls-outer">
+              <button type="button" class="theme-btn btn-style-two toggle-filters">Show Filters</button>
+
+                    @if (Model.Result is not null)
                     {
-                        company = await CompanyService.GetByIdAsync(item.CompanyId);
+                        <!-- ls Switcher -->
+                        <div class="ls-switcher">
+                            <div class="showing-result">
+                                <div class="text">Показани са <strong>@Model.Pager.PageSize</strong> от <strong>@Model.Pager.TotalItems</strong> обяви</div>
+                            </div>
 
+                        </div>
 
-                        <div class="search-listing-details">
+                        @await foreach (var item in Model.Result)
+                        {
+                            skills = _skillService.GetAllById<Skills>(item.TagsId, false);
 
-                            <a class="job-link hidden-link" target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id"></a>
-                            <div class="search-listing-left desktop-only">
-                                <div class="image-wrapper">
-                                    @if (company.Logo is null)
-                                    {
-                                        <i class="fas fa-images"></i>
-                                    }
-                                    else
-                                    {
-                                    <img src="@SiteImageUrl@company?.Logo" alt="Няма лого">
-                                    }
-                                    <div class="overlay">
-                                        <a asp-controller="Jobs" asp-action="UpdateFavourite" asp-route-id="@item.Id" asp-route-returnUrl="@returnUrl" class="icon">
-                                            @if (!(await _favoriteService.isInFavourite(user, PostType.Job, item.Id)))
+                            <!-- Job Block -->
+                            <div class="job-block">
+                                <div class="inner-box">
+                                    <div class="content">
+                                        <span class="company-logo"><img class="lazyload" data-src="@SiteImageUrl@item.CompanyLogo" width="54" height="54" alt=""></span>
+                                        <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                                        <ul class="job-info">
+                                            <li><span class="icon flaticon-map-locator"></span> @item.LocationId</li>
+                                            <li><span class="icon flaticon-clock-3"></span> @item.CreatedOn.ToString("MM MMMM")</li>
+                                            @if (item.MinSalary > 0)
                                             {
-                                                <i class="far fa-heart"></i>
+                                                <li><span class="icon flaticon-money"></span> @item.MinSalary лв.</li>
                                             }
-                                            else
+                                        </ul>
+                                        <ul class="job-other-info">
+                                            @if (item.ExprienceLevels > 0)
                                             {
-                                                <i class="fas fa-heart"></i>
+                                                <li class="time"> @item.ExprienceLevels.GetDisplayName()</li>
                                             }
-                                        </a>
+                                            @*
+                                                <li class="time">Full Time</li>
+                                                <li class="privacy">Private</li>
+                                                <li class="required">Urgent</li>
+                                            *@
+                                        </ul>
+
+                                       @* <form method="post" asp-controller="Jobs" asp-action="UpdateFavourite" asp-route-id="@item.Id" id="AddToFavJob">*@
+                                       
+                                           @{string iconType = @item.isInFavourites ? "las" : "lar";}
+                                            <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                                                <span class="@iconType la-heart" id="@item.Id-heartIcon"></span>
+                                            </button>
+                                   
+
                                     </div>
                                 </div>
                             </div>
+                        }
 
+              <!-- Listing Show More -->
+              <div class="ls-show-more">
+                <p>Страница @Model.Pager.CurrentPage от @Model.Pager.TotalPages страници</p>
+                @*<div class="bar"><span class="bar-inner" style="width: 40%"></span></div>*@
 
-                            <div class="search-listing-center">
-                                <h5 class="job-link-title">
-                                    <a target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name&nbsp;&nbsp;</a>
-
-                                    @if (item.JobType != JobTypeEnum.None)
-                                    {
-                                        switch (item.JobType)
-                                        {
-                                            case JobTypeEnum.Hourly:
-                                                labelType = "labels-beginner";
-                                                break;
-                                            case JobTypeEnum.FullTime:
-                                                labelType = "labels-intermediate";
-                                                break;
-                                            case JobTypeEnum.FixedPrice:
-                                                labelType = "labels-expert";
-                                                break;
-
-                                        }
-
-                                        <span class="labels @labelType margin-left-5 margin-right-10 valign-middle">
-                                            @item.JobType.GetDisplayName()
-                                        </span>
-
-                                    }
-
-                                </h5>
-
-                                <div class="job-link-location">
-                                    <a target="_self" href="@company?.Website">
-                                        <span class="city" style="color: #55a8fd;"><i class="fa fa-globe"></i> Уеб &nbsp;&nbsp; </span>
-                                    </a>
-                                    <span class="city" style="color: #56d48f;"><i class="fa fa-map-marker"></i> @item.Adress.PadRight(20).Substring(0, 20), @item.LocationId&nbsp;&nbsp;</span>
-                                    <span class="city"><i class="fa fa-calendar" style="color:orangered"></i> @item.CreatedOn.ToString("MM MMMM")</span>
-
-                                    @if (item.WorkType != null)
-                                    {
-                                        <p>@item.WorkType</p>
-                                    }
-
-                                </div>
-
-                            </div>
-
-                            <div class="search-listing-right">
-
-                                <div class="mobile-only">
-                                    <div class="image-wrapper">
-                                        <img src="@SiteImageUrl@company?.Logo" alt="Няма лого">
-                                        <div class="overlay">
-                                            <a asp-controller="Jobs" asp-action="UpdateFavourite" asp-route-id="@item.Id" asp-route-returnUrl="@returnUrl" class="icon">
-                                                @if (!(await _favoriteService.isInFavourite(user, PostType.Job, item.Id)))
-                                                {
-                                                    <i class="far fa-heart"></i>
-                                                }
-                                                else
-                                                {
-                                                    <i class="fas fa-heart"></i>
-                                                }
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <span class="labels @labelType margin-left-5 margin-right-10 valign-middle">
-                                        @item.JobType.GetDisplayName()
-                                    </span>
-                                </div>
-
-                                @if (item.MinSalary > 0 || item.MaxSalary > 0)
-                                {
-                                    <p class="job-link-salary mt-3">@item.MinSalary - @item.MaxSalary лв / @item.SalaryType</p>
-                                }
-                                else
-                                {
-                                    <p class="job-link-salary mt-3">Без посочена заплата</p>
-                                }
-                                <div class="job-link-salary mt-3">
-
-                                </div>
+                 @{await Html.RenderPartialAsync("../Partials/_PaginationPartial", Model.Pager);}
+              </div>
+                    } 
+                    else
+                    {
+                      <!-- ls Switcher -->
+                        <div class="ls-switcher">
+                            <div class="showing-result" style="margin-left: 10%">
+                                <h2>Няма намерени обяви по избраните от вас критерии.</h2>
                             </div>
                         </div>
-                        <hr>
+
                     }
 
-                    @await Html.PartialAsync("../Partials/_PaginationPartial", Model.Pager)
-                </div>
 
-            }
-            else
-            {
-                <h3 class="search-options-sort text-md-center"> За съжеление не открихме никакви обяви </h3>
-            }
-
+            </div>
+          </div>
+          
         </div>
-    </div>
-</div>
-
+      </div>
+    </section>
+    <!--End Listing Page Section -->

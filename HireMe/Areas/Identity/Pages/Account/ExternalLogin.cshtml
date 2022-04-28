@@ -2,8 +2,60 @@
 @model ExternalLoginModel
 @{
     ViewData["Title"] = "Регистрация";
-    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+     Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 }
+
+
+    <!-- Info Section -->
+    <div class="login-section">
+      <div class="image-layer" style="background-image: url(images/background/12.jpg);"></div>
+      <div class="outer-box">
+        <!-- Login Form -->
+        <div class="login-form default-form">
+          <div class="form-inner">
+            <h3>Вашият профил е свързан с @Model.ProviderDisplayName.</h3>
+
+        <p class="text-info">
+            Успешно сте се удостоверили с <strong> @Model.ProviderDisplayName </strong>.
+            Моля, въведете имейл адрес за този сайт по-долу и щракнете върху бутона "Завърши регистрацията", за да завършите
+            влизане в системата.
+        </p>
+
+            <!--Login Form-->
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+              <div class="form-group">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" placeholder="Име" required>
+              </div>
+
+              <div class="form-group">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" placeholder="Фамилия" required>
+              </div>
+
+              <div class="form-group">
+                <div class="field-outer">
+                  <div class="input-group checkboxes square">
+                    <input type="checkbox" asp-for="Input.IsEmployer" id="remember">
+                    <label asp-for="Input.IsEmployer" class="remember"><span class="custom-checkbox"></span> Аз съм работодател</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="theme-btn btn-style-one" type="submit" name="log-in">Завърши регистрацията</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+        <!--End Login Form -->
+      </div>
+    </div>
+    <!-- End Info Section -->
+
+
+@*
 <div class="wrapper">
     <div class="login">
         <p class="title">Вашият профил е свързан с @Model.ProviderDisplayName.</p>
@@ -51,4 +103,4 @@
     <footer>
         <a href="#">GrandJob</a>
     </footer>
-    </div>
+    </div>*@

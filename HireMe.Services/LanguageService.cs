@@ -3,9 +3,8 @@
     using HireMe.Core.Helpers;
     using HireMe.Data.Repository.Interfaces;
     using HireMe.Entities.Models;
+    using HireMe.Mapping.Utility;
     using HireMe.Services.Interfaces;
-    using HireMe.ViewModels.Contestants;
-    using HireMe.ViewModels.Jobs;
     using Microsoft.EntityFrameworkCore;
     using System.Collections;
     using System.Collections.Generic;
@@ -22,17 +21,55 @@
             this.LanguageRepository = LanguageRepository;
 
         }
-        public IAsyncEnumerable<Language> GetAll(string LanguageId)
-        {           
-            string[] words = LanguageId.Split(',');
+        public IAsyncEnumerable<T> GetAll<T>(string LanguageId, bool isMapped)
+        {
+            string[] words = LanguageId?.Split(',');
             if (words is null)
                 return null;
 
-            var entity = GetAllAsNoTracking()
+            if (isMapped)
+            {
+                var entity = GetAllAsNoTracking()
+                .Where(x => ((IList)words).Contains(x.Id.ToString()))
+                .To<T>()
+                .AsAsyncEnumerable();
+
+                return entity;
+            }
+            else
+            {
+                var entity = GetAllAsNoTracking()
                 .Where(x => ((IList)words).Contains(x.Id.ToString()))
                 .AsAsyncEnumerable();
 
-            return entity;
+                return (IAsyncEnumerable<T>)entity;
+            }
+
+        }
+        public IAsyncEnumerable<T> GetAllById<T>(string LanguageId, bool isMapped)
+        {
+            string[] words = LanguageId?.Split(',');
+            if (words is null)
+                return null;
+
+            if (isMapped)
+            {
+                var entity = GetAllAsNoTracking()
+                .Where(x => ((IList)words).Contains(x.Name))
+                .To<T>()
+                .AsAsyncEnumerable();
+
+                return entity;
+            }
+            else
+            {
+                var entity = GetAllAsNoTracking()
+                .Where(x => ((IList)words).Contains(x.Name))
+                .AsAsyncEnumerable();
+
+                return (IAsyncEnumerable<T>)entity;
+            }
+
         }
 
         private IQueryable<Language> GetAllAsNoTracking()

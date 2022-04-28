@@ -20,50 +20,52 @@
 
         public ScanResult Scan(string file, int timeoutInMs = 30000)
         {
-            if (!File.Exists(file))
-            {
-                return ScanResult.FileNotFound;
-            }
+            /*  if (!File.Exists(file))
+              {
+                  return ScanResult.FileNotFound;
+              }
 
-            string path = _config.GetSection("MySettings").GetSection("WindowsDefenderPath").Value;
-            var full = new FileInfo(path).FullName;
-            var fileInfo = new FileInfo(file);
+              string path = _config.GetSection("MySettings").GetSection("WindowsDefenderPath").Value;
+              var full = new FileInfo(path).FullName;
+              var fileInfo = new FileInfo(file);
 
-            var process = new Process();
+              var process = new Process();
 
-            var startInfo = new ProcessStartInfo(full)
-            {
-                Arguments = $"-Scan -ScanType 3 -File \"{fileInfo.FullName}\" -DisableRemediation",
-                CreateNoWindow = true,
-                ErrorDialog = false,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                UseShellExecute = false
-            };
+              var startInfo = new ProcessStartInfo(full)
+              {
+                  Arguments = $"-Scan -ScanType 3 -File \"{fileInfo.FullName}\" -DisableRemediation",
+                  CreateNoWindow = true,
+                  ErrorDialog = false,
+                  WindowStyle = ProcessWindowStyle.Hidden,
+                  UseShellExecute = false
+              };
 
-            process.StartInfo = startInfo;
-            process.Start();
-            process.WaitForExit(timeoutInMs);
+              process.StartInfo = startInfo;
+              process.Start();
+              process.WaitForExit(timeoutInMs);
 
-            if (!process.HasExited)
-            {
-                process.Kill();
-                return ScanResult.Timeout;
-            }
+              if (!process.HasExited)
+              {
+                  process.Kill();
+                  return ScanResult.Timeout;
+              }
 
-            switch (process.ExitCode)
-            {
-                case 0:
-                    return ScanResult.NoThreatFound;
-                case 2:
-                    return ScanResult.ThreatFound;
-                default:
-                    return ScanResult.Error;
-            }
+              switch (process.ExitCode)
+              {
+                  case 0:
+                      return ScanResult.NoThreatFound;
+                  case 2:
+                      return ScanResult.ThreatFound;
+                  default:
+                      return ScanResult.Error;
+              }*/
+
+            return ScanResult.Error;
         }
         
         public Task<int> ScanAsync(string fileName, int timeoutInMs = 30000)
         {
-            // File to scan
+            /*// File to scan
             string path = _config.GetSection("MySettings").GetSection("WindowsDefenderPath").Value;
             var full = new FileInfo(path).FullName;
             var fileInfo = new FileInfo(fileName);
@@ -93,7 +95,9 @@
             };         
 
               process.Start();
-              return tcs.Task;
+              return tcs.Task;*/
+
+            return null;
         }
 
         public ScanResult completedProcess(int ExitCode)

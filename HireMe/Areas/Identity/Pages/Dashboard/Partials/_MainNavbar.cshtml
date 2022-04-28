@@ -12,7 +12,7 @@
     string returnUrl = Url.PageLink();
 
     // Avatar
-    string SiteImageUrl = user.isExternal ? null : _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+    string SiteImageUrl = user?.PictureName is not null && user.PictureName.Contains("https://") ? user.PictureName : _config.GetSection("MySettings").GetSection("UserPicturePath").Value;
     string siteUrl = _config.GetSection("MySettings").GetSection("SiteUrl").Value;
 
 
@@ -30,7 +30,7 @@
         <div class="container-fluid">
             <div class="desktop-only">
                 <a asp-controller="Home" asp-action="Index" style="font-size:1.0rem; color:#f2eeee; text-decoration:none ">
-                    <i class="flaticon-search-2" style="font-size:2rem; color:#f2eeee"></i> GrandJob
+                    <i class="fas fa-search" style="font-size:2rem; color:#f2eeee"></i> GrandJob
                 </a>
 
             </div>
@@ -101,27 +101,25 @@
                     <ul class="dropdown-menu dropdown-user round-edges animated fadeIn">
                         <li>
                             <div class="user-box">
+                            <div class="author-img__wrapper author-img__wrapper2" >
 
-                                @if (user?.PictureName is null)
-                                {
-                                    <div class="avatar-lg">
-                                        <span class="avatar-title rounded-circle" style="background-color: @user?.Role.GetDescription()">@name</span>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="avatar-lg">
-                                        <img src="@SiteImageUrl@user?.PictureName" alt="User picture" class="avatar-img rounded">
-                                    </div>
-                                }
-
-                                <div class="u-text">
-                                    <h4>@user?.FirstName @user?.LastName</h4>
-                                    <p class="text-rank" style="color:@user?.Role.GetDescription()">@user?.Role.GetDisplayName()</p>
-                                    <b class="flaticon-coins" style="color:darkgoldenrod"></b> <b>@user?.Balance</b>
-                                </div>
+                            @if (user?.PictureName is null)
+                            {
+                                <i class="author-img fas fa-images"></i>
+                            }
+                            else
+                            {
+                                <img class="author-img lazyload" data-src="@SiteImageUrl@user?.PictureName" width="62" height="62" />
+                            }
+                             <a class="fas fa-coins" style="color:darkgoldenrod"><b class="text-rank">@user?.Balance</b></a>
+                        </div>
                             </div>
+
                         </li>
+                    <li>
+                          <h4 class="dropdown-item text-name">@user?.FirstName @user?.LastName</h4>
+                          <p class="dropdown-item text-rank" style="color:@user?.Role.GetDescription()">@user?.Role.GetDisplayName()</p>
+                    </li>
                         <li>
                             <div class="dropdown-divider"></div>
                             <a asp-area="Identity" asp-page="/Account/Manage/EditProfile" class="dropdown-item">Редактирай профил</a>

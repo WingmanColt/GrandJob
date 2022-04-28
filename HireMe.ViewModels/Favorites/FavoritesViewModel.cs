@@ -2,19 +2,13 @@
 {
     using HireMe.Mapping.Interface;
     using HireMe.Entities.Models;
-    public class FavoritesViewModel : IMapFrom<Favorites>
+    public class FavoritesViewModel
     {
-        public int Id { get; set; }
-
-        public string JobsId { get; set; }
-
-        public int CompanyId { get; set; }
-
-        public string ContestantId { get; set; }
-
-        public string UserId { get; set; }
-
-
+        public Jobs Job { get; set; }
+        public Contestant Contestant { get; set; }
+        public Company Company { get; set; }
+        public int? JobCount { get; set; }
+        public bool isExisted { get; set; }
     }
 
 }

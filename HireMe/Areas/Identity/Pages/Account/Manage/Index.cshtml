@@ -6,365 +6,562 @@
 @model IndexModel
 
 @{
-    ViewData["Title"] = "Дашборд";
-    Layout = "Layouts/_Index";
+    ViewData["Title"] = "Контролен панел";
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 
-    var context = HttpContext.Request;
-    var location = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
-    var returnUrl = location.AbsoluteUri;
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
+    string _ImagePath = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+    string Url = config.GetSection("MySettings").GetSection("SiteUrl").Value;
 
-    string siteUrl = config.GetSection("MySettings").GetSection("ResumeUrl").Value;
+    string SenderImageUrl;
+    string notifyIcon = null;
+    User sender;
 
     var user = await UserManager.GetUserAsync(User);
+    int appliedCount = 0;
 
-    // ChartJS
-    //Chart chart = (Chart)ViewData["chart"];
-
+   int notify;
+    if (user is not null)
+        notify = user.ActivityReaded ? 0 : 1;
+    else
+        notify = 0;
 }
 
-<div class="content">
-    <div class="page-inner">
-        <div class="page-header">
-            <h4 class="page-title">Статистика</h4>
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+          <h3>Здравейте, @user.FirstName!</h3>
         </div>
         <div class="row">
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body ">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-
-                                    @*if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                                    {
-                                        <p class="card-category">Работодатели</p>
-                                        <h4 class="card-title">@Model.AllCompaniesWaiting</h4>
-                                    }
-                                    @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-                                    {
-                                        <p class="card-category">Моите компании</p>
-                                        <h4 class="card-title">@Model.MyCompanies</h4>
-                                    }
-                                    @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
-                                    {
-                                        <p class="card-category">Моите обяви</p>
-                                        <h4 class="card-title">@Model.MyContestant</h4>
-                                    }
-                                        *@
-                                </div>
-                            </div>
-                        </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="ui-item">
+              <div class="left">
+                <i class="icon flaticon-briefcase"></i>
+              </div>
+              <div class="right">
+               @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                  {
+                    <h4>@appliedCount</h4>
+                    <p>Пуснати кандидатури</p>
+                  }
+                  @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+                  {
+                    <h4>@appliedCount</h4>
+                    <p>Моите фирми</p>         
+                  }
+                  @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                  {
+                    <h4>@appliedCount</h4>
+                    <p>Чакащи фирми</p>         
+                  }
                     </div>
-                </div>
             </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-info bubble-shadow-small">
-                                    <i class="far fa-newspaper"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    @*if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                                    {
-                                        <p class="card-category">Oбяви за работа</p>
-                                        <h4 class="card-title">@Model.AllJobsWaiting</h4>
-                                    }
-                                    @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-                                    {
-                                        <p class="card-category">Обяви за работа</p>
-                                        <h4 class="card-title">@Model.MyJobs</h4>
-                                    }
-                                    @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
-                                    {
-                                        <p class="card-category">Кандидатствани</p>
-                                        <h4 class="card-title">@Model.MyAppliedJobs</h4>
-                                    }*@
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="ui-item ui-red">
+              <div class="left">
+                <i class="icon la la-file-invoice"></i>
+              </div>
+              <div class="right">
+               @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                  {
+                    <h4>22</h4>
+                    <p>Пуснати кандидатури</p>
+                  }
+                  @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+                  {
+                    <h4>22</h4>
+                    <p>Моите обяви</p>         
+                  }
+                  @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                  {
+                    <h4>22</h4>
+                    <p>Чакащи обяви</p>         
+                  }
+              </div>
             </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-success bubble-shadow-small">
-                                    <i class="far fa-envelope"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    @*if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                                    {
-                                        <p class="card-category">Кандидати</p>
-                                        <h4 class="card-title">@Model.AllContestantsWaiting</h4>
-                                    }
-                                    @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-                                    {
-                                        <p class="card-category">Съобщения</p>
-                                        <h4 class="card-title">@Model.MyMessages</h4>
-                                    }
-                                    @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
-                                    {
-                                        <p class="card-category">Съобщения</p>
-                                        <h4 class="card-title">@Model.MyMessages</h4>
-                                    }*@
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="ui-item ui-yellow">
+              <div class="left">
+                <i class="icon la la-comment-o"></i>
+              </div>
+              <div class="right">
+                <h4>74</h4>
+                <p>Съобщения</p>
+              </div>
             </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                                    <i class="fas fa-link"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">Приложения</p>
-                                    <h4 class="card-title">@Model.MyAppsCount</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          </div>
+          <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+            <div class="ui-item ui-green">
+              <div class="left">
+                <i class="icon la la-bookmark-o"></i>
+              </div>
+              <div class="right">
+               @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+                  {
+                    <h4>22</h4>
+                    <p>Приложения</p>
+                  }
+                  @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+                  {
+                    <h4>22</h4>
+                    <p>Приложения</p>         
+                  }
+                  @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                  {
+                    <h4>22</h4>
+                    <p>Чакащи кандидати</p>         
+                  }
+              </div>
             </div>
+          </div>
         </div>
-        @* Jobs candidatures *@
-        @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-        {
 
-            <div class="row">
+        <div class="row">
 
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-head-row">
-                                <div class="card-title">Получени кандидатури</div>
 
-                            </div>
-                        </div>
-                        <div class="card-body">
+          <div class="col-lg-7">
+            <!-- Graph widget -->
+            <div class="graph-widget ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Your Profile Views</h4>
+                  <div class="chosen-outer">
+                    <!--Tabs Box-->
+                    <select class="chosen-select">
+                      <option>Last 6 Months</option>
+                      <option>Last 12 Months</option>
+                      <option>Last 16 Months</option>
+                      <option>Last 24 Months</option>
+                      <option>Last 5 year</option>
+                    </select>
+                  </div>
+                </div>
 
-                            <div class="table-full-width">
-                                <table class="table">
-                                    <tbody>
+                <div class="widget-content">
+                  <canvas id="chart" width="100" height="45"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                                        @if (!(Model.ReceivedResumes is null))
+          <div class="col-lg-5">
+            <!-- Notification Widget -->
+            <div class="notification-widget ls-widget">
+              <div class="widget-title">
+                <h4>Известия</h4>
+              </div>
+              <div class="widget-content">
+                @if (Model.isNotiftEmpty && Model.Notifications is not null)
+                        {
+                            <ul class="notification-list">
+                                 @await foreach (var entity in Model.Notifications)
                                         {
+                                            sender = await UserManager.FindByIdAsync(entity.SenderId);
 
-                                            @await foreach (var item in Model.ReceivedResumes)
+                                            switch (entity.Type)
                                             {
-                                                <tr>
-                                                    <td>
-                                                        @item.Date.ToString("dd/MM/yyyy")
-                                                    </td>
-                                                    <td>@item.Title</td>
-
-                                                    <td class="td-actions text-right">
-                                                        <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.FileId" class="btn btn-icon btn-xs" title="Прегледай">
-                                                            <span class="fa fa-eye"></span>
-                                                        </a>
-
-                                                        <a asp-controller="Resume" asp-action="DeleteApplication" asp-route-id="@item.Id" asp-route-returnurl="@returnUrl" title="Изтрий" class="btn btn-icon btn-xs">
-                                                            <i class="fa fa-times"></i>
-                                                        </a>
-                                                    </td>
-                                                </tr>
+                                                case NotifyType.Information:
+                                                    notifyIcon = "notif-primary";
+                                                    break;
+                                                case NotifyType.Warning:
+                                                    notifyIcon = "notif-warning";
+                                                    break;
+                                                case NotifyType.Danger:
+                                                    notifyIcon = "notif-danger";
+                                                    break;
+                                                case NotifyType.Success:
+                                                    notifyIcon = "notif-success";
+                                                    break;
+                                                case NotifyType.Image:
+                                                    notifyIcon = "notif-img";
+                                                    break;
                                             }
-                                        }
-                                        else
+
+                                <li>
+                                    <a href="@Url/@entity.Url">
+                                    <span class="icon @notifyIcon @entity.Icon"></span> <strong>@entity.Title</strong> 
+                                    <br>
+                                    <span class="colored">@entity.Date.ToString("MM MMMM")</span>
+                                    </a>
+                                    <hr>
+                                </li>
+                                
+                               
+                            }
+                            </ul>
+                        }
+                    </div>
+            </div>
+          </div>
+
+          
+          @{
+           @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+           {
+           if (Model.MyAppliedJobs is not null && await Model.MyAppliedJobs.AnyAsync())
+            {   
+                <div class="col-lg-12">           
+             <!-- applicants Widget -->
+            <div class="applicants-widget ls-widget">
+              <div class="widget-title">
+                <h4>Последно кандидатствани обяви</h4>
+              </div>
+              <div class="widget-content">
+                <div class="row">
+
+                  @await foreach (var item in Model.MyAppliedJobs)
+                  {
+                    appliedCount++;
+
+                     <!-- Job Block -->
+                     <div class="job-block col-lg-6 col-md-12 col-sm-12">
+                     <div class="inner-box">
+                    <div class="content">
+                      <span class="company-logo">
+                      <img class="rounded-full" src="@SiteImageUrl@item.CompanyLogo" alt="">
+                      </span>
+                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                      <ul class="job-info">
+                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                        @if (item.MaxSalary > 0)
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                         }
+
+                         else
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                         }
+                        
+                      </ul>
+                      <ul class="job-other-info">
+                        <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
+                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                      </ul>
+                      <button class="bookmark-btn"><span class="flaticon-heart"></span></button>
+                    </div>
+                  </div>
+                </div>
+                  }
+
+                </div>
+              </div>
+            </div>
+           </div>
+          }
+        } 
+        @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                {
+                        @if (!(Model.ReceivedResumes is null))
+                        {
+                            <div class="col-lg-12">
+                            <!-- applicants Widget -->
+                            <div class="applicants-widget ls-widget">
+                                <div class="widget-title">
+                                    <h4>Получени кандидатури</h4>
+                                </div>
+                                <div class="widget-content">
+                                    <div class="row">
+
+                                        @await foreach (var item in Model.ReceivedResumes)
                                         {
-                                            <tr>
-                                                <td>Все още няма изпратени кандидатури за вашите обяви!</td>
-                                            </tr>
+                                            sender = await UserManager.FindByEmailAsync(@item.UserId);
+                                            SenderImageUrl = sender?.PictureName is not null && sender.PictureName.Contains("https://") ? sender?.PictureName : (_ImagePath + sender?.PictureName);
 
+                                            <!-- Candidate block three -->
+                                            <div class="candidate-block-three col-lg-6 col-md-12 col-sm-12">
+                                                <div class="inner-box">
+                                                    <div class="content">
+                                                        
+                                                            @if (sender is not null && sender?.PictureName is not null)
+                                                            {
+                                                                <figure class="image">
+                                                                <img class="lazyload" data-src="@SenderImageUrl" alt="">
+                                                                 </figure>
+                                                            } 
+                                                            else
+                                                            {
+                                                                <figure class="image-icon">
+                                                                <i class="flaticon-user"></i>
+                                                                </figure>
+                                                            }
+                                                       
+
+                                                        @if (sender is not null)
+                                                        {
+                                                            <h4 class="name"><a href="#">@sender?.FirstName @sender?.LastName</a></h4>
+                                                        } 
+                                                        else
+                                                        {
+                                                        <h4 class="name"><a href="#"> @StringHelper.Filter(item.UserId)</a></h4>
+                                                        }
+                                                        <ul class="candidate-info">
+                                                            <li class="designation">@sender?.Email</li>
+                                                            <li><span class="icon flaticon-briefcase"></span> @item.LastAppliedJob</li>
+                                                            @if (item.isGuest)
+                                                            {
+                                                                <li><span class="icon flaticon-user-1"></span>Гост</li>
+                                                            } 
+                                                            else
+                                                            {
+                                                                <li><span class="icon flaticon-user-1"></span>Потребител</li>
+                                                            }
+                                                        </ul>
+
+                                                    </div>
+                                                    <div class="option-box">
+                                                        <ul class="option-list">
+                                                            <li><a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Прегледай резюме">
+                                                            <span class="la la-eye"></span>
+                                                            </a>
+                                                            </li>
+
+                                                            <li><a class="call-modal" data-user="@item.UserId" data-modal="#apply-modal" data-text="Добави в задачи">
+                                                            <span class="la la-check"></span>                                                            
+                                                            </a>
+                                                            </li>
+
+                                                            <li><a class="call-modal" data-id="@item.Id" data-modal="#raport-modal" data-text="Изтрий заявката">
+                                                            <span class="la la-trash"></span>
+                                                            </a>
+                                                            </li>
+
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         }
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa fa-info-circle"></i> Кандидатурите, които получавате от потребителите ще ги виждате тук.
-                        </div>
-                    </div>
-                </div>
-                @*
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Седмична статистика</div>
-                            <div class="card-category">March 25 - April 02</div>
-                        </div>
-                        <div class="card-body pb-0">
-                            <div class="pull-in">
-
-                                <canvas id="myChart" width="400" height="400"></canvas>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
-                *@
+              </div>
             </div>
-        }
-        @* Jobs candidatures END *@
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card card-space">
-                    <div class="card-header">
-                        <h4 class="card-title">Информационно табло</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 col-md-3">
-                                <div class="nav flex-column nav-pills nav-secondary nav-pills-no-bd nav-pills-icons" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                    <a class="nav-link active show" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home-icons" role="tab" aria-controls="v-pills-home-icons" aria-selected="true">
-                                        <i class="flaticon-round"></i>
-                                        Отностно
-                                    </a>
-                                    <a class="nav-link" id="v-pills-contestants-tab" data-toggle="pill" href="#v-pills-contestants-icons" role="tab" aria-controls="v-pills-contestants-icons" aria-selected="false">
-                                        <i class="flaticon-user-4"></i>
-                                        Кандидати
-                                    </a>
-                                    <a class="nav-link" id="v-pills-employer-tab" data-toggle="pill" href="#v-pills-employer-icons" role="tab" aria-controls="v-pills-employer-icons" aria-selected="false">
-                                        <i class="flaticon-suitcase"></i>
-                                        Работадатели
-                                    </a>
-                                    <a class="nav-link" id="v-pills-pro-tab" data-toggle="pill" href="#v-pills-pro-icons" role="tab" aria-controls="v-pills-pro-icons" aria-selected="false">
-                                        <i class="flaticon-coins"></i>
-                                        PRO-Акаунт
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <div class="tab-content" id="v-pills-tabContent">
-                                    <div class="tab-pane fade active show" id="v-pills-home-icons" role="tabpanel" aria-labelledby="v-pills-home-icons">
-                                        <div class="accordion accordion-secondary">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
-                                                    <div class="span-icon">
-                                                        <div class="flaticon-round"></div>
-                                                    </div>
-                                                    <div class="span-title">
-                                                        Как да използвам платформата ?
-                                                    </div>
-
-                                                </div>
-
-                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                                    <div class="card-body">
-                                                        Ползването на платформата е напълно безплатно за кандидати. Бизнесите също могат да се възползват от основните ни функции безплатно.
-
-                                                        За да се възползваш от възможностите, които платформата ни предоставя, можеш да си създадеш профил на Кандидат или Работадател. После просто следвай стъпките и не забравяй да се вслушваш в поп-ъп съветите по време на попълване - те са там за да те улеснят с използването на платформата.
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="v-pills-contestants-icons" role="tabpanel" aria-labelledby="v-pills-contestants-icons">
-                                        <div class="accordion accordion-secondary">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
-                                                    <div class="span-icon">
-                                                        <div class="flaticon-user-4"></div>
-                                                    </div>
-                                                    <div class="span-title">
-                                                        Искам да ме потърсят за работа ...
-                                                    </div>
-
-                                                </div>
-
-                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                                    <div class="card-body">
-                                                        1. Завърши регистрацията и потвърди емайл адреса си <a asp-page="EditProfile" title="редактирай профил">от тук.</a>
-                                                        <br>2. Създай си профил на кандидат <a asp-controller="Contestant" asp-action="Create" title="Създай профил">от тук.</a>
-                                                        <br>3. Качи своето CV, докато създаваш профила си.
-                                                        <br>4. Пусни си кандидатурата, в която индустрия желаеш да работиш.
-                                                        <br>5. Направи всичко възможно обявата ти да достигне до повече хора.  <a id="alert_demo_8" href="#" title="Създай профил">Научи как ?</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="v-pills-employer-icons" role="tabpanel" aria-labelledby="v-pills-employer-icons">
-                                        <div class="accordion accordion-secondary">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
-                                                    <div class="span-icon">
-                                                        <div class="flaticon-suitcase"></div>
-                                                    </div>
-                                                    <div class="span-title">
-                                                        Как да пусна обява за работа ?
-                                                    </div>
-
-                                                </div>
-
-                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                                    <div class="card-body">
-                                                        1. Завърши регистрацията и потвърди емайл адреса си <a asp-page="EditProfile" title="редактирай профил">от тук.</a>
-                                                        <br>2. Добави профил на фирмата <a asp-page="/Companies/Create" title="Създай профил">от тук.</a>
-                                                        <br>3. Добави своя екип, ако имат регистрация в сайта ни.
-                                                        <br>4. Изчакай да се прегледа и одобри от администратор.
-                                                        <br>5. Вече можете да пускате обяви за работа <a asp-controller="Jobs" asp-action="Create" title="Създай профил">от тук.</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="v-pills-pro-icons" role="tabpanel" aria-labelledby="v-pills-pro-icons">
-                                        <div class="accordion accordion-secondary">
-                                            <div class="card">
-                                                <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" role="button">
-                                                    <div class="span-icon">
-                                                        <div class="flaticon-coins"></div>
-                                                    </div>
-                                                    <div class="span-title">
-                                                        Искам да имам висок рейтинг в сайта...
-                                                    </div>
-
-                                                </div>
-
-                                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                                    <div class="card-body">
-                                                        Можете да опитате платените услуги на платформата ни, след като си изберете пакет <a asp-page="Pricing" title="избери пакет">от тук.</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-
-                    </div>
-                </div>
-
-            </div>
+             </div>
+                   }
+                }
+            }
         </div>
     </div>
+
+</section>
+
+
+@if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+{
+    <!-- Add to Task modal -->
+    <div class="modal" id="apply-modal">
+
+        <!-- Task Form -->
+    <div class="login-form default-form">
+            <div class="form-inner">
+                <h4>Добави в задачи</h4>
+                <br>
+                <form method="post" id="taskForm">             
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="TaskInput.Title"></label><span class="required-label">*</span>
+                                <input asp-for="TaskInput.Title" class="form-control" placeholder="Име на задача" required />
+                                <span asp-validation-for="TaskInput.Title" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label asp-for="TaskInput.StartDate"></label><span class="required-label">*</span>
+                                <input asp-for="TaskInput.StartDate" class="form-control" placeholder="Начална дата" required />
+                                <span asp-validation-for="TaskInput.StartDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label asp-for="TaskInput.EndDate"></label><span class="required-label">*</span>
+                                <input asp-for="TaskInput.EndDate" class="form-control" placeholder="Крайна дата" required />
+                                <span asp-validation-for="TaskInput.EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label asp-for="TaskInput.Level"></label><span class="required-label">*</span>
+                                <select asp-for="TaskInput.Level" asp-items="Html.GetEnumSelectList<TaskLevel>()" class="form-control" required></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="TaskInput.About"></label> <small>(не е задължително)</small>
+                                <input asp-for="TaskInput.About" class="form-control" placeholder="кратко описание" />
+                                <span asp-validation-for="TaskInput.About" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bottom-box">
+                        <small><i class="fa fa-info-circle"></i> Можете да уведомите потребителя за онлайн интервю или друго събитие. Моля бъдете описателни!</small>
+                        <hr>
+                        <div class="btn-box row">
+                            <div class="col-lg-6 col-md-12">
+                                <a href="#" class="theme-btn btn-style-default" rel="modal:close">
+                                    <i class="fa fa-times"></i> Отказ</a>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <button class="theme-btn btn-style-four" type="submit"> 
+                                    <i class="fas fa-check"></i> Добави
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--End Task Form -->
+
 </div>
+
+    <!-- Rate before delete modal -->
+    <div class="modal" id="raport-modal">
+
+        <!-- Task Form -->
+    <div class="login-form default-form">
+            <div class="form-inner">
+                <h4>Оценка на CV</h4>
+                <br>
+                <form asp-page-handler="Rate" id="rateForm">             
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group text-center">
+
+                                <div class="star-rating">
+                                    <span class="fa fa-star" data-rating="1"></span>
+                                    <span class="fa fa-star" data-rating="2"></span>
+                                    <span class="fa fa-star" data-rating="3"></span>
+                                    <span class="fa fa-star" data-rating="4"></span>
+                                    <span class="fa fa-star" data-rating="5"></span>
+                                    <input type="hidden" asp-for="RInput.Rating" class="rating-value" value="@Model.RInput?.Rating">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="bottom-box">
+                        <small><i class="fa fa-info-circle"></i> Оцени cv-то на потребителя.</small>
+                        <hr>
+                        <div class="btn-box row">
+                            <div class="col-lg-6 col-md-12">
+                                <a href="#" class="theme-btn btn-style-default" rel="modal:close">
+                                    <i class="fa fa-times"></i> Отказ</a>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <button class="theme-btn btn-style-four" type="submit"> 
+                                    <i class="fas fa-check"></i>Оцени и изтрий
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--End Task Form -->
+</div>
+}
+
+    <!-- End Dashboard -->
+
+    @section Scripts {
+   
+         <script src="~/theme_superio/js/knob.js"></script>
+         <script src="~/theme_superio/js/chart.min.js"></script>
+  <script>
+    Chart.defaults.global.defaultFontFamily = "Sofia Pro";
+    Chart.defaults.global.defaultFontColor = '#888';
+    Chart.defaults.global.defaultFontSize = '14';
+
+    var ctx = document.getElementById('chart').getContext('2d');
+
+    var chart = new Chart(ctx, {
+
+      type: 'line',
+      // The data for our dataset
+      data: {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"],
+        // Information about the dataset
+        datasets: [{
+          label: "Views",
+          backgroundColor: 'transparent',
+          borderColor: '#1967D2',
+          borderWidth: "1",
+          data: [196, 132, 215, 362, 210, 252, 1233, 2222, 5555, 12131, 213413, 555555],
+          pointRadius: 3,
+          pointHoverRadius: 3,
+          pointHitRadius: 10,
+          pointBackgroundColor: "#1967D2",
+          pointHoverBackgroundColor: "#1967D2",
+          pointBorderWidth: "2",
+        }]
+      },
+
+      // Configuration options
+      options: {
+
+        layout: {
+          padding: 10,
+        },
+
+        legend: {
+          display: false
+        },
+        title: {
+          display: false
+        },
+
+        scales: {
+          yAxes: [{
+            scaleLabel: {
+              display: false
+            },
+            gridLines: {
+              borderDash: [6, 10],
+              color: "#d8d8d8",
+              lineWidth: 1,
+            },
+          }],
+          xAxes: [{
+            scaleLabel: {
+              display: false
+            },
+            gridLines: {
+              display: false
+            },
+          }],
+        },
+
+        tooltips: {
+          backgroundColor: '#333',
+          titleFontSize: 13,
+          titleFontColor: '#fff',
+          bodyFontColor: '#fff',
+          bodyFontSize: 13,
+          displayColors: false,
+          xPadding: 10,
+          yPadding: 10,
+          intersect: false
+        }
+      },
+    });
+  </script>
+}

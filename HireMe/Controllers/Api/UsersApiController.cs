@@ -4,6 +4,7 @@ using HireMe.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,15 +32,25 @@ namespace HireMe.Controllers.Api
         [HttpPost]
         [AllowAnonymous]
         [Produces("application/json")]
-        public async ValueTask<JsonResult> isEmailAvaliable(string term)
+        public async Task<JsonResult> isEmailAvaliable(string term)
         {
             bool isValid = await _contextBase.Users
-            .AllAsync(x => !x.isExternal && (x.UserName == term || x.Email == term));
+            .AllAsync(x => x.Email != term);
     
             return Json(isValid);
         }
+     /*   [HttpPost]
+        [AllowAnonymous]
+        [Produces("application/json")]
+        public async Task<JsonResult> isEmailAvaliableLogin(string term)
+        {
+            bool isValid = _contextBase.Users
+            .AsQueryable()
+            .All(x => x.Email == term);
 
-
+            return Json(isValid);
+        }
+     */
         [HttpPost]
         [Produces("application/json")]
         public async ValueTask<JsonResult> HideBubble()

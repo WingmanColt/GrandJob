@@ -1,5 +1,6 @@
 ﻿using HireMe.Entities.Enums;
 using HireMe.Entities.Models;
+using HireMe.Services;
 using HireMe.Services.Interfaces;
 using HireMe.ViewModels.Components;
 using Microsoft.AspNetCore.Identity;
@@ -16,22 +17,22 @@ namespace HireMe.ViewComponents
         private readonly IConfiguration _config;
         private readonly UserManager<User> _userManager;
 
-        private readonly INotificationService _notifyService;
         private readonly IMessageService _messageService;
-        private readonly IFavoritesService _favouriteService;
+        private readonly ILogService _logsService;
+        private readonly ITaskService _taskService;
 
         public _ActivityViewComponent(
             IConfiguration config,
             UserManager<User> userManager,
-            INotificationService notifyService,
             IMessageService messageService,
-            IFavoritesService favouriteService)
+            ILogService logsService,
+            ITaskService taskService)
         {
             _config = config;
             _userManager = userManager;
-            _notifyService = notifyService;
             _messageService = messageService;
-            _favouriteService = favouriteService;
+            _logsService = logsService;
+            _taskService = taskService; 
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
@@ -43,23 +44,20 @@ namespace HireMe.ViewComponents
             {
                 model.User = user;
                 model.FullName = user.FirstName?.Substring(0, 1) + user.LastName?.Substring(0, 1);
-                model.SiteUrl = user.isExternal ? null : _config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
+                model.SiteUrlUsers = user.isExternal ? null : _config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+                model.SiteUrlCompanies = _config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
 
                 // Messages
                 model.Messages = _messageService.GetMessagesBy(user, MessageClient.Receiver, 10);
                 model.MessagesCount = await _messageService.GetMessagesCountBy_Receiver(user);
                 model.isMessagesEmpty = model.Messages is null ? false : await model.Messages.AnyAsync();
 
-                // Notify
-                model.Notifications = _notifyService.GetAllBy(user);
-                model.NotifyCount = await _notifyService.GetNotificationsCount(user);
-                model.isNotiftEmpty = model.Notifications is null ? false : await model.Notifications.AnyAsync();
+                // Logs
+                model.Logs = _logsService.GetAll();
 
-                // Favourites
-                model.FavouriteJob = _favouriteService.GetFavouriteBy<Jobs>(user, PostType.Job);
-                model.FavouriteContestant = _favouriteService.GetFavouriteBy<Contestant>(user, PostType.Contestant);
-                model.FavouriteCompany = _favouriteService.GetFavouriteBy<Company>(user, PostType.Company);
-                model.FavouritesCount = await _favouriteService.GetFavouriteByCount(user, PostType.All);
+                // Tasks
+                model.MyTasks = _taskService.GetAll(user, false);
+                model.ReceivedTasks = _taskService.GetAll(user, true);
 
                 model.ReturnUrl = Url.PageLink();
             }

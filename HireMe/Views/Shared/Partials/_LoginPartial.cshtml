@@ -1,0 +1,139 @@
+﻿  @inject SignInManager<User> _signInManager
+
+  @model AccountViewModel
+
+  @{
+    var context = Context.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+
+    Model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+}
+
+  <!-- Login modal -->
+<div class="modal" id="login-modal">
+    <!-- Login Form -->
+    <div class="login-form default-form">
+      <div class="form-inner">
+        <h3>Влез в профила си</h3>
+             
+        <!--Login Form-->
+        <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl" id="loginForm">
+             <div asp-validation-summary="All" class="text-danger" id="message"></div>
+          <div class="form-group">
+            <label>Емайл</label>
+            <input asp-for="@Model.Email" placeholder="Емайл" required>
+          </div>
+
+          <div class="form-group">
+            <label>Парола</label>
+            <input asp-for="@Model.Password" id="password-field" type="password" placeholder="Password" required>
+          </div>
+
+          <div class="form-group">
+            <div class="field-outer">
+              <div class="input-group checkboxes square">
+                <input type="checkbox" asp-for="@Model.RememberMe" id="remember">
+                <label for="remember" class="remember"><span class="custom-checkbox"></span> Запомни ме</label>
+              </div>
+              <a href="#" class="pwd">Забравена парола?</a>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button class="theme-btn btn-style-one" type="submit" name="log-in">Влез</button>
+          </div>
+        </form>
+
+        <div class="bottom-box">
+          <div class="text">Нямаш акаунт? <a class="call-modal signup" data-modal="#register-modal">Регистрирай се</a></div>
+          <div class="divider"><span>или</span></div>
+           <div class="btn-box row">
+              <div class="col-lg-12 col-md-12">
+        @if (Model.ExternalLogins?.Count > 0)
+            {
+            <form id="external" asp-area="Identity" asp-page="/Account/ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    @foreach (var provider in Model.ExternalLogins)
+                        {
+               
+                    <button type="submit" class="theme-btn social-btn-two @provider.DisplayName.ToLower()-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                        <i class="fab fa-@provider.DisplayName.ToLower() fa-lg"></i> @provider.DisplayName.ToLower() 
+                    </button>
+                
+                        }
+            </form>
+            }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End Login Form -->
+   
+</div>
+
+  <!-- Register modal -->
+<div class="modal" id="register-modal">
+    <!-- Login Form -->
+    <div class="login-form default-form">
+      <div class="form-inner">
+        <h3>Създай нов акаунт</h3>
+        <!--Login Form-->
+        <form method="post" asp-controller="Account" asp-action="Register" asp-route-returnUrl="@returnUrl">
+             <div asp-validation-summary="All" class="text-danger"></div>
+
+          <div class="form-group">
+            <label>Емайл</label>
+            <input asp-for="@Model.Email" placeholder="Емайл" required>
+          </div>
+
+          <div class="form-group">
+            <label>Име</label>
+            <input asp-for="@Model.FirstName" placeholder="Име" required>
+          </div>
+
+         <div class="form-group">
+            <label>Фамилия</label>
+            <input asp-for="@Model.LastName" placeholder="Фамилия" required>
+          </div>
+
+          <div class="form-group">
+            <label>Парола</label>
+            <input asp-for="@Model.Password" type="password" placeholder="Парола" required>
+          </div>
+
+          <div class="form-group">
+            <label>Повторете паролата</label>
+            <input asp-for="@Model.ConfirmPassword" type="password" placeholder="Повторете паролата" required>
+          </div>
+
+          <div class="form-group">
+           <div class="field-outer">
+              <div class="input-group checkboxes square">
+                <input type="checkbox" asp-for="@Model.isEmployer" id="remember">
+                <label for="remember" class="remember"><span class="custom-checkbox"></span> Аз съм работодател</label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-group">
+            <button class="theme-btn btn-style-one" type="submit" name="register-in">Регистрирай ме</button>
+          </div>
+        </form>
+
+        <div class="bottom-box">
+          <div class="btn-box row">
+            <div class="col-lg-6 col-md-12">
+              <a href="#" class="theme-btn social-btn-two facebook-btn"><i class="fab fa-facebook-f"></i> Log In via Facebook</a>
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <a href="#" class="theme-btn social-btn-two google-btn"><i class="fab fa-google"></i> Log In via Gmail</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End Login Form -->
+
+</div>

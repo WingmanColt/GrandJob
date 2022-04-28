@@ -27,7 +27,6 @@ namespace HireMe.Services
                 return null;
 
 
-
             if (isMapped)
             {
                 var entity = GetAllAsNoTracking()
@@ -41,6 +40,32 @@ namespace HireMe.Services
             {
                 var entity = GetAllAsNoTracking()
                 .Where(x => ((IList)words).Contains(x.Id.ToString()))
+                .AsAsyncEnumerable();
+
+                return (IAsyncEnumerable<T>)entity;
+            }
+
+        }
+        public IAsyncEnumerable<T> GetAllById<T>(string SkillId, bool isMapped)
+        {
+            string[] words = SkillId?.Split(',');
+            if (words is null)
+                return null;
+
+
+            if (isMapped)
+            {
+                var entity = GetAllAsNoTracking()
+                .Where(x => ((IList)words).Contains(x.Title))
+                .To<T>()
+                .AsAsyncEnumerable();
+
+                return entity;
+            }
+            else
+            {
+                var entity = GetAllAsNoTracking()
+                .Where(x => ((IList)words).Contains(x.Title))
                 .AsAsyncEnumerable();
 
                 return (IAsyncEnumerable<T>)entity;

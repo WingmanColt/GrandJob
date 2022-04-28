@@ -12,18 +12,26 @@ using HireMe.Data;
 using HireMe.Entities.Enums;
 using HireMe.ViewModels.Jobs;
 using HireMe.Mapping.Utility;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using System.Collections;
 
 namespace HireMe.Services
 {
-
     public class JobsService : IJobsService
     {
         private readonly IRepository<Jobs> jobsRepository;
+        private readonly IRepository<Resume> resumeRepository;
+        private readonly string _ResumeGuestsPath;
 
-        public JobsService(IRepository<Jobs> jobsRepository, FeaturesDbContext _context)
+        public JobsService(
+            IConfiguration config, 
+            IRepository<Jobs> jobsRepository,
+            IRepository<Resume> resumeRepository)
         {
             this.jobsRepository = jobsRepository;
-           // SeedTest(_context);
+            this.resumeRepository = resumeRepository;
+            _ResumeGuestsPath = config.GetValue<string>("MySettings:ResumeGuestsPath");
         }
 
         public async Task<OperationResult> Create(CreateJobInputModel viewModel, User user)
@@ -36,19 +44,15 @@ namespace HireMe.Services
             return result;
         }
 
-        public async Task<OperationResult> AddResumeFile(int jobId, string resumeId)
+        public async Task<OperationResult> AddResumeFile(Jobs entity, string resumeId)
         {
-            Jobs entityId = await jobsRepository.GetByIdAsync(jobId);
-            if (entityId == null)
-            {
-                return OperationResult.FailureResult($"Не можахме да намерим тази обява в системата ни! Моля опитайте по-късно.");
-            }
             string postIdComplate;
             
             postIdComplate = ',' + resumeId;
 
-            entityId.resumeFilesId += postIdComplate;
-            jobsRepository.Update(entityId);
+            entity.resumeFilesId += postIdComplate;
+            entity.ApplyCount += 1; 
+            jobsRepository.Update(entity);
 
             var result = await jobsRepository.SaveChangesAsync();
             return result;
@@ -57,7 +61,9 @@ namespace HireMe.Services
         public async Task<OperationResult> Delete(int id)
         {
             Jobs entityId = await jobsRepository.GetByIdAsync(id);
+
             jobsRepository.Delete(entityId);
+            DeleteResumeFilesByGuest(entityId.Name);
 
             var result = await jobsRepository.SaveChangesAsync();
             return result;
@@ -69,6 +75,15 @@ namespace HireMe.Services
 
             existEntity.Update(viewModel, ApproveType.Waiting, user);
             jobsRepository.Update(existEntity);
+
+            var result = await jobsRepository.SaveChangesAsync();
+            return result;
+        }
+
+        public async Task<OperationResult> UpdateUser(Jobs viewModel, User user)
+        {
+            viewModel.PosterID = user.Id;
+            jobsRepository.Update(viewModel);
 
             var result = await jobsRepository.SaveChangesAsync();
             return result;
@@ -93,6 +108,7 @@ namespace HireMe.Services
                 await foreach (var item in newentity)
                 {
                     jobsRepository.Delete(item);
+                    DeleteResumeFilesByGuest(item.Name);
                 }
             }
 
@@ -134,41 +150,111 @@ namespace HireMe.Services
         {
             return jobsRepository.Set().AsQueryable();
         }
-        public IAsyncEnumerable<Jobs> GetAllByEntity(int id, bool isCompany, int entitiesToShow)
+        public IAsyncEnumerable<JobsViewModel> GetAllByEntity(int id, bool isCompany, int entitiesToShow, IFavoritesService _fav, User user)
         {
-            return GetAllAsNoTracking()
+           var result = GetAllAsNoTracking()
                    .Where(x => (isCompany ? x.CompanyId == id : x.CategoryId == id))
                    .Where(x => x.isApproved == ApproveType.Success && !x.isArchived)
+                   .Select(x => new Jobs
+                     {
+                      Id = x.Id,
+                      Name = x.Name,
+                      CompanyLogo = x.CompanyLogo,
+                      LocationId = x.LocationId,
+                      MinSalary = x.MinSalary,
+                      MaxSalary = x.MaxSalary,
+                      SalaryType = x.SalaryType,
+                      ExprienceLevels = x.ExprienceLevels,
+                      CreatedOn = x.CreatedOn,
+                      isInFavourites = user != null ? _fav.isInFavourite(user, PostType.Job, x.Id.ToString()) : false
+                    })
+                   .OrderByDescending(x => x.Id)
                    .Take(entitiesToShow)
+                   .To<JobsViewModel>()
                    .AsAsyncEnumerable();
+
+            return result;
         }
-
-        public IAsyncEnumerable<Jobs> GetTop(int entitiesToShow)
+        public IAsyncEnumerable<Jobs> GetAllByStats(string JobIdString)
         {
-            var ent = GetAllAsNoTracking()
-                   .Where(x => (x.isApproved == ApproveType.Success) && !x.isArchived);
+            string[] jobIds = JobIdString?.Split(',');
 
-            if (ent.Any(x => (x.Promotion > 0)))
+            if (jobIds.Length < 0)
+                return null;
+
+            var result = GetAllAsNoTracking()
+                   .Where(x => ((IList)jobIds).Contains(x.Id.ToString()))
+                   .AsAsyncEnumerable();
+
+            return result;
+        }
+        public async Task<int> GetAllCountBy(int id, bool isCompany)
+        {
+            return await GetAllAsNoTracking()
+                   .Where(x => (isCompany ? x.CompanyId == id : x.CategoryId == id))
+                   .Where(x => x.isApproved == ApproveType.Success && !x.isArchived)
+                   .CountAsync().ConfigureAwait(false);
+        }
+        public IAsyncEnumerable<JobsViewModel> GetTop(int entitiesToShow, IFavoritesService _fav, User user)
+        {
+
+            var ent = GetAllAsNoTracking()
+            .Where(x => x.isApproved == ApproveType.Success && !x.isArchived)
+            .Select(x => new Jobs
             {
-                ent.OrderByDescending(x => x.Promotion);
+                Id = x.Id,
+                Name = x.Name,
+                CompanyLogo = x.CompanyLogo,
+                LocationId = x.LocationId,
+                MinSalary = x.MinSalary,
+                MaxSalary = x.MaxSalary,
+                SalaryType = x.SalaryType,
+                ExprienceLevels = x.ExprienceLevels,
+                CreatedOn = x.CreatedOn,
+                Promotion = x.Promotion,
+                Rating = x.Rating,
+                isInFavourites = user != null ? _fav.isInFavourite(user, PostType.Job, x.Id.ToString()) : false
+            }); 
+
+            if (ent.Any(x => x.Promotion > 0))
+            {
+                ent = ent.OrderByDescending(x => x.Promotion);
             }
             else if (ent.Any(x => x.Rating > 0))
             {
-                ent.OrderByDescending(x => x.Rating);
+               ent = ent.OrderByDescending(x => x.Rating);
             }
-            else ent.OrderByDescending(x => x.Id);
+            else ent = ent.OrderByDescending(x => x.Id);
 
-            var data = ent.Take(entitiesToShow).AsAsyncEnumerable();
+            var data = ent.Take(entitiesToShow).To<JobsViewModel>().AsAsyncEnumerable();
+
             return data;
         }
 
-        public IAsyncEnumerable<Jobs> GetLast(int entitiesToShow)
+        public IAsyncEnumerable<JobsViewModel> GetLast(int entitiesToShow, IFavoritesService _fav, User user)
         {
-            return jobsRepository.Set()
-                   .Where(x => x.isApproved == ApproveType.Success && !x.isArchived)
-                   .OrderByDescending(x => x.Id)
-                   .Take(entitiesToShow)
-                   .AsAsyncEnumerable();
+            var result = GetAllAsNoTracking()
+                .Where(x => x.isApproved == ApproveType.Success && !x.isArchived)
+                .Select(x => new Jobs
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    CompanyLogo = x.CompanyLogo,
+                    LocationId = x.LocationId,
+                    MinSalary = x.MinSalary,
+                    MaxSalary = x.MaxSalary,
+                    SalaryType = x.SalaryType,
+                    ExprienceLevels = x.ExprienceLevels,
+                    CreatedOn = x.CreatedOn,
+                    isInFavourites = user != null ? _fav.isInFavourite(user, PostType.Job, x.Id.ToString()) : false
+
+                })
+                .OrderByDescending(x => x.Id)
+                .Take(entitiesToShow)
+                .To<JobsViewModel>()
+                .AsAsyncEnumerable(); 
+
+            return result;
         }
 
 
@@ -176,6 +262,7 @@ namespace HireMe.Services
         {
             var ent = await jobsRepository.Set()
                 .Where(p => p.Id == id)
+
                 .To<JobsViewModel>()
                 .FirstOrDefaultAsync();
 
@@ -187,61 +274,108 @@ namespace HireMe.Services
 
             return ent;
         }
+        public async Task<Jobs> GetByTitleAsync(string title)
+        {
+            var ent = await jobsRepository.Set().FirstOrDefaultAsync(j => j.Name == title);
 
+            return ent;
+        }
         public async Task<bool> IsValid(int Id)
         {
             var ent = await this.jobsRepository.Set().AnyAsync(x => x.Id == Id);
             return ent;
         }
         
-        public void SeedTest(FeaturesDbContext dbContext)        {            var test = new List<Jobs>();            for (int i = 0; i < 50000; i++)            {
-                test = new List<Jobs>                {
-                new Jobs
-                {                //Id = i,                CategoryId = 12,                CompanyId = 5,                Name = "Test for backround task",                //WorkType = Entities.Enums.WorkType.Full,                ExprienceLevels = Entities.Enums.ExprienceLevels.Beginner,                Description = "testt",                LocationId = "София",                LanguageId = null,                MinSalary = 11,                MaxSalary = 111,                SalaryType = Entities.Enums.SalaryType.day,                Adress = "test",                TagsId = null,                PosterID = "da3bb2af-d040-4b34-aa04-9edcfe117e80",                CreatedOn = DateTime.Now,                ExpiredOn = DateTime.Now.AddMonths(1),
-                Promotion = Entities.Enums.PromotionEnum.Default,                isApproved = ApproveType.Success,                isArchived = false                }               };                dbContext.Jobs.AddRange(test);            }           
-            dbContext.SaveChanges();        }
-        public async Task<bool> AddRatingToJobs(int jobId, double rating)
-        {
-            var job = await this.jobsRepository.Set().FirstOrDefaultAsync(j => j.Id == jobId);
 
-            if (job == null)
+        public async Task<bool> AddRatingToJobs(Jobs entity, int rating)
+        {
+            if (entity == null)
                 return false;
 
-            double maxRating = 100.0;
-            
-            if (job.Rating < maxRating)
+            int maxRating = 5;
+
+            if (rating < maxRating)
             {
-                job.Rating += rating;
-                job.RatingVotes++;
+                entity.RatingVotes += rating;
+            }
+
+            if (entity.Rating < (double)maxRating)
+            {
+                entity.Rating += ((entity.Rating * entity.RatingVotes) + rating) / (entity.RatingVotes + 1);
 
                 await jobsRepository.SaveChangesAsync();
                 return true;
             }
+
             return false;
         }
 
         // RESUME
-        public async Task<OperationResult> RemoveResumeFromReceived(string id, Jobs job)
+        public async Task<OperationResult> RemoveResumeFromReceived(int id)
         {
-            if (job == null)
+            Jobs job = await GetByIdAsync(id);
+            if (job is null)
                 return OperationResult.FailureResult("Операцията не може да бъде изпълнена!");
 
-            string postIdComplate = ',' + id;
+            string id2 = id.ToString();
+            string postIdComplate = ',' + id2;
             string[] items = job.resumeFilesId?.Split(',');
 
-            if (items == null)
+            if (items is null)
                 return OperationResult.FailureResult("Операцията не може да бъде изпълнена!");
 
-            if (job.resumeFilesId?.IndexOf(id) > -1)
+            if (job.resumeFilesId?.IndexOf(id2) > -1)
                 {
-                job.resumeFilesId = job.resumeFilesId.Remove(job.resumeFilesId.Contains(',') ? job.resumeFilesId.IndexOf(postIdComplate) : job.resumeFilesId.IndexOf(id));
+                job.resumeFilesId = job.resumeFilesId.Remove(job.resumeFilesId.Contains(',') ? job.resumeFilesId.IndexOf(postIdComplate) : job.resumeFilesId.IndexOf(id2));
 
                 jobsRepository.Update(job);
 
                 var result = await jobsRepository.SaveChangesAsync();
+
+                if(result.Success)
+                {
+                    var resumes = GetAllByJobId(job.Id);
+                    if (resumes is null)
+                        return OperationResult.FailureResult("Операцията не може да бъде изпълнена!");
+
+
+                    resumeRepository.DeleteRange(resumes);
+                }
                 return result;
             }
             return OperationResult.FailureResult("Операцията не може да бъде изпълнена!");
+        }
+
+        public OperationResult DeleteResumeFilesByGuest(string jobTitle)
+        {
+            string folderClearedName = Path.Combine(_ResumeGuestsPath, StringHelper.Filter(jobTitle));
+            if (Directory.Exists(folderClearedName))
+            {
+                try
+                {
+                    DirectoryInfo di = new DirectoryInfo(folderClearedName);
+                    FileInfo[] fileInfo = di.GetFiles();
+                    foreach (var item in fileInfo)
+                    {
+                        item.Delete();
+                    }
+                }
+                finally
+                {
+                    Directory.Delete(folderClearedName);
+                }
+                return OperationResult.SuccessResult(null);
+            }
+
+            return OperationResult.FailureResult("Директорията не съществува!");
+        }
+        private IQueryable<Resume> GetAllByJobId(int jobId)
+        {
+            var ent = resumeRepository.Set()
+                .Where(p => p.JobId == jobId)
+                .AsQueryable();
+
+            return ent;
         }
     }
 }

@@ -26,6 +26,7 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             _notificationService = notificationService;
         }
 
+        public User UserEntity { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -35,6 +36,7 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
 
+            UserEntity = user;
             return Page();
         }
 
@@ -46,15 +48,18 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
 
+            UserEntity = user;
+
             if (user.AccountType != AccountType.Free)
             {
                 user.AccountType = AccountType.Free;
 
-                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user);
+                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user.Id, null).ConfigureAwait(false);
                 await _userManager.UpdateAsync(user);
                 await _signInManager.RefreshSignInAsync(user);
                 return RedirectToPage("Index");
             }
+
             return Page();
         }
         public async Task<IActionResult> OnPostProAsync()
@@ -65,10 +70,12 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
 
+            UserEntity = user;
+
             if (user.AccountType != AccountType.Pro)
             {
                 user.AccountType = AccountType.Pro;
-                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user);
+                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user.Id, null).ConfigureAwait(false);
 
                 await _userManager.UpdateAsync(user);
                 await _signInManager.RefreshSignInAsync(user);
@@ -85,10 +92,12 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
 
+            UserEntity = user;
+
             if (user.AccountType != AccountType.Test)
             {
                 user.AccountType = AccountType.Test;
-                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user);
+                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user.Id, null).ConfigureAwait(false);
 
                 await _userManager.UpdateAsync(user);
                 await _signInManager.RefreshSignInAsync(user);

@@ -1,310 +1,242 @@
-﻿
+﻿@inject IConfiguration config
 @inject UserManager<User> _userManager
 @inject ICompanyService _companyService
 
 @model ActivityViewModel
 @{
-    string FullImage = null;
-    string notifyIcon = null;
+    var user = await _userManager.GetUserAsync(User);
+
+    string code = null;
+
+    string _ImagePath = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+    string Url = config.GetSection("MySettings").GetSection("SiteUrl").Value;
+
+    string SenderImageUrl;
+    User sender;
 }
+    <section class="ls-section">
+      <div class="filters-backdrop"></div>
 
-<link type="text/css" href="~/customCSS/Dashboard/plugins/Using/quickSideBar.css" rel="stylesheet" asp-append-version="true" />
-<link type="text/css" href="~/customCSS/Dashboard/plugins/Using/notifications.min.css" rel="stylesheet" asp-append-version="true" />
-<link type="text/css" href="~/customCSS/Dashboard/plugins/Using/avatar.min.css" rel="stylesheet" asp-append-version="true" />
+      <div class="ls-cotainer">
+        <div class="filters-column hide-left">
+          <div class="inner-column">
+            <div class="filters-outer" style="padding:30px 0 0 0;">
+              <button type="button" class="theme-btn close-filters">X</button>
 
-<div class="quick-sidebar" id="quick-sidebar" onclick="HideBubbble()">
-
-    <div class="quick-sidebar-wrapper">
-        <div class="sectionName">
-            <a href="#" class="close-quick-sidebar">
-                <i class="fas fa-angle-left"></i>
-            </a>
-            Активност
-        </div>
-
-
-        <ul class="nav nav-tabs nav-line nav-color-primary" role="tablist">
-            <li class="nav-item"> <a class="nav-link active show" data-toggle="tab" href="#messenger" role="tab" aria-selected="false"><i class="flaticon-chat-4"></i></a> </li>
-            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#notif" role="tab" aria-selected="false"> <i class="flaticon-alarm"></i></a> </li>
-            <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#fav" role="tab" aria-selected="false"><i class="flaticon-like-1"></i></a> </li>
-        </ul>
-
-        <div class="tab-content mt-3">
-
-            <div class="tab-pane fade active show" id="messenger" role="tabpanel">
-                <div class="messages-contact">
-                    <div class="quick-wrapper">
-                        <div class="quick-scroll scrollbar-outer">
-                            <div class="quick-content contact-content">
-
-                                <div class="contact-list contact-list-recent">
-                                    @if (Model.isMessagesEmpty && Model.Messages is not null)
-                                    {
-
-                                        @await foreach (var entity in Model.Messages)
-                                        {
-                                            var sender = await _userManager.FindByIdAsync(entity.SenderId);
-
-                                            <div class="message">
-                                                <a asp-controller="Message" asp-action="Details" asp-route-id="@entity.Id">
+              <!-- Filter Block -->
+              <div class="filter-block">
+            <div class="default-tabs style-two tabs-box">
+              <!--Tabs Box-->
+              <ul class="tab-buttons clearfix">
+                <li class="tab-btn active-btn" data-tab="#tab1" data-toggle="tooltip" data-placement="top" title="Съобщения" ><span class="las la-inbox"></span></li>
+                <li class="tab-btn" data-tab="#tab2" data-toggle="tooltip" data-placement="top" title="Задачи" ><span class="la la-tasks"></span></li>
+                <li class="tab-btn" data-tab="#tab3" data-toggle="tooltip" data-placement="top" title="Настройки"><span class="la la-cog" data-placement="Задачи"></span></li>
+              </ul>
 
 
-                                                    @if (sender.PictureName is null)
-                                                    {
-                                                        <div class="avatar-lg">
-                                                            <span class="avatar-title rounded-circle" style="background-color: @sender?.Role.GetDescription()">@Model.FullName</span>
-                                                        </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="avatar-lg">
-                                                            <img src="@Model.SiteUrl@sender?.PictureName" alt="User picture" class="avatar-img rounded">
-                                                        </div>
-                                                    }
-                                                    <div class="user-data">
-                                                        <span class="name">@sender?.FirstName @sender?.LastName</span>
-                                                        <span class="subject">@entity.Title</span>
-                                                        <span class="time">@entity.dateTime.ToString("MM MMMM")</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                            <div class="dropdown-divider"></div>
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+              <div class="tabs-content">
+                <!--Tab-->
+                <div class="tab active-tab" id="tab1">
+               <div class="notification-widget ls-widget">
+              <div class="widget-title">
+                <h4>Съобщения</h4>
+              </div>
+              <hr>
+              <div class="widget-content">
+      
+                 @if (Model.isMessagesEmpty && Model.Messages is not null)
+                    {
+                    <ul class="notification-list">
+                     @await foreach (var entity in Model.Messages)
+                     {
+                        sender = await _userManager.FindByIdAsync(entity.SenderId);
+                        SenderImageUrl = sender?.PictureName is not null && sender.PictureName.Contains("https://") ? sender?.PictureName : (_ImagePath + sender?.PictureName); 
+                                            
+                     <li>
+                      <a asp-controller="Message" asp-action="Details" asp-route-id="@entity.Id" data-toggle="tooltip" data-placement="bottom" title="@entity.Title.Substring(0, 30)">
+                      <img class="icon lazyload" style="left:0;" data-src="@SenderImageUrl"/><strong> @sender?.FirstName @sender?.LastName</strong><br>ви изпрати ново съобщение. 
+                      <br>
+                      <span class="colored">@entity.dateTime.ToString("MM MMMM")</span>
+                       </a>
+                     </li>
 
-            <div class="tab-pane fade" id="notif" role="tabpanel">
-                <div class="messages-contact">
-                    <div class="quick-wrapper">
-                        <div class="quick-scroll scrollbar-outer">
-                            <div class="quick-content contact-content">
-
-                                <div class="contact-list contact-list-recent">
-                                    @if (Model.isNotiftEmpty && Model.Notifications != null)
-                                    {
-
-                                        @await foreach (var entity in Model.Notifications)
-                                        {
-                                            switch (entity.Type)
-                                            {
-                                                case NotifyType.Information:
-                                                    notifyIcon = "notif-primary";
-                                                    break;
-                                                case NotifyType.Warning:
-                                                    notifyIcon = "notif-warning";
-                                                    break;
-                                                case NotifyType.Danger:
-                                                    notifyIcon = "notif-danger";
-                                                    break;
-                                                case NotifyType.Success:
-                                                    notifyIcon = "notif-success";
-                                                    break;
-                                                case NotifyType.Image:
-                                                    notifyIcon = "notif-img";
-                                                    break;
-                                            }
-
-                                    <div class="message">
-                                        <a href="@Model.SiteUrl@entity.Url">
-
-                                            <div class="avatar-lg">
-                                                <span class="avatar-title rounded-circle @notifyIcon"> <i class="@entity.Icon"></i></span>
-                                            </div>
-
-                                            <div class="user-data">
-                                                <span class="name">@entity.Title</span>
-                                                <span class="subject">@entity.Type.GetDisplayName()</span>
-                                                <span class="time">@entity.Date.ToString("MM MMMM")</span>
-                                            </div>
-                                        </a>
-                                    </div>
-                                            <div class="dropdown-divider"></div>
-                                        }
-                                    }
-                                    @if (Model.isNotiftEmpty && Model.Notifications is not null)
-                                    {
-                                        <a class="see-all" style="font-size:.7em;" asp-controller="Notifications" asp-action="ClearNotifications" asp-route-returnurl="@Model.ReturnUrl">
-                                            <i class="text-danger fa fa-times"></i> Изчисти всички
-                                        </a>
-
-                                    }
-                                    else
-                                    {
-
-                                        <a href="#" class="see-all">
-                                            <span class="text-success fa fa-check-circle"></span> <b>Нямате нови известия</b>
-                                        </a>
-                                    }
-                                </div>
-                            </div>
-                        </div>
+                     }
+                     </ul>
+                   }
      
-                        </div>
-                    </div>
-               
-            </div>
+                </div>
+                </div>
+                </div>
+                <!--Tab-->
+                <div class="tab" id="tab2">
 
+               <div class="notification-widget ls-widget">
+              <div class="widget-title">
+                <h4>Задачи</h4>
+              </div>
+              <hr>
+              <div class="widget-content">
+      
+                 @if (Model.MyTasks is not null)
+                    {
+                    <ul class="notification-list">
+                     @await foreach (var entity in Model.MyTasks)
+                     {
+                     Model.SenderUser = await _userManager.FindByIdAsync(entity.SenderId);
+                     SenderImageUrl = Model.SenderUser?.PictureName is not null && Model.SenderUser.PictureName.Contains("https://") ? Model.SenderUser?.PictureName : (_ImagePath + Model.SenderUser?.PictureName); 
 
-            <div class="tab-pane fade" id="fav" role="tabpanel">
-                <div class="messages-contact">
-                    <div class="quick-wrapper">
-                        <div class="quick-scroll scrollbar-outer">
-                            <div class="quick-content contact-content">
+                        switch (entity.Level)
+                        {
+                          case TaskLevel.Normal:
+                            code = "нормална задача за вас";
+                           break;
+                          case TaskLevel.Video:
+                            code = "видео разговор с вас";
+                           break;
 
-                                <div class="contact-list contact-list-recent">
-                                    @if (Model.FavouritesCount > 0)
-                                    {
+                        }
+                                        
+                     <li>
+                      <a asp-controller="Message" asp-action="Details" asp-route-id="@entity.Id" data-toggle="tooltip" data-placement="bottom" title="@entity.About?.Substring(0, 30)">
+                      <img class="icon lazyload" style="left:0;" data-src="@SenderImageUrl"/><strong> @Model.SenderUser?.FirstName @Model.SenderUser?.LastName<br> създаде @code.</strong>
+                      <br>
+                      <small>Начало: @entity.StartDate.ToString("MM/dd/yyyy h:mm tt")<br>Край: @entity.EndDate.ToString("MM/dd/yyyy h:mm tt")</small>
+                       </a>
+                     <hr>
+                       </li>
 
-                                        @if (Model.FavouriteCompany is not null)
-                                        {
-                                            await foreach (var item in Model.FavouriteCompany)
+                     }
+                     </ul>
+                   }
+     
+                </div>
+                </div>
+
+                </div>
+
+                <!--Tab-->
+                <div class="tab" id="tab3">
+              <div class="notification-widget ls-widget">
+              <div class="widget-title">
+                <h4>Настройки</h4>
+              </div>
+              <hr>
+              <ul class="widget-content">
+                                
+                                <li class="row m-1">
+                                    <div class="col-sm-8">Известия</div>
+
+                                        <form asp-controller="Notifications" asp-action="Enabling" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="col-sm-4">
+                                            @if (!Model.User.NotifyEnable)
                                             {
-                                    <div class="user">
-
-                                        <div class="avatar-lg favouriteImage">
-
-                                            @if (item.Logo is null)
-                                            {
-                                                <span class="avatar-title rounded-circle"><i class="fas fa-images"></i></span>
+                                                <button class="btn btn-sm btn-success" type="submit"> Включи</button>
                                             }
                                             else
                                             {
-                                                <img src="@Model.SiteUrl@item.Logo" alt="User picture" class="avatar-img rounded">
+                                                <button class="btn btn-sm btn-danger" type="submit"> Изключи</button>
                                             }
-
-
-                                            <div class="overlay">
-
-                                                <a asp-controller="Company" asp-action="UpdateFavourite" asp-route-id="@item.Id" asp-route-returnUrl="@Model.ReturnUrl" class="favIcon">
-                                                    <i class="fas fa-heart"></i>
-                                                </a>
-
-                                            </div>
-
-                                        </div>
-                                        <a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id" class="link">
-                                            <div class="user-data">
-                                                <span class="name">@item.Title</span>
-                                                <span class="subject"><i class="text-success fas fa-map-marker-alt"></i> @item.LocationId</span>
-                                                <span class="time">@item.Rating</span>
-                                            </div>
-                                        </a>
-
-                                         </div>
-                                             <div class="dropdown-divider"></div>
-                                                    }
-                                                }
-
-
-                                                @if (Model.FavouriteJob is not null)
-                                                {
-
-
-                                                    await foreach (var item in Model.FavouriteJob)
-                                                    {
-                                                        Model.Company = await _companyService.GetByIdAsync(item.CompanyId);
-                                <div class="user">
-
-                                    <div class="avatar-lg favouriteImage">
-                                        @if (Model.Company?.Logo is null)
-                                        {
-                                            <span class="avatar-title rounded-circle"><i class="fas fa-images"></i></span>
-                                        }
-                                        else
-                                        {
-                                            <img src="@Model.SiteUrl@Model.Company?.Logo" alt="Няма лого" class="avatar-img rounded">
-                                        }
-
-                                        <div class="overlay">
-
-                                            <a asp-controller="Jobs" asp-action="UpdateFavourite" asp-route-id="@item.Id" asp-route-returnUrl="@Model.ReturnUrl" class="favIcon">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-
-                                        </div>
-                                    </div>
-                                    <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" class="link">
-                                        <div class="user-data">
-                                            <span class="name">@item.Name</span>
-                                            <span class="subject"><i class="text-success fas fa-map-marker-alt"></i> @item.LocationId</span>
-                                            <span class="time">@item.Rating</span>
-                                        </div>
-                                    </a>
-                                </div>
-                                              <div class="dropdown-divider"></div>
-                                                    }
-                                                }
-
-                                                @if (Model.FavouriteContestant is not null)
-                                                {
-
-                                                    await foreach (var item in Model.FavouriteContestant)
-                                                    {
-                                                        Model.ContestantUser = await _userManager.FindByIdAsync(item.PosterID);
-                                                        if (!(Model.ContestantUser is null))
-                                                            FullImage = Model.ContestantUser.isExternal ? Model.ContestantUser?.PictureName : Model.SiteUrl + Model.ContestantUser?.PictureName;
-                                                        else
-                                                            FullImage = "~/uploads/Images/100x100.jpg";
-
-                                <div class="user">
-                                    <div class="avatar-lg favouriteImage">
-                                        @if (Model.ContestantUser?.PictureName is null)
-                                        {
-                                            <span class="avatar-title rounded-circle"><i class="fas fa-images"></i></span>
-                                        }
-                                        else
-                                        {
-
-                                            <img src="@FullImage" alt="Няма лого" class="avatar-img rounded">
-
-                                        }
-                                        <div class="overlay">
-
-                                            <a asp-controller="Cotestants" asp-action="UpdateFavourite" asp-route-id="@item.Id" asp-route-returnUrl="@Model.ReturnUrl" class="favIcon">
-                                                <i class="fas fa-heart"></i>
-                                            </a>
-
-                                        </div>
-                                    </div>
-                                    <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id" class="link">
-                                        <div class="user-data">
-                                            <span class="name">@item.FullName</span>
-                                            <span class="subject"><i class="text-success fas fa-map-marker-alt"></i> @item.LocationId</span>
-                                            <span class="time">@item.payRate лв. / @item.SalaryType.GetDisplayName()</span>
-                                        </div>
-                                    </a>
-
-                                </div>
-                                                        <div class="dropdown-divider"></div>
-                                                    }
-                                                }
+                                        </form>
+                                </li>
+                                <li class="row m-1">
+                                <hr>
+                                    <div class="col-sm-8">Съобщения</div>
+                                        <form asp-controller="Message" asp-action="Enabling" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="col-sm-4">
+                                            @if (!Model.User.MessagesEnable)
+                                            {
+                                                <button class="btn btn-sm btn-success" type="submit"> Включи</button>
                                             }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-danger" type="submit"> Изключи</button>
+                                            }
+                                        </form>
+        
+                                </li>
 
-
-
+                                <li class="row m-1">
+                                    <div class="col-sm-8">Приложения</div>
+                                        <form asp-controller="Account" asp-action="SignInSocialEnabling" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="col-sm-4">
+                                            @if (!Model.User.SignInSocialEnable)
+                                            {
+                                                <button class="btn btn-sm btn-success" type="submit"> Включи</button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-danger" type="submit"> Изключи</button>
+                                            }
+                                        </form>
+                                </li>
+                                <li class="row m-1">
+                                    <div class="col-sm-8">Уведомяване по емайл</div>
+                                        <form asp-controller="Account" asp-action="EmailNotifyEnabling" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="col-sm-4">
+                                            @if (!Model.User.EmailNotifyEnable)
+                                            {
+                                                <button class="btn btn-sm btn-success" type="submit"> Включи</button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-danger" type="submit"> Изключи</button>
+                                            }
+                                        </form>
+                                        
+                                </li>
+                             </ul>
                 </div>
+
+            @*if (Model.User.Role.Equals(Roles.Admin))
+            {
+                <!--Tab-->
+                <div class="tab" id="tab4">
+              <div class="notification-widget ls-widget">
+              <div class="widget-title">
+                <h4>Системни грешки</h4>
+              </div>
+              <hr>
+              <div class="widget-content">
+      
+                 @if (Model.Logs is not null)
+                    {
+                    <ul class="notification-list">
+                     @await foreach (var entity in Model.Logs)
+                                    {
+                                        switch (entity.Code)
+                                        {
+                                            case LogLevel.Info:
+                                                code = "info";
+                                                break;
+                                            case LogLevel.Warning:
+                                                code = "warning";
+                                                break;
+                                            case LogLevel.Danger:
+                                                code = "danger";
+                                                break;
+
+                                        }
+                
+                     <li>
+                      <a href="#" data-toggle="tooltip" data-placement="bottom" title="@entity.Date.ToString("MM/dd/yyyy h:mm tt")">
+                      <span class="icon fas fa-info-circle" style="left:0;"></span><strong> @entity.Title (@code)</strong><br>@entity.SenderId<br>
+                      <br>
+                      <span class="colored">@entity.ErrorPage</span>
+                       </a>
+                     </li>
+
+                     }
+                     </ul>
+                   }
+     
+                </div>
+                </div>
+                </div>
+            }*@
+              </div>
             </div>
+              </div>
+
+            </div>
+          </div>
         </div>
-
-        <script>
-            function HideBubbble() {
-                $.ajax({
-                    url: '/UsersApi/HideBubble/',
-                    type: "POST",
-                    dataType: "json",
-                    data: true,
-                });
-
-            };
-            </script>
+        </div>
+        </div>
+        </section>
+        

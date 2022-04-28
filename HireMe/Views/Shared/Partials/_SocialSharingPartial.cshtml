@@ -1,0 +1,18 @@
+﻿@model string
+@{
+    string currentUrl = Context.Request.Scheme + "://" + Context.Request.Host + Context.Request.Path;
+    string enc = System.Net.WebUtility.UrlEncode(currentUrl);
+    string text = System.Net.WebUtility.UrlEncode(Model);
+
+}
+
+              <div class="other-options">
+                <div class="social-share">
+                  <h5>Сподели</h5>
+                  <a href="https://www.facebook.com/sharer/sharer.php?u=@enc" class="facebook"><i class="fab fa-facebook-f"></i> Facebook</a>
+                  <a href="https://twitter.com/intent/tweet?url=@enc&text=@text" class="twitter"><i class="fab fa-twitter"></i> Twitter</a>
+                  <a href="https://api.whatsapp.com/send?text=@enc" class="whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                  <a href="mailto:?subject=@Model.Replace(" ", "%20")&amp;body=@enc" class="email"><i class="fa fa-envelope"></i> Email</a>
+                </div>
+              </div>
+

@@ -1,0 +1,86 @@
+﻿@model Filter
+
+@{
+    bool isMobile = MobileDetector.IsMobile(Context);
+}
+
+@if (isMobile)
+{
+    <style>
+        span.select2-container {
+            z-index: 10050;
+        }
+    </style>
+}
+
+        <!-- Job Search Form -->
+        <div class="job-search-form">
+                <form asp-controller="Company" asp-action="Index" method="post" id="filterForm" asp-route-currentPage="@Model.currentPage">
+            <div class="row">
+              <!-- Form Group -->
+              <div class="form-group col-lg-4 col-md-12 col-sm-12">
+                <span class="icon flaticon-search-1"></span>
+                 <input asp-for="SearchString" type="text" placeholder="Име на фирма">
+              </div>
+
+              <!-- Form Group -->
+              <div class="form-group col-lg-3 col-md-12 col-sm-12 location">
+                <span class="icon flaticon-map-locator"></span>
+                <select class="selectLocation" style="width: 100%" ></select>
+                <input asp-for="LocationId" type="hidden" id="selectLocation_Value" />
+              </div>
+
+              <!-- Form Group -->
+                <div class="form-group col-lg-3 col-md-12 col-sm-12 location">
+                <span class="icon flaticon-briefcase"></span>
+                <select class="selectCategory" style="width: 100%"></select>
+                <input asp-for="CategoryId" type="hidden" id="selectCategory_Value" />
+              </div>
+
+
+              <!-- Form Group -->
+              <div class="form-group col-lg-2 col-md-12 col-sm-12 text-right">
+                <button type="submit" class="theme-btn btn-style-one">Търси</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- Job Search Form -->        
+        
+        @*<div class="top-filters">
+          <div class="form-group">
+            <select class="chosen-select">
+              <option>Company Size</option>
+              <option>New Jobs</option>
+              <option>Freelance</option>
+              <option>Full Time</option>
+              <option>Internship</option>
+              <option>Part Time</option>
+              <option>Temporary</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <select class="chosen-select">
+              <option>Founded Date</option>
+              <option>New Jobs</option>
+              <option>Freelance</option>
+              <option>Full Time</option>
+              <option>Internship</option>
+              <option>Part Time</option>
+              <option>Temporary</option>
+            </select>
+          </div>
+        </div>*@
+
+        
+@section Scripts {
+    <script defer src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <script defer src="~/customJS/contestants/filter/locationSelect.min.js"></script>
+    <script>
+           $(document).ready(function () {
+               console.log("ready");
+           });
+    </script>
+}

@@ -1,409 +1,431 @@
-﻿
+﻿@inject SignInManager<User> _signInManager
+@inject UserManager<User> _userManager
 @model CreateContestantInputModel
 
-@{ 
+@{
     ViewData["Title"] = "Публикувай кандидатура";
     ViewData["Description"] = "Търсете профили на кандидати от GrandJob.eu. Разгледайте нашата база данни за кандидати, за да намерите бързо подходящо лице за вашите задачи.";
     ViewData["Keywords"] = "candidates, кандидати, създай, кандидатура, работа";
     Layout = "Layout/_Create";
 
-
+    var user = await _userManager.GetUserAsync(User);
     var visiblityList = Enum.GetValues(typeof(Visiblity)); 
-    }
+}
 
-<div class="row">
-    <div class="col-sm-12">
-        <ol class="step-indicator">
 
-            <li class="incomplete active is-first">
-                <div class="step-wrapper"><div class="step">1</div></div>
-                <div class="caption">Лични данни</div>
-            </li>
-            <li class="incomplete">
-                <div class="step-wrapper"><div class="step">2</div></div>
-                <div class="caption">Детайли</div>
-            </li>
-            <li class="incomplete">
-                <div class="step-wrapper"><div class="step">3</div></div>
-                <div class="caption">Информация</div>
-            </li>
-            <li class="incomplete is-last">
-                <div class="step-wrapper"><div class="step">4</div></div>
-                <div class="caption">Резюме</div>
-            </li>
-        </ol>
-    </div>
-</div>
+<div class="wrapper">
+    <partial name="../Home/IOSPartials/_LeftSidePartial" />
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="row margin-bottom-20">
-            <div class="col-sm-12">
-                <h3 class="wizard-title">Създай своя профил сега.</h3>
-                <div class="text-light-grey">Разкажи ни за себе си. Само на български език.</div>
+    <div class="main-container">
+
+        <div class="main-header desktop-only">
+            <div class="header-menu">
+                <a class="main-header-link" id="backSearch"><i class="backIcon"></i></a>
+                <a class="main-header-link" asp-controller="Home" asp-action="Index">Начало</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index" asp-route-Internship="intern">Стажове</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index">Работа</a>
+                <a class="main-header-link is-active" asp-controller="Contestants" asp-action="Index">Хора</a>
             </div>
         </div>
-        <form asp-controller="Contestants" asp-action="Create" method="post" id="conForm">
 
-            <fieldset>
+
+        @if (_signInManager.IsSignedIn(User))
+        {@await Component.InvokeAsync("_Activity")}
+
+        <div class="content-wrapper bg-darker">
+            <div class="content-section">
+                <div class="content-section-title">Създай своя профил сега.</div>
                 <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="FullName"></label><span class="required-label">*</span>
-                            <input asp-for="FullName" class="form-control" placeholder="Напишете трите си имена" name="fullname" />
-                            <span asp-validation-for="FullName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="Genders"></label><span class="required-label">*</span>
-                            <select asp-for="Genders" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control"></select>
-                            <span asp-validation-for="Genders" class="text-danger"></span>
-                        </div>
+                    <div class="col-sm-12">
+                        <ol class="step-indicator">
+
+                            <li class="incomplete active is-first">
+                                <div class="step-wrapper"><div class="step">1</div></div>
+                                <div class="caption">Лични данни</div>
+                            </li>
+                            <li class="incomplete">
+                                <div class="step-wrapper"><div class="step">2</div></div>
+                                <div class="caption">Детайли</div>
+                            </li>
+                            <li class="incomplete">
+                                <div class="step-wrapper"><div class="step">3</div></div>
+                                <div class="caption">Информация</div>
+                            </li>
+                            <li class="incomplete is-last">
+                                <div class="step-wrapper"><div class="step">4</div></div>
+                                <div class="caption">Резюме</div>
+                            </li>
+                        </ol>
                     </div>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="Age"></label><span class="required-label">*</span>
-                            <input asp-for="Age" class="form-control" placeholder="Избери дата" name="age" />
-                            <span asp-validation-for="Age" class="text-danger"></span>
+                <form asp-controller="Contestants" asp-action="Create" method="post" id="conForm">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="FullName"></label><span class="required-label">*</span>
+                                    <input asp-for="FullName" class="form-control" value="@user?.FirstName @user?.LastName" disabled /> 
+                                    <span asp-validation-for="FullName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="Genders"></label><span class="required-label">*</span>
+                                    <select asp-for="Genders" asp-items="Html.GetEnumSelectList<Gender>()" class="form-control"></select>
+                                    <span asp-validation-for="Genders" class="text-danger"></span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <label asp-for="LocationId"></label><span class="required-label">*</span>
-                        <select class="form-control" asp-for="LocationId">
-                            @await foreach (var item in Model.AllLocations)
-                            {
-                <option value="@item.Value">@item.Value</option>}
-                        </select>
-                        <span asp-validation-for="LocationId" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <hr>
-                <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-outline-primary next" value="Продължи" />
-            </fieldset>
-
-
-
-
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label asp-for="userSkillsId"></label>
-                            <select class="selectTags form-control" multiple="multiple" style="width: 95%" id="selectTags">
-                            </select>
-                            <input asp-for="userSkillsId" type="hidden" id="selectTags_Value" />
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="Age"></label><span class="required-label">*</span>
+                                    <input asp-for="Age" class="form-control" placeholder="Избери дата" name="age" />
+                                    <span asp-validation-for="Age" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <label asp-for="LocationId"></label><span class="required-label">*</span>
+                                <select class="form-control" asp-for="LocationId">
+                                    @await foreach (var item in Model.AllLocations)
+                                    {
+                                        <option value="@item?.Value">@item?.Value</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="LocationId" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label asp-for="LanguagesId"></label>
-                            <select class="selectLang form-control" style="width: 95%" onchange="this.form.submit();"></select>
-                            <input asp-for="LanguagesId" type="hidden" id="selectLang_Value" />
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label asp-for="Experience"></label><small>(години)</small>
-                            <input asp-for="Experience" class="form-control" value="0" />
-                            <span asp-validation-for="Experience" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <label asp-for="payRate"></label><span class="required-label">*</span>
-                    </div>
-                </div>
-                <div class="row">
 
-                    <div class="col-sm-3">
-                        <div class="form-group form-show-validation">
-                            <input asp-for="payRate" class="form-control" name="payrate" value="0" placeholder="Заплащане пример: (10лв. / час)" />
-                            <span asp-validation-for="payRate" class="text-danger"></span>
+                        <hr>
+                        <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-primary next" value="Продължи" />
+                    </fieldset>
+
+
+
+
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label asp-for="userSkillsId"></label>
+                                    <select class="selectTags form-control" multiple="multiple" style="width: 95%" id="selectTags">
+                                        @{ if (Model.AllTags != null && Model.userSkillsId != null)
+                                            {
+                                                await foreach (var item in Model.AllTags)
+                                                {
+                                                    <option value="@item?.Id" selected="selected">@item?.Title</option>
+                                                }
+                                            } }
+                                    </select>
+                                    <input asp-for="userSkillsId" type="hidden" id="selectTags_Value" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <select asp-for="SalaryType" asp-items="Html.GetEnumSelectList<SalaryType>()" class="form-control"></select>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label asp-for="LanguagesId"></label>
+                                    <select class="selectLang form-control" style="width: 95%" onchange="this.form.submit();">
+                                        @{ if (Model.AllLanguages != null && Model.LanguagesId != null)
+                                            {
+                                                await foreach (var item in Model.AllLanguages)
+                                                {
+                                                    <option value="@item?.Id" selected="selected">@item?.Name</option>
+                                                }
+                                            } }
+                                    </select>
+                                    <input asp-for="LanguagesId" type="hidden" id="selectLang_Value" />
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label asp-for="Experience"></label><small>(години)</small>
+                                    <input asp-for="Experience" class="form-control" value="0" />
+                                    <span asp-validation-for="Experience" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label asp-for="payRate"></label><span class="required-label">*</span>
+                            </div>
+                        </div>
+                        <div class="row">
 
-                    <br>
-                    <div class="col-md-10">
-                        <i class="fa fa-info-circle" style="color:cornflowerblue"></i> <small class="text-lg-left">Включването на заплащане значително ще увеличи броя на заявките за съобщения, които получавате, защото много клиенти го използват като критерии за търсене.</small>
-                    </div>
+                            <div class="col-sm-3">
+                                <div class="form-group form-show-validation">
+                                    <input asp-for="payRate" class="form-control" name="payrate" value="0" placeholder="Заплащане пример: (10лв. / час)" />
+                                    <span asp-validation-for="payRate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <select asp-for="SalaryType" asp-items="Html.GetEnumSelectList<SalaryType>()" class="form-control"></select>
+                                </div>
+                            </div>
 
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="WorkType"></label><span class="required-label">*</span>
-                            <select class="selectWork form-control required" style="width: 85%" multiple="multiple"></select>
-                            <input asp-for="WorkType" type="hidden" id="selectWork_Value" name="selectWork_Value" />
-                            <span asp-validation-for="WorkType" class="text-danger"></span>
+                            <br>
+                            <div class="col-md-10">
+                                <i class="fa fa-info-circle" style="color:cornflowerblue"></i> <small class="text-lg-left">Включването на заплащане значително ще увеличи броя на заявките за съобщения, които получавате, защото много клиенти го използват като критерии за търсене.</small>
+                            </div>
 
                         </div>
-                    </div>
-                </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="WorkType"></label><span class="required-label">*</span>
+                                    <select class="selectWork form-control required" style="width: 85%" multiple="multiple">
+                                        @if (Model.WorkType != null)
+                                        {
+                                            @foreach (var item in Model.Worktypes)
+                                            {
+                                                <option value="@item?" selected="selected">@item?</option>
+                                            }}
+                                    </select>
+                                    <input asp-for="WorkType" type="hidden" id="selectWork_Value" name="selectWork_Value" />
+                                    <span asp-validation-for="WorkType" class="text-danger"></span>
 
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label asp-for="profileVisiblity"></label><span class="required-label">*</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label asp-for="profileVisiblity"></label><span class="required-label">*</span>
+
+                                    <div class="col-sm-10">
+                                        @if (visiblityList is not null)
+                                        {
+                                            @foreach (var item in visiblityList)
+                                            {
+                                                <input type="radio" value="@Convert.ToInt32(item)" asp-for="profileVisiblity"> @Enum.GetName(typeof(Visiblity), item);
+                                                
+                                            }
+                                    }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-primary next" value="Продължи" />
+
+                    </fieldset>
+
+
+
+
+                    <fieldset>
+                        <h5 class="wizard-title">Описание</h5>
+                        <div class="row">
 
                             <div class="col-sm-10">
-                                @foreach (var item in visiblityList)
-                                {
-                    <input type="radio" value="@Convert.ToInt32(item)" asp-for="profileVisiblity"> @Enum.GetName(typeof(Visiblity), item);
-                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-                <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-outline-primary next" value="Продължи" />
-
-            </fieldset>
-
-
-
-
-            <fieldset>
-                <h5 class="wizard-title">Описание</h5>
-                <div class="row">
-
-                    <div class="col-sm-10">
-                        <div class="form-group form-show-validation">
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-md">Специалност:</span>
+                                <div class="form-group form-show-validation">
+                                    <input asp-for="Speciality" placeholder="Инжинер, Учител, Архитект" class="form-control" aria-describedby="inputGroup-sizing-md" name="speciality" />
+                                    <span asp-validation-for="Speciality" class="text-danger"></span>
+                                    <br>
+                                    <small style="color:mediumvioletred">(*)</small> <small>Използвайте между 3 и 20 символи.</small>
                                 </div>
-                                <input asp-for="About" placeholder="Предоставете обобщение на вашите умения." class="form-control" aria-describedby="inputGroup-sizing-md" name="about" />
                             </div>
-                            <span asp-validation-for="About" class="text-danger"></span>
-                            <br>
-                            <small style="color:mediumvioletred">(*)</small> <small>Използвайте между 10 и 100 символи.</small>
                         </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-lg-10">
-                        <div class="form-group form-show-validation">
-                            <textarea asp-for="Description" id="mytextarea"></textarea>
-                            <small style="color:#ff0000">(*)</small> <b> Използвайте минимум 20 символи.</b>
-                            <br>
-                            <small style="color:cornflowerblue">(*)</small> <small> Препоръчително 400 думи</small>
-                            <br>
-                            <span id="tinyMsg" asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-                    </div>
+                        <hr>
+                        <div class="row">
 
-                </div>
-                <hr>
-                <h5 class="wizard-title">Лични страници</h5>
-
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group form-group-default">
-                            <label asp-for="Website"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-primary btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-web" style="font-size:20px"></i>
-                                    </a>
+                            <div class="col-sm-10">
+                                <div class="form-group form-show-validation">
+                                    <input asp-for="About" placeholder="Предоставете обобщение на вашите умения." class="form-control" aria-describedby="inputGroup-sizing-md" name="about" />
+                                    <span asp-validation-for="About" class="text-danger"></span>
+                                    <br>
+                                    <small style="color:mediumvioletred">(*)</small> <small>Използвайте между 10 и 100 символи.</small>
                                 </div>
-                                <input asp-for="Website" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Въведете линк" />
                             </div>
                         </div>
-                    </div>
-
-                    <div class="col-sm-5">
-                        <div class="form-group form-group-default">
-                            <label asp-for="Portfolio"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-primary btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-user-1" style="font-size:20px"></i>
-                                    </a>
+                        <hr>
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <div class="form-group form-show-validation">
+                                    <textarea asp-for="Description" id="mytextarea"></textarea>
+                                    <small style="color:#ff0000">(*)</small> <b> Използвайте минимум 20 символи.</b>
+                                    <br>
+                                    <small style="color:cornflowerblue">(*)</small> <small> Препоръчително 400 думи</small>
+                                    <br>
+                                    <span id="tinyMsg" asp-validation-for="Description" class="text-danger"></span>
                                 </div>
-                                <input asp-for="Portfolio" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Въведете линк" />
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                <h5 class="wizard-title">Социални мрежи</h5>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group form-group-default">
-                            <label asp-for="Facebook"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-primary btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-facebook" style="font-size:20px"></i>
-                                    </a>
+                        </div>
+                        <hr>
+                        <h5 class="wizard-title">Лични страници</h5>
+
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group form-group-default">
+                                    <label asp-for="Website"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons linkIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Website" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Личен сайт" />
+                                    </div>
                                 </div>
-                                <input asp-for="Facebook" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-sm-5">
-                        <div class="form-group form-group-default">
-                            <label asp-for="Linkdin"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-primary btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-linkedin" style="font-size:20px"></i>
-                                    </a>
+                            <div class="col-sm-5">
+                                <div class="form-group form-group-default">
+                                    <label asp-for="Portfolio"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons blogIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Portfolio" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Блог" />
+                                    </div>
                                 </div>
-                                <input asp-for="Linkdin" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group form-group-default">
-                            <label asp-for="Twitter"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-primary btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-twitter" style="font-size:20px"></i>
-                                    </a>
+                        <h5 class="wizard-title">Социални мрежи</h5>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group form-group-default">
+                                    <label asp-for="Facebook"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons facebookIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Facebook" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
+                                    </div>
                                 </div>
-                                <input asp-for="Twitter" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
                             </div>
-                        </div>
-                    </div>
 
-                    <div class="col-sm-5">
-                        <div class="form-group form-group-default">
-                            <label asp-for="Dribbble"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-danger btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-dribbble" style="font-size:20px; color:mediumvioletred"></i>
-                                    </a>
+                            <div class="col-sm-5">
+                                <div class="form-group form-group-default">
+                                    <label asp-for="Linkdin"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons linkedinIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Linkdin" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
+                                    </div>
                                 </div>
-                                <input asp-for="Dribbble" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group form-group-default">
-                            <label asp-for="Github"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-dark btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-chain" style="font-size:20px"></i>
-                                    </a>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group form-group-default">
+                                    <label asp-for="Twitter"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons twitterIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Twitter" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
+                                    </div>
                                 </div>
-                                <input asp-for="Github" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
+                            </div>
+
+                            <div class="col-sm-5">
+                                <div class="form-group form-group-default">
+                                    <label asp-for="Dribbble"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons dribbbleIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Dribbble" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>
-                <hr>
-                <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-outline-primary next" id="desc" value="Продължи" />
-            </fieldset>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group form-group-default">
+                                    <label asp-for="Github"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons githubIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Github" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Потребителско име" />
+                                    </div>
+                                </div>
+                            </div>
 
-
-
-            <fieldset>
-                @*
-                    <b>Искате ли да рекламирате обявата си ?</b>
-                    <div class="row form-group">
-                        <div class="col-md-12 mb-3 mb-md-0">
-                            <label for="option-price-1">
-                                <input type="checkbox" id="option-price-1"> <span class="text-success">3€</span> За 7 дни
-                            </label>
                         </div>
-                        <div class="col-md-12 mb-3 mb-md-0">
-                            <label for="option-price-2">
-                                <input type="checkbox" id="option-price-2"> <span class="text-success">6€</span> За 30 дни
-                            </label>
+                        <hr>
+                        <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-primary next" id="desc" value="Продължи" />
+                    </fieldset>
+
+
+
+                    <fieldset>
+
+
+                        <div class="row mb-5">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <strong>Категория:</strong><span class="required-label">*</span>
+                                    <br>
+                                    <select class="form-control" asp-for="CategoryId">
+                                        @await foreach (var item in Model.AllCategories)
+                                        {
+                                            <option value="@item?.Value">@item?.Text</option>
+                                        }
+                                    </select>
+
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Резюме:</strong>
+                                <br>
+                                <input asp-for="FormFile" type="file" />
+                                <br>
+                                <i class="infoIcon"></i>
+                                <small class="text-lg-left"> Можете да качите резюмето си след публикуване.</small>
+
+                            </div>
+
                         </div>
-                    </div>
-                *@
 
-                <div class="row mb-5">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <strong>Категория:</strong><span class="required-label">*</span>
-                            <br>
-                            <select class="form-control" asp-for="CategoryId">
-                                @await foreach (var item in Model.AllCategories)
-                                {
-                    <option value="@item.Value">@item.Text</option>}
-                            </select>
-
-                            <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <i class="dangerIcon"></i> <strong>Приети файлови формати:</strong>
+                                <br>
+                                <small class="text-lg-left"> Adobe PDF (.pdf), Adobe PostScript (.ps), Microsoft Word (.doc, .docx), OpenOffice Text Document (.odt, .sxw), Plain text (.txt), Rich text format (.rtf)</small>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <strong>Резюме:</strong>
-                        <br>
-                        <a class="btn btn-outline-light"> Качване <input asp-for="FormFile" type="file" /> </a>
-                        <br>
-                        <i class="fa fa-info-circle" style="color:cornflowerblue"></i>
-                        <small class="text-lg-left">Можете да качите резюмето си след публикуване.</small>
-
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <i class="fa fa-info-circle" style="color:cornflowerblue"></i> <strong>Приети файлови формати:</strong>
-                        <br>
-                        <small class="text-lg-left"> Adobe PDF (.pdf), Adobe PostScript (.ps), Microsoft Word (.doc, .docx), OpenOffice Text Document (.odt, .sxw), Plain text (.txt), Rich text format (.rtf)</small>
-                    </div>
-                </div>
-                <hr>
-                <button type="submit" id="submit" class="btn btn-success btn btn-md btn-floating btn-100 btn-main">Публикувай</button>
-            </fieldset>
+                        <hr>
+                        <button type="submit" id="submit" class="content-button status-button">Публикувай</button>
+                    </fieldset>
 
 
 
-        </form>
-    </div>
-
-    <div class="col-md-4">
-        <div class="p-3 mb-5 bg-white">
-            <h3 class="h5 font-weight-bold text-black mb-3">Често задавани въпроси</h3>
-            <hr>
-            <b class="text-letblue">В:</b> <strong>Има ли такса за публикуване на обява?</strong><br>
-            <b class="text-letblue">О:</b> Няма такси за публикуване на обява в GrandJob. Това е 100% безплатна услуга, която предлагаме както за работодателите, така и за кандидатите.
-            <hr>
-
-            <b class="text-letblue">В:</b> <strong>Как да си подсилвам публикацията?</strong><br>
-            <b class="text-letblue">О:</b> Можете да подсилите вашата обява, като използвате кредитите, които сте закупили . Можете да заредите кредити чрез (кредитна карта, дебитна карта, и PayPal).
-            <hr>
+                </form>
+            </div>
         </div>
-
     </div>
-
 </div>
-
 
 

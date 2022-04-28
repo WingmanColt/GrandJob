@@ -15,22 +15,22 @@ namespace HireMe.Services
     public class NotificationService : INotificationService
     {
         private readonly IRepository<Notification> _notifyRepository;
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
 
-        public NotificationService(
-            SignInManager<User> signInManager,
-            UserManager<User> userManager, 
-            IRepository<Notification> notifyRepository)
+        private readonly UserManager<User> _userManager;
+        private readonly IAccountsService _accountsService;
+
+        public NotificationService(UserManager<User> userManager, 
+            IRepository<Notification> notifyRepository,
+            IAccountsService accountsService)
         {
-            _signInManager = signInManager;
             _userManager = userManager;
             _notifyRepository = notifyRepository;
+            _accountsService = accountsService;
         }
 
-        public async Task<OperationResult> Create(string title, string url, DateTime start, NotifyType type, string icon, User user)
+        public async Task<OperationResult> Create(string title, string url, DateTime start, NotifyType type, string icon, string receiverId, string senderId)
         {
-            if (user == null)
+            if (receiverId is null)
                 return OperationResult.FailureResult("");
 
             var notification = new Notification
@@ -40,7 +40,8 @@ namespace HireMe.Services
                 Date = start,
                 Type = type,
                 Icon = icon,
-                UserId = user.Id
+                SenderId = senderId,
+                ReceiverId = receiverId
             };
 
             await _notifyRepository.AddAsync(notification);
@@ -48,12 +49,28 @@ namespace HireMe.Services
 
             if(result.Success)
             {
-                user.ActivityReaded = false;
-                await _userManager.UpdateAsync(user);
-                await _signInManager.RefreshSignInAsync(user);
+                var user = receiverId.Contains("@") ? await _userManager.FindByEmailAsync(receiverId) : await _userManager.FindByIdAsync(receiverId);
+                if (user is not null)
+                {
+                    user.ActivityReaded = false;
+                    await _userManager.UpdateAsync(user);
+                }
+              //  await _signInManager.RefreshSignInAsync(user);
             }
 
             return result;
+        }
+
+        public async Task<bool> CreateForAdmins(string title, string url, DateTime start, NotifyType type, string icon, string senderId)
+        {
+            var admins = _accountsService.GetAllAdmins().ToList();
+
+                foreach (var entity in admins)
+                {
+                  await Create(title, url, start, type, icon, entity.Id, senderId).ConfigureAwait(false);
+                }
+
+            return true;
         }
 
         public async Task<OperationResult> Delete(int id)
@@ -71,7 +88,7 @@ namespace HireMe.Services
                 return null;
 
             var entity = GetAllAsNoTracking()
-                .Where(x => x.UserId == user.Id)
+                .Where(x => x.ReceiverId == user.Id)
                 .OrderByDescending(x => x.Date)
                 .AsAsyncEnumerable();
 
@@ -85,7 +102,7 @@ namespace HireMe.Services
 
             var entities = _notifyRepository.Set()
                 .AsQueryable()
-                .Where(x => x.UserId == user.Id)
+                .Where(x => x.ReceiverId == user.Id)
                 .AsAsyncEnumerable();
 
             var isExist = await entities.IsEmptyAsync();
@@ -106,7 +123,7 @@ namespace HireMe.Services
                 return -1;
 
             int count = await GetAllAsNoTracking()
-                .Where(j => j.UserId == user.Id)
+                .Where(j => j.ReceiverId == user.Id)
                 .Select(x => new Notification { Id = x.Id })
                 .AsQueryable()
                 .CountAsync()

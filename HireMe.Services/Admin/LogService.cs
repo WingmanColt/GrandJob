@@ -2,9 +2,8 @@
 using HireMe.Data.Repository.Interfaces;
 using HireMe.Entities.Enums;
 using HireMe.Entities.Models;
-using HireMe.Mapping.Utility;
-using HireMe.ViewModels.Logs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +13,12 @@ namespace HireMe.Services
 {
     public class LogService : ILogService
     {
+        private readonly bool _isWorking;
         private readonly IRepository<Logs> logsRepository;
 
-        public LogService(IRepository<Logs> logsRepository)
+        public LogService(IConfiguration config, IRepository<Logs> logsRepository)
         {
+            _isWorking = config.GetValue<bool>("SystemSettings:LogService");
             this.logsRepository = logsRepository;
         }
 
@@ -59,13 +60,13 @@ namespace HireMe.Services
             }
 
             public IAsyncEnumerable<Logs> GetAll()
-        {
+            {
             var entity = GetAllAsNoTracking()
                 .OrderByDescending(x => x.Date)
                 .ToAsyncEnumerable();
 
             return entity;
-        }
+            }
 
         private IQueryable<Logs> GetAllAsNoTracking()
         {

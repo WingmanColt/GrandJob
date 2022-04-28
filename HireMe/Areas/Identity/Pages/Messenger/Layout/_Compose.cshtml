@@ -1,9 +1,9 @@
 ﻿@{
     Layout = "/Areas/Identity/Pages/Dashboard/Layout/_Dashboard.cshtml";
 }
-<link rel="stylesheet" href="~/customCSS/Dashboard/plugins/Using/email.min.css">
-<link rel="stylesheet" href="~/customCSS/Base/autoComplate.min.css">
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/customCSS/Dashboard/plugins/Using/email.min.css">
+<link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/customCSS/Base/autoComplate.min.css">
+<link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
 @RenderBody()
@@ -11,11 +11,11 @@
 
 @section Scripts {
 
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    <script defer src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
             integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
             crossorigin="anonymous"></script>
 
-    <script type="text/javascript">
+    <script defer type="text/javascript">
 
         function complate(id) {
 

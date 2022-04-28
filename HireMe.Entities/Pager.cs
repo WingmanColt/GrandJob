@@ -11,6 +11,7 @@ namespace HireMe.Entities
             var currentPage = page != null ? (int)page : 1;
             var startPage = currentPage - 3;
             var endPage = currentPage + 2;
+
             if (startPage <= 0)
             {
                 endPage -= (startPage - 1);

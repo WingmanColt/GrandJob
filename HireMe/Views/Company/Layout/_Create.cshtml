@@ -1,82 +1,55 @@
 ﻿@{
     Layout = "~/Views/Home/_PageLayout.cshtml";
 
-    <link href="~/customCSS/Jobs/Create.min.css" rel="stylesheet" />
-    <link href="~/customCSS/Base/stepIndicator.min.css" rel="stylesheet" />
-
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="~/customCSS/Base/autoComplate.min.css">
+    <link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/theme_ios/plugins/stepIndicator.min.css" />
+    <link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/customCSS/Base/autoComplate.min.css">
 }
 
 @RenderBody()
 
 
 @section Scripts {
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+    <script defer src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
             integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
             crossorigin="anonymous">
     </script>
 
-    <script src="~/customJS/Dashboard/plugin/jquery.validate/jquery-validate.min.js"></script>
-    <script src="~/customJS/company/create/validationRules.min.js"></script>
-    <script src="~/customJS/company/create/StepIndicator.min.js"></script>
+    <script defer src="~/customJS/Dashboard/plugin/jquery.validate/jquery-validate.min.js"></script>
+    <script defer src="~/customJS/company/create/validationRules.min.js"></script>
+    <script defer src="~/customJS/company/create/StepIndicator.min.js"></script>
 
     <script type="text/javascript">
-        function complate(id) { $(id).autocomplete({ source: function (request, response) { $.ajax({ url: '/MessageApi/SelectRecruiter', type: 'GET', cache: !1, data: request, dataType: 'json', success: function (data) { if (response) { response($.map(data, function (item) { return { label: item.firstname + ' ' + item.lastname + ' ', value: item.id, image: item.picture } })) } else { return null } } }) }, minLength: 2, focus: function (event, ui) { $(id).val(ui.item.label); return !1 }, select: function (event, ui) { $(id).val(ui.item.label); $(id + 'Hidden').val(ui.item.value); return !1 } }).data("ui-autocomplete")._renderItem = function (ul, item) { var $div = $("<div></div>"); $("<img style='height:76px;'>").attr("src", item.image).appendTo($div); $("<span></span>").text(item.label).appendTo($div); return $("<li></li>").append($div).appendTo(ul) } }        
-        /*function complate(id) {
-
-            $(id).autocomplete({
-
-                source: function (request, response) {
-
-                    $.ajax({
-                        url: '/MessageApi/SelectRecruiter',
-                        type: 'GET',
-                        cache: false,
-                        data: request,
-                        dataType: 'json',
-                        success: function (data) {
-                            if (response) {
-                                response($.map(data, function (item) {
-
-                                    return {
-                                        label: item.firstname + ' ' + item.lastname + ' ',
-                                        value: item.id,
-                                        image: item.picture
-                                    }
-                                }))
-                            } else {
-                                return null;
-                            }
-                        }
-                    });
-                },
-                minLength: 2,
-
-                focus: function (event, ui) {
-                    $(id).val(ui.item.label);
-
-                    return false;
-                },
-
-                select: function (event, ui) {
-                    $(id).val(ui.item.label);
-                    $(id + 'Hidden').val(ui.item.value);
-                    return false;
-                }
-            }).data("ui-autocomplete")._renderItem = function (ul, item) {
-
-                var $div = $("<div></div>");
-
-                $("<img style='height:76px;'>").attr("src", item.image).appendTo($div);
-                $("<span></span>").text(item.label).appendTo($div);
-
-                return $("<li></li>").append($div).appendTo(ul);
-            };
-        };*/
-        
+        function complate(id) { $(id).autocomplete({ source: function (request, response) { $.ajax({ url: '/MessageApi/SelectRecruiter', type: 'GET', cache: !1, data: request, dataType: 'json', success: function (data) { if (response) { response($.map(data, function (item) { return { label: item.firstname + ' ' + item.lastname + ' ', value: item.id, image: item.picture } })) } else { return null } } }) }, minLength: 2, focus: function (event, ui) { $(id).val(ui.item.label); return !1 }, select: function (event, ui) { $(id).val(ui.item.label); $(id + 'Hidden').val(ui.item.value); return !1 } }).data("ui-autocomplete")._renderItem = function (ul, item) { var $div = $("<div></div>"); $("<img style='height:76px;'>").attr("src", item.image).appendTo($div); $("<span></span>").text(item.label).appendTo($div); return $("<li></li>").append($div).appendTo(ul) } }
     </script>
 
+    <script src="~/customJS/Dashboard/plugin/dropzone/dropzone.min.js"></script>
+    <script>
+        Dropzone.options.UploadZone = {
+            url: "/Company/Upload",
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 6,
+            maxFiles: 6,
+            acceptedFiles: ".jpeg,.jpg,.png",
+            // paramName: myParamName,
+            init: function () {
+
+                var submitButton = document.querySelector("#submit");
+                var wrapperThis = this;
+
+                submitButton.addEventListener("click", function () {
+                    wrapperThis.processQueue();
+                });
+
+                this.on('sendingmultiple', function (data, xhr, formData) {
+
+                });
+                this.on('error',function (file, response) { /**/ });
+            }
+        }
+    </script>
 }
+
 
 

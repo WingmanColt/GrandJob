@@ -1,6 +1,5 @@
 ﻿namespace HireMe.Services
 {
-    using HireMe.Core.Extensions;
     using HireMe.Entities.Enums;
     using HireMe.Entities.Models;
     using HireMe.Services.Interfaces;
@@ -31,34 +30,10 @@
             _companiesService = companiesService;
         }
 
-        public async Task<bool> AddToFavourite(User user, PostType postType, string postId)
+        public async Task<bool> UpdateFavourite(User user, PostType postType, string postId)
         {
-            if (user is null)
-                return false;
-
-                string postIdComplate = ',' + postId;
-
-                switch (postType)
-                {
-                    case PostType.Company:user.FavouriteCompanies += postIdComplate;     
-                        break;
-                    case PostType.Contestant:user.FavouriteContestants += postIdComplate;                        
-                        break;
-                    case PostType.Job:user.FavouriteJobs += postIdComplate;
-                        break;
-                }
-
-            user.ActivityReaded = false;
-            await _userManager.UpdateAsync(user); 
-            return true;
-        }
-
-        public async Task<bool> RemoveFromFavourite(User user, PostType postType, string postId)
-        {
-            if (user is null)
-                return false;
-
             string postIdComplate = ',' + postId;
+            bool isExisted = false;
 
             switch (postType)
             {
@@ -67,6 +42,12 @@
                         if (user.FavouriteCompanies?.IndexOf(postId) > -1)
                         {
                             user.FavouriteCompanies = user.FavouriteCompanies.Replace(postIdComplate, "");
+                            isExisted = true;
+                        }
+                        else
+                        {
+                            user.FavouriteCompanies += postIdComplate;
+                            isExisted = false;
                         }
                     }
                     break;
@@ -75,24 +56,85 @@
                         if (user.FavouriteContestants?.IndexOf(postId) > -1)
                         {
                             user.FavouriteContestants = user.FavouriteContestants.Replace(postIdComplate, "");
+                            isExisted = true;
                         }
-                    }
+                        else 
+                        { 
+                            user.FavouriteContestants += postIdComplate;
+                            isExisted = false;
+                        }
+                     }
                     break;
                 case PostType.Job:
                     {
                         if (user.FavouriteJobs?.IndexOf(postId) > -1)
                         {
                             user.FavouriteJobs = user.FavouriteJobs.Replace(postIdComplate, "");
+                            isExisted = true;
+                        }
+                        else
+                        {
+                            user.FavouriteJobs += postIdComplate;
+                            isExisted = false;
                         }
                     }
                     break;
-            }
+                }
 
-            await _userManager.UpdateAsync(user);
+            user.ActivityReaded = false;
+            await _userManager.UpdateAsync(user); 
+            return isExisted;
+        }
+        public async Task<bool> RemoveAllFavourites(User user)
+        {
+            user.FavouriteJobs = "0";
+            user.FavouriteCompanies = "0";
+            user.FavouriteContestants = "0";
+
+            await _userManager.UpdateAsync(user); 
             return true;
         }
+    /*
+            public async Task<bool> RemoveFromFavourite(User user, PostType postType, string postId)
+            {
+                if (user is null)
+                    return false;
 
-        public IAsyncEnumerable<TViewModel> GetFavouriteBy<TViewModel>(User user, PostType postType)
+                string postIdComplate = ',' + postId;
+
+                switch (postType)
+                {
+                    case PostType.Company:
+                        {
+                            if (user.FavouriteCompanies?.IndexOf(postId) > -1)
+                            {
+                                user.FavouriteCompanies = user.FavouriteCompanies.Replace(postIdComplate, "");
+                            }
+                        }
+                        break;
+                    case PostType.Contestant:
+                        {
+                            if (user.FavouriteContestants?.IndexOf(postId) > -1)
+                            {
+                                user.FavouriteContestants = user.FavouriteContestants.Replace(postIdComplate, "");
+                            }
+                        }
+                        break;
+                    case PostType.Job:
+                        {
+                            if (user.FavouriteJobs?.IndexOf(postId) > -1)
+                            {
+                                user.FavouriteJobs = user.FavouriteJobs.Replace(postIdComplate, "");
+                            }
+                        }
+                        break;
+                }
+
+                await _userManager.UpdateAsync(user);
+                return true;
+            }
+    */
+    public IAsyncEnumerable<TViewModel> GetFavouriteBy<TViewModel>(User user, PostType postType)
         {
             if (user is null)
                 return null;
@@ -186,59 +228,94 @@
                 
             return -1;
         }
-        public async Task<bool> isInFavourite(User user, PostType postType, int id)
+        public bool isInFavourite(User user, PostType postType, string id)
         {
             if (user is null)
                 return false;
 
-            switch (postType)
+            switch(postType)
             {
                 case PostType.Company:
-                    {
-                        var items = user?.FavouriteCompanies?.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(p => p.Trim())
-                            .ToList()
-                            .ConvertAll(int.Parse);
-
-                        if (items is null)
-                            return false;
-
-                        var entities = items.Any(x => ((IList)items).Contains(id));
-
-                        return entities;
-                    }
+                {
+                    if (user.FavouriteCompanies?.IndexOf(id) > -1)
+                        {
+                            return true;
+                        }
+                 }break;
 
                 case PostType.Contestant:
                     {
-                        var items = user?.FavouriteContestants?.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(p => p.Trim())
-                            .ToList()
-                            .ConvertAll(int.Parse);
-
-                        if (items is null)
-                            return false;
-
-                        var entities = items.Any(x => ((IList)items).Contains(id));
-
-                        return entities;
+                        if (user.FavouriteContestants?.IndexOf(id) > -1)
+                        {
+                            return true;
+                        }
                     }
+                    break;
 
                 case PostType.Job:
                     {
-                        var items = user?.FavouriteJobs?.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                            .Select(p => p.Trim())
-                            .ToList()
-                            .ConvertAll(int.Parse);
-
-                        if (items is null)
-                            return false;
-
-                        var entities = items.Any(x => ((IList)items).Contains(id));
-                        return entities;
+                        if (user.FavouriteJobs?.IndexOf(id) > -1)
+                        {
+                            return true;
+                        }
                     }
-
-            }
+                    break;
+                }
             return false;
         }
-    }
+            /* public async Task<bool> isInFavourite(User user, PostType postType, int id)
+             {
+                 if (user is null)
+                     return false;
+
+                 switch (postType)
+                 {
+                     case PostType.Company:
+                         {
+                             var items = user?.FavouriteCompanies?.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                 .Select(p => p.Trim())
+                                 .ToList()
+                                 .ConvertAll(int.Parse);
+
+                             if (items is null)
+                                 return false;
+
+                             var entities = items.Any(x => ((IList)items).Contains(id));
+
+                             return entities;
+                         }
+
+                     case PostType.Contestant:
+                         {
+                             var items = user?.FavouriteContestants?.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                 .Select(p => p.Trim())
+                                 .ToList()
+                                 .ConvertAll(int.Parse);
+
+                             if (items is null)
+                                 return false;
+
+                             var entities = items.Any(x => ((IList)items).Contains(id));
+
+                             return entities;
+                         }
+
+                     case PostType.Job:
+                         {
+                             var items = user?.FavouriteJobs?.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                 .Select(p => p.Trim())
+                                 .ToList()
+                                 .ConvertAll(int.Parse);
+
+                             if (items is null)
+                                 return false;
+
+                             var entities = items.Any(x => ((IList)items).Contains(id));
+                             return entities;
+                         }
+
+                 }
+                 return false;
+             }*/
+        }
 }

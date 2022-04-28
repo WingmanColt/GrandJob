@@ -10,6 +10,9 @@
     public interface ISkillsService
     {
         IAsyncEnumerable<T> GetAll<T>(string SkillId, bool isMapped);
+
+        IAsyncEnumerable<T> GetAllById<T>(string SkillId, bool isMapped);
+
         Task<OperationResult> SeedSkills();
 
     }

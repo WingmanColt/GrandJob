@@ -1,181 +1,143 @@
-﻿using HireMe.Areas.Identity.Pages.Account;
-using HireMe.Controllers;
-using HireMe.Core.Helpers;
+﻿using HireMe.Controllers;
 using HireMe.Entities.Enums;
+using HireMe.Core.Helpers;
 using HireMe.Entities.Models;
 using HireMe.Services.Interfaces;
 using HireMe.ViewModels.Accounts;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace HireMe.Web.Controllers
 {
     public class AccountController : Controller
     {
-
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
-        private readonly INotificationService _notifyService;
-        private readonly IBaseService _baseService;
-        private readonly ISenderService _senderService;
         private RoleManager<IdentityRole> _roleManager;
+
+        private readonly IBaseService _baseService;
+        private readonly IJobsService _jobsService;
+        private readonly ICompanyService _companyService;
+        private readonly IContestantsService _contestantService;
+        private readonly IResumeService _resumeService;
+        private readonly ISenderService _senderService;
+        private readonly INotificationService _notifyService;
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleManager,
-            INotificationService notifyService,
             IBaseService baseService,
-            ILogger<RegisterModel> logger,
-            ISenderService senderService)
+            IJobsService jobsService,
+            ICompanyService companyService,
+            IContestantsService contestantService,
+            IResumeService resumeService,
+            ISenderService senderService,
+            INotificationService notifyService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            _notifyService = notifyService;
+
             _baseService = baseService;
-            _logger = logger;
+            _jobsService = jobsService;
+            _companyService = companyService;
+            _contestantService = contestantService;
+            _resumeService = resumeService;
             _senderService = senderService;
+            _notifyService = notifyService;
         }
-
-        // GET: /Account/Login
-        [AllowAnonymous]
-        public async Task<IActionResult> Login(string returnUrl = null)
-        {
-            var viewModel = new AccountViewModel();
-            returnUrl = returnUrl ?? Url.Content("~/");
-
-            if (_signInManager.IsSignedIn(User))
-            {
-                return Redirect(returnUrl);
-            }
-
-            // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            viewModel.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            viewModel.ReturnUrl = returnUrl;
-
-            return View();
-        }
-
-        
-        // POST: /Account/Login
         [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel viewModel, string returnUrl = null)
+        public async Task<ActionResult> Login(AccountViewModel viewModel)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             if (_signInManager.IsSignedIn(User))
             {
-                return LocalRedirect(returnUrl);
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
+
+            // valid problems
+            // viewModel.ConfirmPassword = viewModel.Password;
 
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                User user;
-                if (viewModel.Email.Contains("@"))
-                    user = await _userManager.FindByEmailAsync(viewModel.Email);
-                else
-                    user = await _userManager.FindByNameAsync(viewModel.Email);
 
-                var result = await _signInManager.PasswordSignInAsync(user.UserName, viewModel.Password, viewModel.RememberMe, lockoutOnFailure: false);
+                User user = await _userManager.FindByEmailAsync(viewModel.Email);
+
+                if (user is null)
+                {
+                    viewModel.ErrorMessage = "Възникна грешка, не съществува такъв потребител.";
+
+                    return NotFound(viewModel);
+                }
+                var result = await _signInManager.PasswordSignInAsync(user?.UserName, viewModel.Password, viewModel.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
                     _baseService.ToastNotify(ToastMessageState.Info, "Здравейте!", "Успешно влязохте в профила си.", 1000);
-                    return LocalRedirect(returnUrl);
+                    return Json(viewModel);
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = viewModel.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = viewModel.ReturnUrl, RememberMe = viewModel.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
-                    _baseService.ToastNotifyLog(user, ToastMessageState.Error, "Проблем", "Профилът е заключен за 24 часа.", "login", 4000);
+
+                    await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Проблем", "Профилът е заключен за 24 часа.", "login", 4000);
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
                     if (user.EmailConfirmed != true)
                     {
-                        ModelState.AddModelError(string.Empty, "Моля потвърдете вашия емайл адрес за да влезете в системата ни !");
+                        viewModel.ErrorMessage = "Моля потвърдете вашия емайл адрес за да влезете в системата ни !";
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, "Възникна грешка, опитайте по-късно.");
-                        _baseService.ToastNotifyLog(user, ToastMessageState.Error, "Проблем", "Възникна грешка, опитайте по-късно.", "login", 4000);
+                        viewModel.ErrorMessage = "Възникна грешка, моля опитайте по-късно.";
+                        await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Възникна грешка", "Грешна парола или емайл адрес.", "login", 10000);
                     }
-
-                    return View();
+                    return NotFound(viewModel);
                 }
-            }
-            // If we got this far, something failed, redisplay form
-            return View(viewModel);
+            }  
+
+            viewModel.ErrorMessage = "Възникна грешка, грешна парола или емайл адрес.";
+            return NotFound(viewModel);
         }
-        
-
-        // GET: /Account/Register
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register(string returnUrl = null)
-        {
-            var viewModel = new AccountViewModel();
-            viewModel.ReturnUrl = returnUrl ?? Url.Content("~/");
-
-            if (_signInManager.IsSignedIn(User))
-            {
-                return Redirect(returnUrl);
-            }
-
-            viewModel.ReturnUrl = returnUrl;
-            viewModel.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            return View();
-        }
-
-        // POST: /Account/Register
         [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(AccountViewModel viewModel, string returnUrl = null)
+        public async Task<IActionResult> Register(AccountViewModel viewModel)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             if (_signInManager.IsSignedIn(User))
             {
-                return LocalRedirect(returnUrl);
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            viewModel.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+
                 var user = new User
                 {
                     isExternal = false,
                     Email = viewModel.Email,
                     UserName = StringHelper.GetUntilOrEmpty(viewModel.Email, "@"),
-                    PictureName = null
+                    FirstName = viewModel.FirstName,
+                    LastName = viewModel.LastName,
+                    PictureName = "200x200.jpg"
                 };
+
+
 
                 var result = await _userManager.CreateAsync(user, viewModel.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var email = await _userManager.GetEmailAsync(user);
 
@@ -185,12 +147,10 @@ namespace HireMe.Web.Controllers
                         values: new { userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    await _senderService.SendEmailAsync(email,
-                    "Потвърди емайл адрес",
-                    $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Потвърждаване</a>.");
-                    var count = await _userManager.Users.CountAsync().ConfigureAwait(false);
+                    await _senderService.SendEmailAsync(email, "Потвърди емайл адрес", callbackUrl);
+                    var count = await _userManager.Users.FirstOrDefaultAsync();//.CountAsync().ConfigureAwait(false);
 
-                    if (count == 1)
+                    if (count == null)
                     {
                         await CreateRole();
                         await _userManager.AddToRoleAsync(user, "Admin");
@@ -202,52 +162,45 @@ namespace HireMe.Web.Controllers
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, "User");
-                        user.Role = Roles.User;
+                        if (viewModel.isEmployer)
+                        {
+                            await _userManager.AddToRoleAsync(user, "Employer");
+                            user.Role = Roles.Employer;
+                        } 
+                        else
+                        {
+                            await _userManager.AddToRoleAsync(user, "User");
+                            user.Role = Roles.User;
+                        }
                     }
 
 
-                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/editprofile", DateTime.Now, NotifyType.Information, "fas fa-edit", user);
+                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/editprofile", DateTime.Now, NotifyType.Information, "fas fa-edit", user.Id, null).ConfigureAwait(false);
 
                     _baseService.ToastNotify(ToastMessageState.Alert, "Детайли", "Моля попълнете личните си данни.", 9000);
                     _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "се регистрирахте. Благодарим ви за отделеното време !", 5000);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = viewModel.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { email = viewModel.Email, /*returnUrl = returnUrl*/ });
                     }
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToAction(nameof(HomeController.Index), "Home");
                     }
 
                 }
-                AddErrors(result);
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-
-
-            // If we got this far, something failed, redisplay form
-            return View(viewModel);
-        }
-
-        public async Task<IActionResult> Logout()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            if (ModelState.IsValid)
-            {
-                await _signInManager.SignOutAsync();
-            }
-
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
-        public async Task<IActionResult> Manage()
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Logout(string returnUrl = "")
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -255,75 +208,18 @@ namespace HireMe.Web.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            return Redirect("/identity/account/manage/index");
-        }
-        public async Task<IActionResult> Profile()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            if (_signInManager.IsSignedIn(User))
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                await _signInManager.SignOutAsync();
+                HttpContext.Response.Cookies.Delete(".AspNetCore.Cookies");
+                HttpContext.Response.Cookies.Delete("GrandCookie");
             }
 
-            return Redirect("/identity/account/manage/editprofile");
+            if (!String.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("Index", "Home");
         }
-        public async Task<IActionResult> Messenger()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            return Redirect("/identity/messenger");
-        }
-        //
-        // GET: /Account/ForgotPassword
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult ForgotPassword()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Account/ForgotPassword
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _userManager.FindByNameAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
-                {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return View("ForgotPasswordConfirmation");
-                }
-
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                // Send an email with this link
-                //var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                //await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                //   "Please reset your password by clicking here: <a href=\"" + callbackUrl + "\">link</a>");
-                //return View("ForgotPasswordConfirmation");
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        //
-        // GET: /Account/ForgotPasswordConfirmation
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult ForgotPasswordConfirmation()
-        {
-            return View();
-        }
-
 
         public async Task<IActionResult> SignInSocialEnabling(string returnUrl = "")
         {
@@ -367,6 +263,115 @@ namespace HireMe.Web.Controllers
             else
                 return RedirectToAction("Index", "Home");
         }
+
+
+        // User Modifications
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ExchangeRole(string id, Roles T, string returnUrl)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
+
+            var user_2 = await _userManager.FindByIdAsync(id);
+            if (user_2 == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
+
+            string roleName = user_2.Role.GetShortName();
+            await _userManager.RemoveFromRoleAsync(user_2, roleName);
+
+            switch (T)
+            {
+                case Roles.Admin:
+                    {
+                        roleName = "Admin";
+                        user_2.Role = Roles.Admin;
+                    }
+                    break;
+                case Roles.Moderator:
+                    {
+                        roleName = "Moderator";
+                        user_2.Role = Roles.Moderator;
+                    }
+                    break;
+                case Roles.Employer:
+                    {
+                        roleName = "Employer";
+                        user_2.Role = Roles.Employer;
+                    }
+                    break;
+                case Roles.Contestant:
+                    {
+                        roleName = "Contestant";
+                        user_2.Role = Roles.Contestant;
+                    }
+                    break;
+                case Roles.Recruiter:
+                    {
+                        roleName = "Recruiter";
+                        user_2.Role = Roles.Recruiter;
+                    }
+                    break;
+                case Roles.User:
+                    {
+                        roleName = "User";
+                        user_2.Role = Roles.User;
+                    }
+                    break;
+            }
+
+            await _userManager.AddToRoleAsync(user_2, roleName);
+
+            if (!String.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            else
+                RedirectToPage("/Identity/Account/Manage/Users", new { Area = "Identity" });
+
+
+            return View();
+        }
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> DeleteUser(string id, string returnUrl)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
+
+            var user_2 = await _userManager.FindByIdAsync(id);
+            if (user_2 == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
+
+            _baseService.DeleteUserResources(user_2, true);
+
+            await _jobsService.DeleteAllBy(0, user_2);
+            await _companyService.DeleteAllBy(user_2);
+            await _contestantService.DeleteAllBy(user_2);
+            await _resumeService.DeleteAllBy(user_2);
+
+           var result = await _userManager.DeleteAsync(user_2);
+
+            if (!result.Succeeded)
+                await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Грешка", "при изтриване на потребител.","", 2000);
+            else
+                await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Success, "Успешно", "е изтрит потребителят.", "", 2000);
+
+            if (!String.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
+                else
+                    RedirectToPage("/Identity/Account/Manage/Users", new { Area = "Identity" });
+            
+
+            return View();
+        }
+
         private async Task CreateRole()
         {
             await _roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -376,33 +381,6 @@ namespace HireMe.Web.Controllers
             await _roleManager.CreateAsync(new IdentityRole("Contestant"));
             await _roleManager.CreateAsync(new IdentityRole("User"));
         }
-        #region Helpers
 
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-
-        private async Task<User> GetCurrentUserAsync()
-        {
-            return await _userManager.GetUserAsync(HttpContext.User);
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
-        }
-
-        #endregion
     }
 }

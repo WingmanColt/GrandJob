@@ -18,16 +18,16 @@
 
         IQueryable<Company> GetAllAsNoTracking();
 
-  /*      IAsyncEnumerable<CompanyViewModel> GetAllByPosterOnly(string id);*/
+        /*      IAsyncEnumerable<CompanyViewModel> GetAllByPosterOnly(string id);*/
+
         IAsyncEnumerable<Company> GetAll(User user);
         IAsyncEnumerable<Company> GetTop(int entitiesToShow);
         IAsyncEnumerable<Company> GetLast(int entitiesToShow);
         IAsyncEnumerable<Company> GetAllByApprove(ApproveType approve);
 
-        Task<bool> AddRatingToCompany(int Id, int rating);
+        Task<bool> AddRatingToCompany(Company entity, int rating);
         Task<Company> GetByIdAsync(int id);
         Task<CompanyViewModel> GetByIdAsyncMapped(int id);
         Task<bool> IsValid(int Id);
-
     }
 }

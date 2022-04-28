@@ -22,6 +22,7 @@
 
         Task<User> GetByIdAsync(string id);
 
+        IQueryable<User> GetAllAdmins();
         IQueryable<User> GetAllAsNoTracking();
 
     }

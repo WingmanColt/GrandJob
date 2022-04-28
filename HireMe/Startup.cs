@@ -7,9 +7,11 @@ using HireMe.Firewall.Checker.Core;
 using HireMe.Firewall.Checker.Core.Interface;
 using HireMe.Mapping.Utility;
 using HireMe.Services;
+using HireMe.Services.Benchmark;
 using HireMe.Services.Core;
 using HireMe.Services.Core.Interfaces;
 using HireMe.Services.Interfaces;
+using HireMe.Utility;
 using HireMe.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,17 +29,21 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using NToastNotify;
+using sib_api_v3_sdk.Api;
+using sib_api_v3_sdk.Model;
 using System;
 using System.Globalization;
 using System.IO.Compression;
 using System.Reflection;
-using WebMarkupMin.AspNetCore3;
 
 namespace HireMe
 {
     public class Startup
     {
-        public Startup(IWebHostEnvironment env)
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration config, IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -45,8 +52,6 @@ namespace HireMe
             Configuration = builder.Build();
          //   GC.Collect();
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -57,7 +62,7 @@ namespace HireMe
             .UseSqlServer(connectionString), ServiceLifetime.Transient);
             services.AddDbContext<FeaturesDbContext>(options => options
             .UseSqlServer(connectionString), ServiceLifetime.Transient);
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            //services.AddDatabaseDeveloperPageExceptionFilter();
 
             // Identity
             IdentityConfig(services);
@@ -91,7 +96,7 @@ namespace HireMe
             });*/
 
             // Cookies
-            CookiesConfig(services);
+            //CookiesConfig(services);
            
             
             // Cache 1
@@ -109,7 +114,7 @@ namespace HireMe
             {
                 options.Level = CompressionLevel.Fastest;
             });
-
+            
 
             // .NET 3.1 with cache profiles
             services.AddControllersWithViews(options =>
@@ -132,11 +137,18 @@ namespace HireMe
             services.AddRazorPages().AddRazorOptions(options =>
             {
                 options.PageViewLocationFormats.Add("/Pages/Partials/{0}.cshtml");
-            }); 
+            });
+
+            services.AddRazorPages(options =>
+            {
+                options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
+                options.Conventions.AddPageRoute("/Webcam", "{text?}");
+            });
+
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireAdminRole",
+               options.AddPolicy("RequireAdminRole",
                      policy => policy.RequireRole("Admin"));
             });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -145,11 +157,7 @@ namespace HireMe
                options.SlidingExpiration = true;
                options.Cookie.MaxAge = new TimeSpan(72, 0, 0);
             });
-
-
-
-            // Extensions
-            LoadExtensions(services);                     
+                    
         }
 
 
@@ -160,22 +168,28 @@ namespace HireMe
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                Secure = CookieSecurePolicy.SameAsRequest
+            });
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
+              
+                //app.UseExceptionHandler("/error-local-development");
+                // app.UseDatabaseErrorPage();
             }
             else
             {
-                app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
 
-                //app.UseExceptionHandler("/Home/Error");
+               // app.UseExceptionHandler("/error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
 
             }
+
+
 
             var supportedCultures = new[]
             {
@@ -188,17 +202,20 @@ namespace HireMe
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
+                              
 
-            app.UseWebMarkupMin();
             app.UseResponseCompression();
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+            //add after test
+            //  app.UseDefaultFiles();
+
+          //  app.UseCors(MyAllowSpecificOrigins);
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSession();
+          //  app.UseSession();
 
             // Toast notifications
             app.UseNToastNotify();
@@ -212,9 +229,9 @@ namespace HireMe
             });
 
             // Cache
-            app.UseResponseCaching();
+          app.UseResponseCaching();
 
-            /*app.UseStaticFiles(new StaticFileOptions
+            app.UseStaticFiles(new StaticFileOptions
             {
                 OnPrepareResponse = (context) =>
                 {
@@ -225,9 +242,9 @@ namespace HireMe
                         MaxAge = TimeSpan.FromDays(365)
                     };
                 }
-            });*/
+            });
 
-            app.Use(async (context, next) =>
+           /* app.Use(async (context, next) =>
             {
                 context.Response.GetTypedHeaders().CacheControl =
                     new CacheControlHeaderValue()
@@ -235,9 +252,10 @@ namespace HireMe
                         Public = true,
                         MaxAge = TimeSpan.FromDays(10)
                     };
+                context.Request.Scheme = "https";
                 context.Response.Headers[HeaderNames.Vary] = new string[] { "Accept-Encoding" };
                 await next();
-            });
+            });*/
 
 
         }
@@ -249,7 +267,7 @@ namespace HireMe
             services.Configure<IdentityOptions>(options =>
             {
                 options.SignIn.RequireConfirmedEmail = false;
-                options.Password.RequiredLength = 10;
+                options.Password.RequiredLength = 5;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireLowercase = false;
@@ -263,10 +281,10 @@ namespace HireMe
             });
 
             services.AddAuthentication()
-             .AddFacebook(facebookOptions =>
-             {
-                 facebookOptions.AppId = Configuration["FacebookConf:ID"];
-                 facebookOptions.AppSecret = Configuration["FacebookConf:Secret"];
+             .AddFacebook(facebookOptions => {
+
+             facebookOptions.AppId = Configuration["FacebookConf:ID"];
+             facebookOptions.AppSecret = Configuration["FacebookConf:Secret"];
              })
              .AddGoogle(options =>
              {
@@ -293,14 +311,13 @@ namespace HireMe
 
 
         // Services initializations
-        private static void LoadServices(IServiceCollection services)
+        private void LoadServices(IServiceCollection services)
         {
             // Repositories
             services.AddSingleton(typeof(IRepository<>), typeof(DbBaseRepository<>));
             services.AddTransient(typeof(IRepository<>), typeof(DbFeaturesRepository<>));
 
-            // Admin Services
-            services.AddScoped<ILogService, LogService>();
+            services.AddTransient<IFavoritesService, FavoritesService>();
 
             // App Services
             services.AddTransient<IAccountsService, AccountsService>();
@@ -309,25 +326,61 @@ namespace HireMe
             services.AddTransient<IScanner, WindowsDefenderScanner>();
             services.AddTransient<ICipherService, CipherService>();
             services.AddTransient<ISenderService, SenderService>();
+            services.AddTransient<ITaskService, TaskService>();
 
+            services.AddTransient<IStatisticsService, StatisticsService>();
             services.AddTransient<ICategoriesService, CategoriesService>();
             services.AddTransient<ICompanyService, CompanyService>();
             services.AddTransient<IJobsService, JobsService>();
             services.AddTransient<IContestantsService, ContestantsService>();
+            services.AddTransient<IContestantDetailsService, ContestantDetailsService>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IResumeService, ResumeService>();
+            services.AddTransient<IFilesService, FilesService>();
+
 
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<ISkillsService, SkillsService>();
             services.AddTransient<ILanguageService, LanguageService>();
             services.AddTransient<ILocationService, LocationService>();
             services.AddTransient<IPromotionService, PromotionService>();
-            services.AddTransient<IFavoritesService, FavoritesService>();
+
+            // Admin Services
+            services.AddTransient<ILogService, LogService>();
+            services.AddTransient<IBenchmarkService, BenchmarkService>();
 
             IHtmlSanitizer sanitizer = new HtmlSanitizer();
             services.AddSingleton<IHtmlSanitizer>(sanitizer);
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            /*   services.AddCors(options =>
+               {
+                   options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+                   {
+                       builder.WithOrigins("https://grandjob.eu/signin-facebook",
+                                           "https://grandjob.eu/signin-google",
+                                           "https://grandjob.eu/signin-facebook?code=",
+                                           "https://grandjob.eu/Identity/Account/Login",
+                                           "https://grandjob.eu/Identity/Account/Login?ReturnUrl=")
+                                           .AllowAnyHeader()
+                                           .AllowAnyMethod(); 
+                   });
+               });*/
+
+            CookiesConfig(services);
+            try
+            {
+                var apiInstance2 = new AccountApi();
+                string apiKey = "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";
+                apiInstance2.Configuration.ApiKey.Add("api-key", apiKey);
+            }
+            catch (Exception)
+            {
+                
+            }
+            
+      //      GetAccount result2 = apiInstance2.GetAccount();
         }
 
         // Cookies config
@@ -364,36 +417,20 @@ namespace HireMe
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
-            /*
+            
             services.ConfigureApplicationCookie(options =>
             {
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.Cookie.Name = "YourAppCookieName";
+                options.Cookie.Name = "GrandCookie";
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(30);
-                options.LoginPath = "/Identity/Account/Login";
+                options.LoginPath = "/Home/Index";
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
             });
-            */
+            
         }
 
-        // Load Extensions
-        private static void LoadExtensions(IServiceCollection services)
-        {
-            services.AddWebMarkupMin(options =>
-            {
-                options.AllowMinificationInDevelopmentEnvironment = true;
-                options.AllowCompressionInDevelopmentEnvironment = true;
-            })
-
-              .AddHtmlMinification(options =>
-              {
-                  options.MinificationSettings.RemoveRedundantAttributes = true;
-                  options.MinificationSettings.RemoveHttpProtocolFromAttributes = true;
-                  options.MinificationSettings.RemoveHttpsProtocolFromAttributes = true;
-              }).AddHttpCompression();
-        }
     }
 }
 

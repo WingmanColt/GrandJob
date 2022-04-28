@@ -1,0 +1,193 @@
+﻿@model Filter
+
+          <!-- Filters Column -->
+          <div class="filters-column col-lg-4 col-md-12 col-sm-12">
+            <div class="inner-column">
+              <div class="filters-outer">
+
+                <a class="btn btn-sm btn-outline-success" href="#" onclick="$('#filterForm').submit();" @*onclick="submitFilters()"*@ style="margin-left:90%">
+                <i class="fas fa-check-circle"></i>
+               </a>
+
+
+                <form asp-controller="Jobs" asp-action="Index" method="post" id="filterForm" asp-route-currentPage="@Model.currentPage">
+
+                    
+                <!-- Filter Block -->
+                <div class="filter-block">
+                  <h4>Търси по ключови думи</h4>
+                  <div class="form-group">
+                    <input asp-for="SearchString" type="text" placeholder="Име на обява, специалност, фирма">
+                    <span class="icon flaticon-search-3"></span>
+                  </div>
+                </div>
+
+                <!-- Filter Block -->
+                <div class="filter-block">
+                  <h4>Местоположение</h4>
+                  <div class="form-group">
+                     <select class="selectLocation form-control" style="width: 100%"></select>
+                     <input asp-for="LocationId" type="hidden" id="selectLocation_Value" />
+                  </div>
+                </div>
+
+                <!-- Filter Block -->
+                <div class="filter-block">
+                  <h4>Индустрия</h4>
+                  <div class="form-group">
+                    <select class="selectCategory form-control" style="width: 100%"></select>
+                      <input asp-for="CategoryId" type="hidden" id="selectCategory_Value" />
+                  </div>
+                </div>
+
+               <!-- Filter Block -->
+                <div class="filter-block">
+                  <h4>Фирма</h4>
+                  <div class="form-group">
+                    <select class="selectCompany form-control" style="width: 100%"></select>
+                      <input asp-for="CompanyId" type="hidden" id="selectCompany_Value" />
+                  </div>
+                </div>
+
+                <!-- Switchbox Outer -->
+                <div class="switchbox-outer">
+                  <h4>Тип</h4>
+                  <ul class="switchbox">
+                   @for (var i = 0; i < Model.Equipments?.Count(); i++)
+                            {
+                                <li>
+                                <label class="switch">
+                                    <input type="checkbox" asp-for="@Model.Equipments[i].IsChecked" id="@Model.Equipments[i].Key" checked="@Model.Equipments[i].IsChecked" />
+                                    <span class="slider round"></span>
+                                    <span class="title">@Model.Equipments[i].Value</span>
+                                    <input type="hidden" asp-for="@Model.Equipments[i].Key" />
+                                    <input type="hidden" asp-for="@Model.Equipments[i].Value" />
+                                </label>
+                                </li>
+                            }
+                  </ul>
+                </div>
+
+                
+               <div class="switchbox-outer">
+                  <h4>Подреди по</h4>
+                  <ul class="switchbox">
+                   @for (var i = 0; i < Model.SortBy?.Count(); i++)
+                            {
+                            <li>
+                                <label class="switch switch-disable"> 
+                                    @{
+                                        string ID = @Model.SortBy[i].Key + "-sort";
+                                    }
+                                    <input type="checkbox" asp-for="@Model.SortBy[i].IsChecked" id="@ID" checked="@Model.SortBy[i].IsChecked"/>
+                                    <span class="slider round"></span>
+                                    <span class="title">@Model.SortBy[i].Value</span>
+                                    <input type="hidden" asp-for="@Model.SortBy[i].Key" />
+                                    <input type="hidden" asp-for="@Model.SortBy[i].Value" />
+                                </label>
+                                </li>
+                            }
+                                  </ul>
+                </div>
+               
+
+                 <!-- Checkboxes Ouer -->
+               <div class="switchbox-outer">
+                  <h4>Опит</h4>
+                  <ul class="switchbox">
+                   @for (var i = 0; i < Model.Exprience?.Count(); i++)
+                            {
+                                <li>
+                                <label class="switch">
+                                    <input type="checkbox" asp-for="@Model.Exprience[i].IsChecked" id="@Model.Exprience[i].Key" checked="@Model.Exprience[i].IsChecked" />
+                                    <span class="slider round"></span>
+                                    <span class="title">@Model.Exprience[i].Value</span>
+                                  @*  <label asp-for="@Model.Equipments[i].Key" for="@Model.Equipments[i].Key">@Model.Equipments[i].Value</label>*@
+                                    <input type="hidden" asp-for="@Model.Exprience[i].Key" />
+                                    <input type="hidden" asp-for="@Model.Exprience[i].Value" />
+                                </label>
+                                </li>
+                            }
+                  </ul>
+                </div>
+
+                <!-- Filter Block -->
+                <div class="filter-block">
+                  <h4>Заплата</h4>
+
+                  <div class="range-slider-one salary-range">
+                    <div class="salary-range-slider"></div>
+                    <div class="input-outer">
+                      <div class="amount-outer">
+                        <span class="amount salary-amount">
+                          $<span class="min">0</span>
+                          $<span class="max">0</span>
+                          <input type="hidden" asp-for="@Model.MinSalary" id="MinSalary" />
+                          <input type="hidden" asp-for="@Model.MaxSalary" id="MaxSalary" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                                
+               <!-- Filter Block -->
+                <div class="filter-block col-sm-12 col-lg-12">
+                  <h4>Чужд език (на латински)</h4>
+                  <div class="form-group select2-group">
+                    <select class="selectLang form-control select-identifier" style="width:100%"></select>
+                    <input asp-for="LanguageId" type="hidden" id="selectLang_Value" />
+                  </div>
+                </div>
+                 <!-- Filter Block -->
+                <div class="filter-block col-sm-12 col-lg-12">
+                  <h4>Умения</h4>
+                  <div class="form-group select2-group">
+                 <select class="selectTags form-control select-identifier" style="width: 100%" multiple="multiple">
+                 @*await foreach (var item in Model.Skills)
+                  {
+                   <option value="@item.Id" selected="selected">@item.Title</option>
+                  }*@                               
+                  </select>
+                  <input asp-for="TagsId" type="hidden" id="selectTags_Value" />
+                  </div>
+                </div>
+
+                </form>
+
+              </div>
+
+              <!-- Call To Action -->
+             @* <div class="call-to-action-four">
+                <h5>Recruiting?</h5>
+                <p>Advertise your jobs to millions of monthly users and search 15.8 million CVs in our database.</p>
+                <a href="#" class="theme-btn btn-style-one bg-blue"><span class="btn-title">Start Recruiting Now</span></a>
+                <div class="image" style="background-image: url(images/resource/ads-bg-4.png);"></div>
+              </div>*@
+              <!-- End Call To Action -->
+            </div>
+          </div>
+          
+    @*
+<script type="text/javascript">
+
+    function submitFilters() {
+        var data = $("#filterForm").serialize();
+        console.log(data);
+        alert(data);
+        $.ajax({
+            type: 'POST',
+            url: '/jobs/all',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8', // when we use .serialize() this generates the data in query string format. this needs the default contentType (default content type is: contentType: 'application/x-www-form-urlencoded; charset=UTF-8') so it is optional, you can remove it
+            data: data,
+            success: function (result) {
+                alert('Successfully received Data ');
+                console.log(result);
+            },
+            error: function () {
+                alert('Failed to receive the Data');
+                console.log('Failed ');
+            }
+        })
+    }
+
+</script>*@

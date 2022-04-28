@@ -98,7 +98,7 @@ namespace HireMe.Areas.Identity.Pages.Account
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
-                return LocalRedirect(returnUrl);
+                return RedirectToPage("./Manage/Index"); //LocalRedirect(returnUrl);
             }
             if (result.IsLockedOut)
             {

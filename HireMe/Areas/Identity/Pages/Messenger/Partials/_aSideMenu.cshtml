@@ -24,7 +24,7 @@
         </div>
         <br>
 
-        <a asp-page="Compose" class="btn btn-outline-danger btn-block fw-mediumbold">Ново съобщение</a>
+        <a asp-page="Compose" class="btn btn-outline-danger btn-block fw-mediumbold"><i class="fas fa-pen-alt"></i> Ново съобщение</a>
 
     </div>
     <form method="get" asp-page="Index" id="aSideMenu">
@@ -32,18 +32,18 @@
 
             <ul class="nav">
                 <li class="@(pageName == "/Messenger" ? "active" : "")">
-                    <input type="submit" asp-for="@Sort" value="Входящи"/><i class="flaticon-inbox"></i>
+                    <i class="fas fa-inbox"></i><input type="submit" asp-for="@Sort" value="Входящи"/>
                     @*<span class="badge badge-primary float-right">@unreadedCount</span>*@
 
                 </li>
                 <li class="@(pageName == "/Messenger?Sort=Изпратени" ? "active" : "")">
-                        <input type="submit" asp-for="@Sort" value="Изпратени"/><i class="flaticon-envelope-1"></i>                    
+                    <i class="fas fa-envelope"></i> <input type="submit" asp-for="@Sort" value="Изпратени" />
                 </li>
                 <li class="@(pageName == "/Messenger?Sort=Важни" ? "active" : "")">
-                        <input type="submit" asp-for="@Sort" value="Важни"/><i class="flaticon-exclamation"></i>
+                    <i class="fas fa-exclamation-triangle"></i> <input type="submit" asp-for="@Sort" value="Важни"/>
                 </li>
                 <li class="@(pageName == "/Messenger?Sort=Закачени" ? "active" : "")">
-                        <input type="submit" asp-for="@Sort" value="Закачени"/><i class="flaticon-envelope-3"></i>
+                    <i class="fas fa-star"></i><input type="submit" asp-for="@Sort" value="Закачени"/>
                 </li>
 
             </ul>
@@ -51,10 +51,10 @@
             <span class="label">Други</span>
             <ul class="nav nav-pills nav-stacked">
                 <li class="@(pageName == "/Messenger?Sort=Докладвани" ? "active" : "")">
-                        <input type="submit" asp-for="@Sort" value="Докладвани" /> <i class="flaticon-signs-1"></i> 
+                    <i class="fas fa-flag"></i>  <input type="submit" asp-for="@Sort" value="Докладвани" />
                 </li>
                 <li class="@(pageName == "/Messenger?Sort=Кошче" ? "active" : "")">
-                        <input type="submit" asp-for="@Sort" value="Кошче"  /><i class="flaticon-interface-5"></i> 
+                    <i class="fas fa-recycle"></i> <input type="submit" asp-for="@Sort" value="Кошче" />
                 </li>
             </ul>
 

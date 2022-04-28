@@ -1,11 +1,11 @@
 ﻿ $(document).ready(function () {
             $(".selectTags").select2({
-                placeholder: "Думи",
-                allowClear: true,
+                placeholder: "Всички",
+                allowClear: false,
                 theme: "bootstrap",
                 closeOnSelect: true,
                 maximumSelectionLength: 5,
-                minimumInputLength: 2,
+                minimumInputLength: 1,
                 multiple: true,
                 ajax: {
                     url: "/FeaturesApi/GetTags",

@@ -1,0 +1,43 @@
+﻿@model DeleteViewModel
+@{
+    int id = ViewBag.ID is not null ? (int)ViewBag.ID : 0; 
+}
+
+
+  <!-- apply modal -->
+<div class="modal" id="apply-modal">
+    <!-- Login Form -->
+    <div class="login-form default-form">
+      <div class="form-inner">
+        <h4>Сигурен ли сте, че искате да изтриете тази обява ?</h4>
+
+        <!--Login Form-->
+        <form method="post" asp-route-id="@Model.Id" asp-page-handler="@Model.Handler" asp-route-currentPage="@Model.CurrentPage" asp-route-Sort="@Model.Sort" id="deleteForm">
+             <div asp-validation-summary="All" class="text-danger"></div>
+
+          <div class="form-group">
+            <label>Парола</label>
+            <input asp-for="@Model.Password" type="password" class="form-control" required>
+          </div>
+
+
+        <div class="bottom-box">
+          <div class="btn-box row">
+              <div class="col-lg-6 col-md-12">
+                   <a href="#" class="theme-btn btn-style-default" rel="modal:close">
+                       <i class="fa fa-times"></i> Отказ</a>
+                   </div>
+                   <div class="col-lg-6 col-md-12">
+                   <button class="theme-btn btn-style-danger" type="submit"> 
+                       <i class="fas fa-trash-alt"></i> Изтрий
+                       </button>
+                </div>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+    <!--End Login Form -->
+   
+</div>
+

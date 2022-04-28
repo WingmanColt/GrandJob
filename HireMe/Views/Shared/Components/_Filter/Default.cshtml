@@ -1,0 +1,197 @@
+﻿@model Filter
+
+@{
+    bool isMobile = MobileDetector.IsMobile(Context);
+}
+
+@if (isMobile)
+{
+    <style>
+        span.select2-container {
+            z-index: 10050;
+        }
+    </style>
+
+
+}
+<link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/theme_ios/plugins/filterSideBar.min.css" />
+
+<div class="mobile-only filter-sidebar" id="filter-sidebar">
+    <div class="filter-sidebar-wrapper">
+        <div class="sectionName">
+            <a href="#" class="close-filter-sidebar">
+                <i class="backIcon"></i>
+            </a>
+            Филтри
+
+            <a class="btn btn-sm btn-outline-success" href="#" onclick="$('#filterForm').submit();" style="float:right">
+                <i class="successIcon"></i>
+            </a>
+        </div>
+
+        <ul class="nav nav-tabs" role="tablist" style="border-bottom: 1px solid var(--border-color);">
+            <li class="nav-item"> <button class="nav-link active show" onclick="toggle('hor')"><i class="filterIcon"></i><small>Филтри</small></button> </li>
+            <li class="nav-item"> <button class="nav-link" onclick="toggle('ver')"><i class="sortIcon"></i><small>Сортиране</small></button> </li>
+        </ul>
+
+        <div class="holder">
+
+
+            <div class="horTxt">
+                <div class="filter-wrapper">
+                    <div class="filter-scroll scrollbar-outer">
+                        <div class="filter-content">
+                            <form asp-controller="Jobs" asp-action="Index" method="get" id="filterForm">
+                                <div class="form-group">
+                                    <label class="form-label">Търси по</label>
+                                    <input asp-for="SearchString" type="text" class="form-control" placeholder="Ключова дума">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Тип</label>
+                                    @for (var i = 0; i < Model.Equipments?.Count(); i++)
+                                    {
+                                        <div class="type-container checkbox">
+                                            <input type="checkbox" asp-for="@Model.Equipments[i].IsChecked" id="@Model.Equipments[i].Key" checked="@Model.Equipments[i].IsChecked" />
+                                            <label asp-for="@Model.Equipments[i].Key" for="@Model.Equipments[i].Key">@Model.Equipments[i].Value</label>
+                                            <input type="hidden" asp-for="@Model.Equipments[i].Key" />
+                                            <input type="hidden" asp-for="@Model.Equipments[i].Value" />
+                                        </div>
+                                    }
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="form-label">Индустрия</label>
+                                    <select class="selectCategory form-control" style="width: 100%" multiple="multiple"></select>
+                                    <input asp-for="CategoryId" type="hidden" id="selectCategory_Value" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Заплащане</label>
+                                    @for (var i = 0; i < Model.Salaries?.Count(); i++)
+                                    {
+                                        <div class="type-container checkbox">
+                                            <input type="checkbox" asp-for="@Model.Salaries[i].IsChecked" id="@Model.Salaries[i].Key-sex" checked="@Model.Salaries[i].IsChecked" />
+                                            <label asp-for="@Model.Salaries[i].Key" for="@Model.Salaries[i].Key-sex">@Model.Salaries[i].Value</label>
+                                            <input type="hidden" asp-for="@Model.Salaries[i].Key" />
+                                            <input type="hidden" asp-for="@Model.Salaries[i].Value" />
+                                        </div>
+                                    }
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="verTxt">
+                <div class="filter-wrapper">
+                    <div class="filter-scroll scrollbar-outer">
+                        <div class="filter-content">
+                            <form asp-controller="Jobs" asp-action="Index" method="get" id="sortForm" class="search-options">
+                                <input type="submit" asp-for="Sort" value="Рейтинг" class="simpleInput font-weight-bold" />
+                                <hr>
+                                <input type="submit" asp-for="Sort" value="Най-нови" class="simpleInput font-weight-bold" />
+                                <hr>
+                                <input type="submit" asp-for="Sort" value="Последни" class="simpleInput font-weight-bold" />
+                                <hr>
+                                <input type="submit" asp-for="Sort" value="Заплата" class="simpleInput font-weight-bold" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="desktop-only left-side">
+    <form asp-controller="Jobs" asp-action="Index" method="get" id="filter-form">
+        <div class="side-wrapper">
+            <div class="side-title">
+                Търсене
+                <a class="btn btn-sm btn-outline-success" href="#" onclick="$('#filterForm').submit();" style="float:right">
+                    <i class="successIcon"></i>
+                </a>
+            </div>
+            <div class="side-menu">
+                <div class="alert">
+                    <div class="alert-subtitle">Търси работа по ключова дума</div>
+                    <div class="input-group">
+                        <input asp-for="SearchString" type="text" class="form-control" placeholder="Ключова дума">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Equipments is not null)
+        {
+            <div class="side-wrapper">
+
+                <div class="side-menu">
+
+                    <div class="job-time">
+                        <div class="side-title">Тип</div>
+
+                        <div class="job-wrapper">
+
+                            @for (var i = 0; i < Model.Equipments?.Count(); i++)
+                            {
+                                <div class="type-container checkbox">
+                                    <input type="checkbox" asp-for="@Model.Equipments[i].IsChecked" id="@Model.Equipments[i].Key" checked="@Model.Equipments[i].IsChecked" />
+                                    <label asp-for="@Model.Equipments[i].Key" for="@Model.Equipments[i].Key">@Model.Equipments[i].Value</label>
+                                    <input type="hidden" asp-for="@Model.Equipments[i].Key" />
+                                    <input type="hidden" asp-for="@Model.Equipments[i].Value" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="side-wrapper">
+            <div class="side-title">Индустрия</div>
+            <div class="side-menu">
+                <div class="alert">
+                    <div class="input-group">
+                        <select class="selectCategory" style="width: 100%" multiple="multiple"></select>
+                        <input asp-for="CategoryId" type="hidden" id="selectCategory_Value" />
+                    </div>
+                </div>
+                @if (Model.Salaries is not null)
+                {
+                    <div class="job-time">
+                        <div class="side-title">Заплата</div>
+                        <div class="job-wrapper">
+                            @for (var i = 0; i < Model.Salaries?.Count(); i++)
+                            {
+                                <div class="type-container checkbox">
+                                    <input type="checkbox" asp-for="@Model.Salaries[i].IsChecked" id="@Model.Salaries[i].Key-sex" checked="@Model.Salaries[i].IsChecked" />
+                                    <label asp-for="@Model.Salaries[i].Key" for="@Model.Salaries[i].Key-sex">@Model.Salaries[i].Value</label>
+                                    <input type="hidden" asp-for="@Model.Salaries[i].Key" />
+                                    <input type="hidden" asp-for="@Model.Salaries[i].Value" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+
+    </form>
+</div>
+<script>
+    var holder = document.querySelector(".holder");
+
+    function toggle(val) {
+        holder.setAttribute('dir', val);
+    }
+</script>

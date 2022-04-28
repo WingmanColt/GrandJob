@@ -1,0 +1,433 @@
+﻿@page
+
+@inject IConfiguration config
+@inject ITaskService taskService
+@inject UserManager<User> UserManager
+
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Моите задачи";
+    Layout = "Layout/_Index";
+
+    ViewData["TaskTitle"] = null;
+    ViewData["TaskAbout"] = null;
+}
+
+<style>
+    .badge-normal {
+        background-color: cornflowerblue;
+    }
+
+    .badge-video {
+        background-color: #8d15a0;
+    }
+    .table td, .table th {
+        overflow: auto !important;
+    }
+</style>
+
+
+
+
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+          <h3>Задачи</h3>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Всички задачи свързани с мен</h4>
+                </div>
+                <div class="widget-content">
+                  <div class="table-outer">
+                    <table class="default-table manage-job-table">
+                      <thead>
+                        <tr>
+                          <th>Име</th>
+                          <th>Тип</th>
+                          <th>Дата на провеждане</th>
+                          <th>Информация</th>
+                          <th>Още</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                       @if (Model.List is not null && await Model.List.AnyAsync())
+                           {
+                            await foreach (var item in Model.List)
+                            {
+                        <tr>
+                          <td>
+                            <h6>@item.Title</h6>
+                            <span class="info">
+                            @switch (item.Status)
+                            {
+                             case TasksStatus.Waiting:<span class="badge notif-warning">В изчакване</span>
+                                  break;
+                             case TasksStatus.Approved:<span class="badge notif-success">Одобрена</span>
+                                  break;
+                             case TasksStatus.Rejected:<span class="badge notif-danger">Отхвърлена</span>
+                                  break;
+                             case TasksStatus.Failed:<span class="badge notif-default">Не е завършена</span>
+                                  break;
+                             case TasksStatus.Success:<span class="badge notif-info">Успешно завършена</span>
+                                  break;
+                            }  
+                            </span>
+                            
+
+                          </td>
+                          <td class="applied">                                   
+                              @switch (item.Level)
+                              {
+                               case TaskLevel.Normal:<span class="badge badge-normal">Нормална</span>
+                                break;
+                                case TaskLevel.Video:<span class="badge badge-video">Разговор</span>
+                                break;
+                               }
+                               </td>
+                          <td>@item.StartDate.ToString("MM/dd/yyyy h:mm tt")<br>@item.EndDate.ToString("MM/dd/yyyy h:mm tt")</td>
+                          <td class="dropdown hidden-caret">
+                                                <a href="#" class="btn btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-info-circle"></i>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li>@item.About </li>
+                                                </ul>
+
+                              </td>
+                                            <td class="dropdown hidden-caret">
+                                                <a href="#" class="btn btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-ellipsis-h"></i>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        @if (item.Level == TaskLevel.Video && item.Status == TasksStatus.Approved)
+                                                        {
+                                                            @if (item.Behaviour == TasksBehaviour.Running)
+                                                            {
+                                                                <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-text="@item.GeneratedLink" class="dropdown-item">
+                                                                    <span class="fas fa-video"></span> Към видео разговор
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-text="@item.GeneratedLink" class="dropdown-item">
+                                                                    <span class="fas fa-video-slash"></span> Към видео разговор
+                                                                </a>
+                                                            }
+                                                        }
+
+                                                        @if (item.Status == TasksStatus.Waiting)
+                                                        {
+                                                            <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Approved" class="dropdown-item">
+                                                                <span class="fas fa-check-circle"></span> Приеми задачата
+                                                            </a>
+                                                            <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Rejected" class="dropdown-item">
+                                                                <span class="fas fa-trash-alt"></span> Отхвърли задачата
+                                                            </a>
+                                                        }
+                                                        <a role="button" data-modal="#apply-modal" class="dropdown-item call-modal">
+                                                            <span class="fas fa-comments"></span> Изпрати съобщение
+                                                        </a>
+                                                    </li>
+                                                </ul>
+
+                                            </td>
+                        </tr>
+
+
+                        }
+                     }
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+
+
+@*
+<div class="content">
+    <div class="page-inner">
+        <div class="page-header">
+            <h4 class="page-title">@ViewData["Title"]</h4>
+            <ul class="breadcrumbs">
+                <li class="nav-home">
+                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li class="separator">
+                    <i class="fas fa-arrow-right"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">@ViewData["Title"]</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="row">
+
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                    </div>
+                    @if (Model.List != null)
+                    {
+                        <small style="text-align: right">Страница: @Model.Pager.CurrentPage от @Model.Pager.TotalPages</small>
+
+                        <div class="card-body card-table">
+                            <table class="table table-hover table-striped">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Заглавие</th>
+                                        <th scope="col">Вид</th>
+                                        <th scope="col">Статус</th>
+                                        <th scope="col">Достъп</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody>
+
+                                    @await foreach (var item in Model.List)
+                                    {
+
+                                        <tr>
+                                            <td>@item.Title</td>
+                                            <td>@item.StartDate.ToString("MM MMMM") - @item.EndDate.ToString("MM MMMM")</td>
+                                            <td>
+                                                @switch (item.Level)
+                                                {
+                                                    case TaskLevel.Normal:<span class="badge badge-normal">Нормална</span>
+                                                        break;
+                                                    case TaskLevel.Video:<span class="badge badge-video">Разговор</span>
+                                                        break;
+
+                                                }
+                                            </td>
+                                            <td>
+                                                @switch (item.Status)
+                                                {
+                                                    case TasksStatus.Waiting:<span class="badge badge-dark">В изчакване</span>
+                                                        break;
+                                                    case TasksStatus.Approved:<span class="badge badge-success">Одобрена</span>
+                                                        break;
+                                                    case TasksStatus.Rejected:<span class="badge badge-danger">Отхвърлена</span>
+                                                        break;
+                                                    case TasksStatus.Failed:<span class="badge badge-danger">Не е завършена</span>
+                                                        break;
+                                                    case TasksStatus.Success:<span class="badge badge-success">Успешно завършена</span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td class="dropdown hidden-caret">
+                                                <a href="#" class="btn btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-ellipsis-h"></i>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a role="button" data-toggle="modal" data-target="#detailsModal" class="dropdown-item">
+                                                            <span class="fas fa-eye"></span> Преглед
+                                                        </a>
+                                                        @if (item.Level == TaskLevel.Video && item.Status == TasksStatus.Approved)
+                                                        {
+                                                            @if (item.Behaviour == TasksBehaviour.Running)
+                                                            {
+                                                                <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-id="@item.GeneratedLink" class="dropdown-item">
+                                                                    <span class="fas fa-video"></span> Към видео разговор
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-id="@item.GeneratedLink" class="dropdown-item">
+                                                                    <span class="fas fa-video-slash"></span> Към видео разговор
+                                                                </a>
+                                                            }
+                                                        }
+
+                                                        @if (item.Status == TasksStatus.Waiting)
+                                                        {
+                                                            <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Approved" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                                <span class="fas fa-check-circle"></span> Приеми задачата
+                                                            </a>
+                                                            <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Rejected" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                                <span class="fas fa-trash-alt"></span> Отхвърли задачата
+                                                            </a>
+                                                        }
+                                                        <a role="button" data-toggle="modal" data-target="#messageModal" class="dropdown-item">
+                                                            <span class="fas fa-comments"></span> Изпрати съобщение
+                                                            @{
+                                                                ViewData["taskId"] = item.Id;
+                                                                ViewData["TaskTitle"] = item.Title;
+                                                            }
+
+                                                        </a>
+                                                    </li>
+                                                </ul>
+
+                                            </td>
+                                        </tr>
+
+                                        <div id="detailsModal" class="modal fade" role="dialog" data-backdrop="false">
+                                            <div class="modal-dialog modal-sm">
+
+                                                <!-- Modal content-->
+                                                <div class="modal-content modal-window">
+                                                    <div class="modal-header">
+                                                        <h4>Информация</h4>
+                                                        <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+
+                                                    </div>
+
+                                                    <div class="modal-body">
+
+                                                        <div class="row">
+                                                            <div class="col-md-10">
+                                                                <label>Заглавие:</label><br>
+                                                                @item.Title
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                            <div class="col-md-10">
+                                                                <label>Описание:</label><br>
+                                                                @item.About
+                                                            </div>
+                                                        </div>
+                                                        <br>
+                                                        <div class="row">
+                                                            <div class="col-md-10">
+                                                                <div class="form-group">
+                                                                    <label>Продължителност:</label><br>
+                                                                    @item.StartDate -  @item.EndDate
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal" arial-label="Close">Затвори</button>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                        <div class="card-action">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @await Html.PartialAsync("../Partials/_PaginationPartial", Model.Pager)
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header" style="text-align:center">
+                                        <b>Няма намерени задачи.</b>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@{
+    var Id = ViewData["taskId"];
+    string title = ViewData["TaskTitle"] as string;
+}
+<!-- Message Modal -->
+<form asp-route-id="@Id" method="post" id="messageForm">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div id="messageModal" class="modal fade" role="dialog" data-backdrop="false">
+        <div class="modal-dialog modal-md">
+
+            <!-- Modal content-->
+            <div class="modal-content modal-window">
+                <div class="modal-header">
+                    <h4>Изпрати съобщение</h4>
+                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label asp-for="Message.ReceiverId"></label>
+                                <input asp-for="Message.ReceiverId" class="form-control" disabled placeholder="Създател на задачата" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label asp-for="Message.Title"></label>
+                                <input asp-for="Message.Title" class="form-control" disabled Value="@title" />
+                                <span asp-validation-for="Message.Title" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="form-group">
+                                <label asp-for="Message.Description"></label>
+                                <textarea asp-for="Message.Description" id="mytextarea"></textarea>
+                                <span asp-validation-for="Message.Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success btn-fill pull-right" id="MessageSubmit">Изпрати</button>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+*@

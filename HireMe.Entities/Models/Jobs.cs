@@ -1,9 +1,10 @@
-﻿namespace HireMe.Entities.Models
+﻿ namespace HireMe.Entities.Models
 {
     using Ardalis.GuardClauses;
     using HireMe.Entities.Enums;
     using HireMe.Entities.Input;
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Jobs : BaseModel
     {
@@ -25,10 +26,15 @@
         public int RatingVotes { get; set; }
         public int VotedUsers { get; set; }
         public uint Views { get; set; }
+        public uint ApplyCount { get; set; }
 
         public string resumeFilesId { get; set; } = null;
+       // public string guestResumeFiles { get; set; } = null;
+
         public int CategoryId { get; set; }
         public int CompanyId { get; set; }
+        public string CompanyLogo { get; set; }
+
         public string LanguageId { get; set; }
         public string TagsId { get; set; }
 
@@ -38,6 +44,9 @@
         public ApproveType isApproved { get; set; }
 
         public bool isArchived { get; set; }
+
+        [NotMapped]
+        public bool isInFavourites { get; set; }
 
         public void Update(CreateJobInputModel viewModel, ApproveType approved, User user)
         {
@@ -68,6 +77,8 @@
             CategoryId = viewModel.CategoryId;
             LanguageId = viewModel.LanguageId;
             TagsId = viewModel.TagsId;
+
+            CompanyLogo = viewModel.CompanyLogo;
 
             PosterID = user.Id;
             isApproved = approved;

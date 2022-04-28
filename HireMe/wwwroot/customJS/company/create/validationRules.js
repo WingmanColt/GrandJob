@@ -40,9 +40,7 @@
                    }
                }
             },
-            logo: {
-                extension: "jpg|jpeg|png|gif"
-            },
+            
         },
         highlight: function (element) {
             $(element).closest('.form-group').removeClass('has-success').addClass('has-error');

@@ -10,7 +10,7 @@ namespace HireMe.Utility
             object value, ValidationContext validationContext)
         {
             var _context = (BaseDbContext)validationContext.GetService(typeof(BaseDbContext));
-            var entity = _context.Users.SingleOrDefault(e => e.Email == value.ToString());
+            var entity = _context.Users?.SingleOrDefault(e => e.Email == value.ToString());
 
             if (entity != null)
             {
@@ -21,7 +21,7 @@ namespace HireMe.Utility
 
         public string GetErrorMessage(string email)
         {
-            return $"Email {email} is already in use.";
+            return $"Емайл '{email}' вече се използва! Пробвайте с друг.";
         }
     }
 }

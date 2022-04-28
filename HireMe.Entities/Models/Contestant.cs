@@ -2,6 +2,7 @@
 using HireMe.Entities.Enums;
 using HireMe.Entities.Input;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HireMe.Entities.Models
 {
@@ -18,6 +19,7 @@ namespace HireMe.Entities.Models
 
         // Details
         public string About { get; set; }
+        public string Speciality { get; set; }
         public string Description { get; set; }
         public int Experience { get; set; }
         public int payRate { get; set; }
@@ -47,9 +49,14 @@ namespace HireMe.Entities.Models
         public string userSkillsId { get; set; }
         public string LanguagesId { get; set; }
         public int CategoryId { get; set; }
+        public string Logo { get; set; }
         public string PosterID { get; set; }
         public ApproveType isApproved { get; set; }
         public bool isArchived { get; set; }
+
+
+        [NotMapped]
+        public bool isInFavourites { get; set; }
 
         public void Update(CreateContestantInputModel viewModel, ApproveType approved, User user)
         {
@@ -63,6 +70,9 @@ namespace HireMe.Entities.Models
 
             Guard.Against.NullOrEmpty(viewModel.About, nameof(viewModel.About));
             About = viewModel.About;
+
+            Guard.Against.NullOrEmpty(viewModel.Speciality, nameof(viewModel.Speciality));
+            Speciality = viewModel.Speciality;
 
             Genders = viewModel.Genders;
             Age = viewModel.Age;
@@ -88,6 +98,7 @@ namespace HireMe.Entities.Models
             userSkillsId = viewModel.userSkillsId;
             isApproved = approved;
             isArchived = viewModel.isArchived;
+            Logo = user.PictureName;
 
             PosterID = user.Id;
             CreatedOn = DateTime.Now;

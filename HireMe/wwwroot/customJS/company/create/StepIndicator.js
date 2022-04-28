@@ -35,7 +35,7 @@
                     //1. scale current_fs down to 80%
                     scale = 1 - (1 - now) * 0.2;
                     //2. bring next_fs from the right(50%)
-                    left = (now * 50) + "%";
+                    left = (now * 10) + "%";
                     //3. increase opacity of next_fs to 1 as it moves in
                     opacity = 1 - now;
                     current_fs.css({
@@ -45,7 +45,7 @@
                     next_fs.css({ 'left': left, 'opacity': opacity });
 
                 },
-                duration: 1000,
+                duration: 100,
                 complete: function () {
                     current_fs.hide();
                     animating = false;

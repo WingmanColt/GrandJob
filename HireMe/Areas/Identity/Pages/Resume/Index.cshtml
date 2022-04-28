@@ -1,65 +1,150 @@
 ﻿@page
-
-@inject IConfiguration config
-@inject IResumeService resumeService
-@inject UserManager<User> UserManager
-
+@inject ICipherService _cipherService
 @model IndexModel
 
 @{
     ViewData["Title"] = "Моите файлове";
-    Layout = "Layout/_Index";
-
-    var user = await UserManager.GetUserAsync(User);
-    var all = resumeService.GetAllBy(user);
-    // Filter
-    string resumeUploadLimit = config.GetSection("ResumeUploadLimit").Value;
-    var count = await resumeService.GetFilesByUserCount(user.Id);
-
-    string siteUrl = config.GetSection("MySettings").GetSection("ResumeUrl").Value;
-    int index = 0;
-    <script src="~/customJS/pdfobject.min.js"></script>
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 }
-<style>
-    .pdfobject-container {
-        height: 120rem;
-        border: 1rem solid rgba(0,0,0,.1);
-    }
-</style>
-<form method="post" enctype="multipart/form-data">
 
-    <div id="resumeModal" class="modal fade" role="dialog" data-backdrop="false">
-        <div class="modal-dialog modal-md">
 
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" arial-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
 
-                </div>
-
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <input asp-for="Input.FormFile" type="file" />
-                            </div>
-                        </div>
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+        <div class="row">
+                    <div class="col-lg-12">
+                      <h4>Резюме</h4>
+                       <div class="chosen-outer">
+                       <a class="theme-btn btn-style-danger call-modal mid-right" data-modal="#apply-modal"><i class="fa fa-plus"></i> Добави</a>
+                      </div>
                     </div>
+         </div>
+        </div>
 
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
 
+                <div class="widget-content">
+                  <div class="table-outer">
+                    <table class="default-table manage-job-table">
+                      <thead>
+                        <tr>
+                          <th>Име</th>
+                          <th>Рейтинг</th>
+                          <th>Брой гласове</th>
+                          <th>Дата на качване</th>
+                          <th>Още</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                       @if (Model.Result is not null && await Model.Result.AnyAsync())
+                           {
+                            await foreach (var item in Model.Result)
+                            {
+                        <tr>
+                          <td>
+                            <h6>@item.Title</h6>
+
+                            @if(item.LastAppliedJob?.Length > 0)
+                            {
+                            <span class="info"><i class="icon flaticon-briefcase"></i> @item.LastAppliedJob</span>
+                            }
+
+                          </td>
+                          <td class="applied">@item.Rating / 5</td>
+                          <td class="applied">@item.RatingVotes</td>
+                          <td>@item.Date.ToString("MM MMMM")</td>
+                          <td>
+                            <div class="option-box">
+                              <ul class="option-list">
+                                <li>@*{ string encryptedId = _cipherService.Encrypt(@item.FileId); }*@
+                                     <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Виж">
+                                    <span class="la la-eye"></span></a>
+                                 </li>
+                                <li>
+                                  <form asp-page-handler="Delete" asp-route-id="@item.Id" method="post">
+                                  <button data-text="Изтрий" type="submit"><span class="la la-trash"></span></button>
+                                  </form>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                        }
+                     }
+
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger btn-fill pull-right" id="Submit">Качи</button>
-                    <div class="clearfix"></div>
-                </div>
+              </div>
             </div>
+          </div>
+
 
         </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+    
+
+  <!-- apply modal -->
+<div class="modal" id="apply-modal">
+    <!-- Login Form -->
+    <div class="login-form default-form">
+      <div class="form-inner">
+        <h4>Добави ново резюме</h4>
+        <br>
+        <!--Login Form-->
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+                          <div class="uploading-outer">
+                    <div class="uploadButton">
+                 <input class="uploadButton-input" asp-for="Input.FormFile" type="file" id="upload" />
+                <label class="uploadButton-button ripple-effect" for="upload"> </label>
+                      <span class="uploadButton-file-name"></span>
+                    </div>
+                    <div class="text">Максималният размер е 5MB, а форматът трябва да е pdf, txt, docx или doc.</div>
+                  </div>
+</div>
+
+        <div class="bottom-box">
+          <div class="btn-box row">
+              <div class="col-lg-12">
+                   <button class="theme-btn btn-style-three" type="submit"><i class="fa fa-upload"></i> Качи</button>
+                   <a href="#" class="theme-btn btn-style-default bottom-right" rel="modal:close"><i class="fa fa-times"></i> Затвори</a>
+                </div>
+               
+          </div>
+        </div>
+        </form>
+      </div>
     </div>
-</form>
+    <!--End Login Form -->
+   
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <div class="row form-group">
     <!-- Modal -->
@@ -89,109 +174,3 @@
 
 
 
-
-<div class="content">
-    <div class="page-inner">
-        <div class="page-header">
-            <h4 class="page-title">@ViewData["Title"] ( @count/@resumeUploadLimit )</h4>
-            <ul class="breadcrumbs">
-                <li class="nav-home">
-                    <a asp-area="Identity" asp-page="/Account/Manage/Index">
-                        <i class="flaticon-home"></i>
-                    </a>
-                </li>
-                <li class="separator">
-                    <i class="flaticon-right-arrow"></i>
-                </li>
-                <li class="nav-item">
-                    <a href="#">@ViewData["Title"]</a>
-                </li>
-            </ul>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-10">
-                <div class="card">
-                    <div class="card-header">
-                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#resumeModal">
-                            <span class="btn-label">
-                                <i class="fa fa-plus"></i>
-                            </span>
-                            Добави файл
-                        </button>
-
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-responsive-md mt-3">
-
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Заглавие</th>
-                                    <th scope="col">Добавена на</th>
-                                    <th scope="col">Достъп</th>
-                                </tr>
-                            </thead>
-
-
-                            <tbody>
-                                @{
-                                    @if (all != null)
-                                    {
-                                        await foreach (var item in all)
-                                        {
-                                            index++;
-
-                                    <tr>
-                                        <td>@index</td>
-                                        <td>@item.Title</td>
-                                        <td>@item.Date.ToString("MM MMMM")</td>
-
-                                        <td>
-
-                                            <div class="btn-group btn-group-page-header ml-auto">
-                                                <button type="button" class="btn btn-light btn-round btn-page-header-dropdown dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-h"></i>
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <div class="arrow"></div>
-
-                                                    <script>PDFObject.embed("@siteUrl@item.FileId", "#resume");</script>
-                                                    <a data-toggle="modal" data-target="#myResume" class="dropdown-item">
-                                                        <span class="fa fa-eye"></span> Преглед
-                                                    </a>
-                                                    @*
-                                                        <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.FileId" class="dropdown-item">
-                                                            <span class="fa fa-eye"></span> Преглед
-                                                        </a>
-                                                    *@
-                                                    <form asp-page-handler="Delete" asp-route-id="@item.Id" method="post">
-
-                                                        <button type="submit" class="dropdown-item">
-                                                            <span class="fas fa-trash"></span>
-                                                            Изтрий
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-
-                                        </td>
-
-                                    </tr>
-
-
-                                        }
-                                    }
-                                }
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-</div>

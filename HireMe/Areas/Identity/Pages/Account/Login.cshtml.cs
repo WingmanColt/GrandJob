@@ -89,12 +89,8 @@ namespace HireMe.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                User user;
-                if (Input.Email.Contains("@"))
-                    user = await _userManager.FindByEmailAsync(Input.Email);
-                else
-                    user = await _userManager.FindByNameAsync(Input.Email);
 
+                    User user = await _userManager.FindByEmailAsync(Input.Email);
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
@@ -108,7 +104,7 @@ namespace HireMe.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _baseService.ToastNotifyLog(user, ToastMessageState.Error, "Проблем", "Профилът е заключен за 24 часа.", "login", 4000);
+                    _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Проблем", "Профилът е заключен за 24 часа.", "login", 4000);
                     return RedirectToPage("./Lockout");
                 }
                 else
@@ -120,7 +116,7 @@ namespace HireMe.Areas.Identity.Pages.Account
                     else
                     {
                      ModelState.AddModelError(string.Empty, "Възникна грешка, опитайте по-късно.");
-                     _baseService.ToastNotifyLog(user, ToastMessageState.Error, "Проблем", "Възникна грешка, опитайте по-късно.", "login", 4000);
+                     _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Проблем", "Възникна грешка, опитайте по-късно.", "login", 4000);
                     }
 
                     return Page();

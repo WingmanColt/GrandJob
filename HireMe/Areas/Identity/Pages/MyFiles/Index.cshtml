@@ -1,0 +1,176 @@
+﻿@page
+@inject ICipherService _cipherService
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Моите файлове";
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+}
+
+
+
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+        <div class="row">
+                    <div class="col-lg-12">
+                      <h4>Моите файлове</h4>
+                       <div class="chosen-outer">
+                       <a class="theme-btn btn-style-danger call-modal mid-right" data-modal="#apply-modal"><i class="fa fa-plus"></i> Добави</a>
+                      </div>
+                    </div>
+         </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+
+                <div class="widget-content">
+                  <div class="table-outer">
+                    <table class="default-table manage-job-table">
+                      <thead>
+                        <tr>
+                          <th>Име</th>
+                          <th>Рейтинг</th>
+                          <th>Брой гласове</th>
+                          <th>Дата на качване</th>
+                          <th>Още</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                       @if (Model.Result is not null && await Model.Result.AnyAsync())
+                           {
+                            await foreach (var item in Model.Result)
+                            {
+                        <tr>
+                          <td>
+                            <h6>@item.Title</h6>
+
+                            @if(item.LastAppliedJob?.Length > 0)
+                            {
+                            <span class="info"><i class="icon flaticon-briefcase"></i> @item.LastAppliedJob</span>
+                            }
+
+                          </td>
+                          <td class="applied">@item.Rating / 5</td>
+                          <td class="applied">@item.RatingVotes</td>
+                          <td>@item.Date.ToString("MM MMMM")</td>
+                          <td>
+                            <div class="option-box">
+                              <ul class="option-list">
+                                <li>@*{ string encryptedId = _cipherService.Encrypt(@item.FileId); }*@
+                                     <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Виж">
+                                    <span class="la la-eye"></span></a>
+                                 </li>
+                                <li>
+                                  <form asp-page-handler="Delete" asp-route-id="@item.Id" method="post">
+                                  <button data-text="Изтрий" type="submit"><span class="la la-trash"></span></button>
+                                  </form>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                        }
+                     }
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+    
+
+  <!-- apply modal -->
+<div class="modal" id="apply-modal">
+    <!-- Login Form -->
+    <div class="login-form default-form">
+      <div class="form-inner">
+        <h4>Добави нов файл</h4>
+        <br>
+        <!--Login Form-->
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+                          <div class="uploading-outer">
+                    <div class="uploadButton">
+                 <input class="uploadButton-input" asp-for="Input.FormFile" type="file" id="upload" />
+                <label class="uploadButton-button ripple-effect" for="upload"> </label>
+                      <span class="uploadButton-file-name"></span>
+                    </div>
+                    <div class="text">Максималният размер е 5MB, а форматът трябва да е pdf, txt, docx или doc.</div>
+                  </div>
+</div>
+
+        <div class="bottom-box">
+          <div class="btn-box row">
+              <div class="col-lg-12">
+                   <button class="theme-btn btn-style-three" type="submit"><i class="fa fa-upload"></i> Качи</button>
+                   <a href="#" class="theme-btn btn-style-default bottom-right" rel="modal:close"><i class="fa fa-times"></i> Затвори</a>
+                </div>
+               
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+    <!--End Login Form -->
+   
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="row form-group">
+    <!-- Modal -->
+    <div id="myResume" class="modal fade" role="dialog" data-backdrop="false">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                </div>
+                <div class="modal-body">
+                    <div id="resume">
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+

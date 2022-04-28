@@ -1,0 +1,114 @@
+﻿@inject IConfiguration config
+@inject UserManager<User> UserManager
+@inject SignInManager<User> _signInManager
+
+@inject ICompanyService CompanyService
+@inject ISkillsService _skillService
+@inject IFavoritesService _favoriteService
+
+@model JobsViewModel
+
+@{
+    ViewData["Title"] = "Обяви за работа";
+    ViewData["Description"] = "Публикувайте обявата си за работа тук. Или намерете подходяща работа за вас.";
+    ViewData["Keywords"] = "обява, работа, кандидатура, публикувай";
+
+    Layout = "Layout/_Index";
+
+    var user = await UserManager.GetUserAsync(User);
+
+    Company company;
+    IAsyncEnumerable<Skills> skills;
+
+    string labelType = "";
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
+
+    var context = Context.Request;
+    var loc = new Uri($"{context.Scheme}://{context.Host}{context.Path}{context.QueryString}");
+    var returnUrl = loc.AbsoluteUri;
+}
+
+
+<div class="wrapper">
+    @await Component.InvokeAsync("_Filter")
+
+    <div class="main-container">
+
+        <div class="main-header desktop-only">
+            <div class="header-menu">
+                <a class="main-header-link" id="backSearch"><i class="backIcon"></i></a>
+                <a class="main-header-link" asp-controller="Home" asp-action="Index">Начало</a>
+                <a class="main-header-link is-active" asp-controller="Jobs" asp-action="Index" asp-route-Internship="intern">Стажове</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index">Работа</a>
+                <a class="main-header-link" asp-controller="Contestants" asp-action="Index">Хора</a>
+            </div>
+        </div>
+
+
+        @if (_signInManager.IsSignedIn(User))
+        {
+            @await Component.InvokeAsync("_Activity")
+        }
+        <div class="content-wrapper" style="padding:unset;">
+                    <div class="mobile-only content-section-title text-center">
+                    <button label="Филтрирай" type="button" class="btn btn-sm btn-outline-primary filter-sidebar-toggler">
+                        Филтрирай
+                    </button>
+         </div>
+            <div class="content-section">
+                @if (Model.Result is not null)
+                {
+                    <div class="apps-card">
+                        @await foreach (var item in Model.Result)
+                        {
+                            company = await CompanyService.GetByIdAsync(item.CompanyId);
+                            skills = _skillService.GetAllById<Skills>(item.TagsId, false);
+
+                            <div class="app-card" value="@item.Id" id="app-card">
+                                <span>
+                                    @if (company.Logo is null)
+                                    {
+                                        <i class="icon imagesIcon"></i>
+                                    }
+                                    else
+                                    {
+                                        <img class="icon lazyload" data-src="@SiteImageUrl@company?.Logo" width="85" height="35" />
+                                    }
+                                    @item.Name
+                                </span>
+                                <div class="app-card__subtext">
+                                    <b>@company.Title</b> <br>
+                                    <i class="text-success locationIcon"></i> @item.LocationId
+                                    <br>
+                                    @if (skills is not null)
+                                    {
+                                        @await foreach (var skill in skills)
+                                        {
+                                            <button class="search-buttons detail-button">@skill.Title</button>
+                                        }
+                                    }
+                                </div>
+                                <div class="app-card-buttons">
+                                    @if (item.MinSalary > 0)
+                                    {
+                                        <button class="search-buttons card-buttons" style="background-color: #56d48f;">
+                                            <i class="euroIcon"></i><br>@item.MinSalary лв.
+                                        </button>
+                                    }
+
+                                    <button class="search-buttons card-buttons-msg">
+                                        <i class="calendarIcon"></i><br> @item.CreatedOn.ToString("MM MMMM")
+                                    </button>
+
+
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div id="job-partial"></div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

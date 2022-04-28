@@ -1,0 +1,413 @@
+﻿@model HeaderMenuViewModel
+
+@{
+        string notifyIcon = null;
+}
+
+      <!-- Main Header-->
+    <header class="main-header"> @*header-shaddow*@
+
+      <!-- Main box -->
+      <div class="main-box">
+        <!--Nav Outer -->
+        <div class="nav-outer">
+          <div class="logo-box">
+            <div class="logo">
+              <a asp-controller="Home" asp-action"Index"><img src="~/theme_superio/images/logo.png" alt=""></a>
+            </div>          
+          </div>
+
+          <nav class="nav main-menu">
+            <ul class="navigation" id="navbar">
+            <li><a asp-controller="Home" asp-action="Index">Начало</a></li>
+            <li><a asp-controller="Jobs" asp-action="Index">Обяви</a></li>
+            <li><a asp-controller="Contestants" asp-action="Index">Кандидати</a></li>
+            <li><a asp-controller="Company" asp-action="Index">Фирми</a></li>
+
+            @if (Model.User is not null && !Model.isDashboard)
+            {
+              <li class="mobile-only"><a asp-area="Identity" asp-page="/Account/Manage/Index">Контролен Панел</a></li>
+            }
+             <!-- Only for Mobile View -->
+                <li class="mm-add-listing">
+                <br>
+              <span class="social-links">
+              <a href="https://www.facebook.com/grandjob.eu/"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://twitter.com/2GG4iId1wp8cO1s/"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </span>
+
+                </li>
+            </ul>
+          </nav>
+          <!-- Main Menu End-->
+        </div>
+
+       
+          <div class="outer-box">
+
+               @if(Model.User is not null)
+               {
+                <div class="dropdown dashboard-option menu-btn">
+                    <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">
+                        
+
+                        <span class="count" id="favCounter">@Model.FavouritesCount</span>
+                        <span class="icon la la-heart-o" ></span>
+                        
+                    </button>
+ 
+                        <ul class="dropdown-menu notify" id="favUl">
+                        <div class="row">
+                            <div class="col-sm-10">
+                        <h4>Любими</h4>
+                        </div>
+                        <div class="col-sm-2">
+                       <a asp-controller="Home" asp-action="RemoveFavourites" asp-route-returnUrl="@Model.ReturnUrl">
+                        <i class="notif-danger-text las la-trash-alt"></i>
+                        </a>
+                        </div>
+                        </div>
+                            <br>
+
+                          @if(await Model.FavouriteJob.AnyAsync())
+                           {
+                            @await foreach (var entity in Model.FavouriteJob)
+                            {
+
+                                <li id="@entity.Id-jobLi">
+                                    <a asp-controller="Jobs" asp-action="Details" asp-route-id="@entity.Id" style="padding:7px 3px;">
+                                        <span>
+                                            <img data-src="@Model.CompanyImageUrl@entity.CompanyLogo" alt="" class="lazyload">
+                                        </span>  
+                                      
+                                        <small>@entity.Name</small>
+                                    </a>
+                                </li>
+                            }
+                          }
+                         @if(await Model.FavouriteCompany.AnyAsync())
+                           {
+                            @await foreach (var entity in Model.FavouriteCompany)
+                            {
+
+                                <li id="@entity.Id-companyLi">
+                                    <a asp-controller="Company" asp-action="Details" asp-route-id="@entity.Id" style="padding:7px 3px;">
+                                        <span>
+                                            <img data-src="@Model.CompanyImageUrl@entity.Logo" alt="" class="lazyload">
+                                        </span>  
+                                        <small>@entity.Title</small>
+                                    </a>
+                                </li>
+                            }
+                          }
+                          @if(await Model.FavouriteContestant.AnyAsync())
+                           {
+                            @await foreach (var entity in Model.FavouriteContestant)
+                            {
+
+                                <li id="@entity.Id-contestantLi">
+                                    <a asp-controller="Contestants" asp-action="Details" asp-route-id="@entity.Id" style="padding:7px 3px;">
+                                        <span>
+                                            <img data-src="@Model.UserImageUrl@entity.Logo" alt="" class="lazyload">
+                                        </span>  
+                                        <small>@entity.FullName</small>
+                                    </a>
+                                </li>
+                            }
+                          }                             
+                        </ul>
+                </div>
+
+
+                <div class="dropdown dashboard-option menu-btn">
+                    <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">
+                        
+                        @if(Model.NotifyCount > 0)
+                        {
+                        <span class="count">@Model.NotifyCount</span>
+                        <span class="icon la la-bell" style="color:#0F0F0F"></span>
+                        } else {
+                            <span class="icon la la-bell"></span>
+                        }
+                        
+                    </button>
+
+                        <ul class="dropdown-menu notify">
+                          <div class="row">
+                            <div class="col-sm-10">
+                        <h4>Известия</h4>
+                        </div>
+                        <div class="col-sm-2">
+                       <a asp-controller="Notifications" asp-action="ClearNotifications" asp-route-returnUrl="@Model.ReturnUrl">
+                        <i class="notif-danger-text las la-trash-alt"></i>
+                        </a>
+                        </div>
+                        </div>
+                            <br>
+
+                   @if (Model.Notifications is not null && Model.isNotiftEmpty)
+                        {
+                            @await foreach (var entity in Model.Notifications)
+                            {
+                                switch (entity.Type)
+                                {
+                                    case NotifyType.Information:
+                                        notifyIcon = "notif-info-text";
+                                        break;
+                                    case NotifyType.Warning:
+                                        notifyIcon = "notif-warning-text";
+                                        break;
+                                    case NotifyType.Danger:
+                                        notifyIcon = "notif-danger-text";
+                                        break;
+                                    case NotifyType.Success:
+                                        notifyIcon = "notif-success-text";
+                                        break;
+                                    case NotifyType.Image:
+                                        notifyIcon = "notif-img";
+                                        break;
+                                }
+
+
+                                <li>
+                                    <a href="@Model.Url/@entity.Url" style="padding:7px 3px;">
+                                        <span class="@notifyIcon @entity.Icon"></span>  
+                                        <small>@entity.Title</small>
+                                    </a>
+                                </li>
+                            }
+                            <li>
+                                <br>
+                                <a class="theme-btn btn-style-default" href="#" style="padding:7px 3px;">
+                                    <strong>Виж всички</strong>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+              
+                </div>
+
+                @*
+                <button type="button" class="menu-btn toggle-filters">
+                    <span class="icon la la-stream"></span>
+                </button>
+                *@
+                <!-- Dashboard Option -->
+                <div class="dropdown dashboard-option">
+                    <a class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">
+
+                 @if (Model.User?.PictureName is not null)
+                 {
+                <img class="thumb lazyload" data-src="@Model.SiteImageUrl" alt="avatar">
+                 } else {
+                    <i class="fa fa-images"></i>
+                 }
+
+                <span class="name">@Model.User?.FirstName</span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="active"><a asp-controller="Home" asp-action="Index"> <i class="la la-home"></i> Начало</a></li>
+                <li><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="la la-user-alt"></i>Контролен Панел</a></li>
+                        @if (@Model.User.Role.Equals(Roles.User) || @Model.User.Role.Equals(Roles.Contestant) || @Model.User.Role.Equals(Roles.Admin) || @Model.User.Role.Equals(Roles.Moderator))
+                            {
+                                <li><a asp-area="Identity" asp-page="/Contestant/Operations"> <i class="las la-id-badge"></i>Добави Кандидатура</a></li>
+                            }
+                            @if (@Model.User.Role.Equals(Roles.Employer) || @Model.User.Role.Equals(Roles.Admin) || @Model.User.Role.Equals(Roles.Moderator))
+                            {
+                                <li><a asp-area="Identity" asp-page="/Companies/Operations"><i class="la la-briefcase"></i>Добави Фирма</a></li>
+                            }
+                            @if (@Model.User.Role.Equals(Roles.Recruiter) || @Model.User.Role.Equals(Roles.Admin) || @Model.User.Role.Equals(Roles.Moderator))
+                            {
+                                <li><a asp-area="Identity" asp-page="/Jobs/Operations"><i class="la la-file-invoice"></i>Добави Обява</a></li>
+                            }
+                <li>
+                  <a asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Model.ReturnUrl">
+                   <i class="la la-sign-out" style="color:darkred"></i> Излез
+                  </a>
+                </li>
+              </ul>
+                </div>
+                }
+
+          </div>
+      </div>
+
+      <!-- Mobile Header -->
+      <div class="mobile-header">
+        <div class="logo"><a asp-controller="Home" asp-action="Index"><img src="~/theme_superio/images/logo.png" alt="" title=""></a></div>
+
+        <!--Nav Box-->
+        <div class="nav-outer clearfix">
+            
+          <div class="outer-box">
+
+
+
+
+           @if (Model.User is not null)
+             {
+                 @if (!Model.isDashboard)
+                 {
+                <div class="dropdown dashboard-option menu-btn">
+                    <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">
+                        
+
+                        <span class="count" id="favCounter">@Model.FavouritesCount</span>
+                        <span class="icon la la-heart-o" ></span>
+                        
+                    </button>
+ 
+                        <ul class="dropdown-menu notify" id="favUl">
+                        <div class="row">
+                            <div class="col-sm-10">
+                        <h4>Любими</h4>
+                        </div>
+                        <div class="col-sm-2">
+                       <a asp-controller="Home" asp-action="RemoveFavourites" asp-route-returnUrl="@Model.ReturnUrl">
+                        <i class="notif-danger-text las la-trash-alt"></i>
+                        </a>
+                        </div>
+                        </div>
+                            <br>
+
+                          @if(await Model.FavouriteJob.AnyAsync())
+                           {
+                            @await foreach (var entity in Model.FavouriteJob)
+                            {
+
+                                <li id="@entity.Id-jobLi">
+                                    <a asp-controller="Jobs" asp-action="Details" asp-route-id="@entity.Id" style="padding:7px 3px;">
+                                        <span>
+                                            <img data-src="@Model.CompanyImageUrl@entity.CompanyLogo" alt="" class="lazyload">
+                                        </span>  
+                                      
+                                        <small>@entity.Name</small>
+                                    </a>
+                                </li>
+                            }
+                          }
+                         @if(await Model.FavouriteCompany.AnyAsync())
+                           {
+                            @await foreach (var entity in Model.FavouriteCompany)
+                            {
+
+                                <li id="@entity.Id-companyLi">
+                                    <a asp-controller="Company" asp-action="Details" asp-route-id="@entity.Id" style="padding:7px 3px;">
+                                        <span>
+                                            <img data-src="@Model.CompanyImageUrl@entity.Logo" alt="" class="lazyload">
+                                        </span>  
+                                        <small>@entity.Title</small>
+                                    </a>
+                                </li>
+                            }
+                          }
+                          @if(await Model.FavouriteContestant.AnyAsync())
+                           {
+                            @await foreach (var entity in Model.FavouriteContestant)
+                            {
+
+                                <li id="@entity.Id-contestantLi">
+                                    <a asp-controller="Contestants" asp-action="Details" asp-route-id="@entity.Id" style="padding:7px 3px;">
+                                        <span>
+                                            <img data-src="@Model.UserImageUrl@entity.Logo" alt="" class="lazyload">
+                                        </span>  
+                                        <small>@entity.FullName</small>
+                                    </a>
+                                </li>
+                            }
+                          }                             
+                        </ul>
+                </div>
+
+
+                <div class="dropdown dashboard-option menu-btn">
+                    <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">
+                        
+                        @if(Model.NotifyCount > 0)
+                        {
+                        <span class="count">@Model.NotifyCount</span>
+                        <span class="icon la la-bell" style="color:#0F0F0F"></span>
+                        } else {
+                            <span class="icon la la-bell"></span>
+                        }
+                        
+                    </button>
+
+                        <ul class="dropdown-menu notify">
+                          <div class="row">
+                            <div class="col-sm-10">
+                        <h4>Известия</h4>
+                        </div>
+                        <div class="col-sm-2">
+                       <a asp-controller="Notifications" asp-action="ClearNotifications" asp-route-returnUrl="@Model.ReturnUrl">
+                        <i class="notif-danger-text las la-trash-alt"></i>
+                        </a>
+                        </div>
+                        </div>
+                            <br>
+
+                   @if (Model.Notifications is not null && Model.isNotiftEmpty)
+                        {
+                            @await foreach (var entity in Model.Notifications)
+                            {
+                                switch (entity.Type)
+                                {
+                                    case NotifyType.Information:
+                                        notifyIcon = "notif-info-text";
+                                        break;
+                                    case NotifyType.Warning:
+                                        notifyIcon = "notif-warning-text";
+                                        break;
+                                    case NotifyType.Danger:
+                                        notifyIcon = "notif-danger-text";
+                                        break;
+                                    case NotifyType.Success:
+                                        notifyIcon = "notif-success-text";
+                                        break;
+                                    case NotifyType.Image:
+                                        notifyIcon = "notif-img";
+                                        break;
+                                }
+
+
+                                <li>
+                                    <a href="@Model.Url/@entity.Url" style="padding:7px 3px;">
+                                        <span class="@notifyIcon @entity.Icon"></span>  
+                                        <small>@entity.Title</small>
+                                    </a>
+                                </li>
+                            }
+                            <li>
+                                <br>
+                                <a class="theme-btn btn-style-default" href="#" style="padding:7px 3px;">
+                                    <strong>Виж всички</strong>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+              
+                </div>
+                
+          @*else
+          {
+
+             <button id="toggle-user-sidebar"><span class="icon la la-stream"></span></button>
+          }*@
+            }
+
+            }
+
+            <a href="#nav-mobile" class="mobile-nav-toggler"><span class="flaticon-menu-1"></span></a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Mobile Nav -->
+      <div id="nav-mobile"></div>
+    </header>
+
+    <!--End Main Header -->
+        

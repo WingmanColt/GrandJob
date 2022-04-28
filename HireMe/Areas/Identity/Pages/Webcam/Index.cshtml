@@ -1,0 +1,77 @@
+﻿@page "{text?}"
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Видео разговор";
+    Layout = "Layout/_Index";
+}
+
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+          <h3>Виедо разоговор</h3>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+                <div class="widget-title">
+                  <h4>Всички задачи свързани с мен</h4>
+                </div>
+                <div class="widget-content">
+
+        @if (Model.Tasks.Behaviour == TasksBehaviour.Idle)
+        {
+            <div class="row">
+                <div class="text-center label"><i class="text-primary fa fa-info-circle"></i> Видео разговорът ще е наличен, когато таймерът приключи !</div>
+            </div>
+            <br>
+            <div class="row">
+                <ul id="countdown">
+                    <li id="days">
+                        <div class="number">00</div>
+                        <div class="label">Дни</div>
+                    </li>
+                    <li id="hours">
+                        <div class="number">00</div>
+                        <div class="label">Часа</div>
+                    </li>
+                    <li id="minutes">
+                        <div class="number">00</div>
+                        <div class="label">Минути</div>
+                    </li>
+                    <li id="seconds">
+                        <div class="number">00</div>
+                        <div class="label">Секунди</div>
+                    </li>
+                </ul>
+            </div>
+        }
+        @if (Model.Tasks.Behaviour == TasksBehaviour.Running)
+        {
+            <div class="row" style="margin-bottom:20px;">
+                <button class="btn btn-primary" style="float:left;margin-right:20px;" onclick="mtgJoin()">Join meeting</button>
+                <button class="btn btn-danger" style="float:left;" onclick="mtgLeave()">Leave meeting</button>
+            </div>
+
+            <div class="row">
+                <div id="mtg-frame" height="600" width="700" style="height:700px;width:800px;border-radius:6px;background-color:lightgrey;" allow="autoplay; fullscreen"></div>
+            </div>
+        }
+        @if (Model.Tasks.Behaviour == TasksBehaviour.Ended)
+        {
+            <div class="row">
+                <h3> Тази задача вече е приключила... </h3>
+            </div>
+        }
+
+        </div>
+       </div>
+      </div>
+        </div>
+      </div>
+      </div>
+    </section>

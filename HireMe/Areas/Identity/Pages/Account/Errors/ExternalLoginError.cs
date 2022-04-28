@@ -29,7 +29,7 @@ namespace HireMe.Areas.Identity.Pages.Account
         }
 
 
-        public async Task<IActionResult> OnGetAsync()
+        public IActionResult OnGetAsync()
         {
             return Page();
         }

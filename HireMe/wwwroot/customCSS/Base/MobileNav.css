@@ -13,7 +13,7 @@
 
     .customMenu .item {
         width: 19vw;
-        height: 14vw;
+       /* height: 14vw;*/
         position: relative;
         float: left;
         padding: 0;
@@ -21,6 +21,31 @@
         text-align: center;
     }
 
+        .customMenu .item span {
+            color: #333232;
+            font-size: .5rem;
+            display: block;
+            text-transform: uppercase;
+            font-family: 'Josefin Sans';
+            letter-spacing: 1px;
+        }
+
+        .customMenu .item span {
+            color: #333232;
+            font-size: .5rem;
+            display: block;
+            text-transform: uppercase;
+            font-family: 'Josefin Sans';
+            letter-spacing: 1px;
+            line-height: 2;
+        }
+
+
+            .customMenu .item i:hover,
+            .customMenu .item i:active {
+                color: #0094ff;
+                text-decoration: none;
+            }
 
         .customMenu .item #tooltip {
             transform: scale(0);
@@ -115,11 +140,12 @@
     
 .customMenu i {
     text-align: center;
-    padding: 3vw;
-    color: #000000;
+    padding: 1.2vw;
+    color: #303030;
     text-decoration: none;
     font-size: 6vw;
 }
+
 /*
     .notifications::after {
         content: "";

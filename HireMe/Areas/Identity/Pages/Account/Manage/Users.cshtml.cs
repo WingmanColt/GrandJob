@@ -3,13 +3,13 @@
     using HireMe.Entities;
     using HireMe.Entities.Enums;
     using HireMe.Entities.Models;
-    using HireMe.Services;
     using HireMe.Services.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -19,11 +19,14 @@
     {
         private readonly UserManager<User> _userManager;
         private readonly IAccountsService _accountService;
+        private readonly string _ImagePathShow;
 
-        public UsersModel(UserManager<User> userManager, IAccountsService accountService)
+        public UsersModel(IConfiguration config, UserManager<User> userManager, IAccountsService accountService)
         {
             _userManager = userManager;
             _accountService = accountService;
+
+            _ImagePathShow = config.GetValue<string>("MySettings:UserPicturePath");
         }
 
         [BindProperty]
@@ -57,7 +60,8 @@
                     Email = x.Email,
                     ActivityOn = x.ActivityOn,
                     profileConfirmed = x.profileConfirmed,
-                    Balance = x.Balance
+                    Balance = x.Balance,
+                    PictureName = x.PictureName != null && x.PictureName.Contains("https://") ? x.PictureName : (_ImagePathShow + x.PictureName)
                 });
 
             switch (Role)

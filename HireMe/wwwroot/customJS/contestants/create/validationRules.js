@@ -11,6 +11,10 @@
                 required: true,
                 rangelength: [10, 100]
             },
+            speciality: {
+                required: true,
+                rangelength: [3, 20]
+            },
             age: {
                 required: true,
                 date: true

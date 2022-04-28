@@ -5,124 +5,174 @@
 
 @model CompanyViewModel
 
-@{
+@{ 
     ViewData["Title"] = Model.Title;
     ViewData["Description"] = Model.About;
     ViewData["Keywords"] = Model.Title;
 
-    Layout = "Layout/_Details";
+     Layout = "~/Views/Home/_PageLayout.cshtml";
 
-    var jobsByCompany = JobsService.GetAllByEntity(Model.Id, true, 3);
+    string SiteImageUrl = config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
+    string imageFullPath = SiteImageUrl + Model.Logo; 
+}
 
-    string SiteImageUrl = config.GetSection("MySettings").GetSection("SiteImageUrl").Value;
-    string imageFullPath = SiteImageUrl + Model.Logo;
-    }
 
-<div class="page-preview">
-    <div class="employer-fake-header"></div>
-    <div class="employer-header">
-        <div class="container">
-            <div class="justify-content-start row">
-                <div class="desktop-only col-md-2">
-                    <div class="image-wrapper">
-                        <img src="@imageFullPath" alt="Няма лого" />
-                    </div>
-                </div>
-                <div class="employer-title col-4 mb-sm-3 col-lg-7 col-12">
-                    <h1 class="mt-2">@Model.Title</h1>
-                    <p class="mb-4"><i class="fa fa-map-marker-alt"></i> @Model.LocationId, @Model.Adress</p>
-                    <span class="text-icon-row mr-4"><span class="fa fa-phone"></span><span class="ml-1">@Model.PhoneNumber</span></span>
-                </div>
+    <!-- Job Detail Section -->
+    <section class="job-detail-section">
+      <!-- Upper Box -->
+      <div class="upper-box">
+        <div class="auto-container">
+          <!-- Job Block -->
+          <div class="job-block-seven">
+            <div class="inner-box">
+              <div class="content">
+                <span class="company-logo"><img class="lazyload" data-src="@imageFullPath" alt=""></span>
+                <h4><a href="#">@Model.Title</a></h4>
+                <ul class="job-info">
+                  <li><span class="icon flaticon-map-locator"></span> @Model.LocationId</li>
+                  <li><span class="icon flaticon-briefcase"></span> Category Name</li>
+                  <li><span class="icon flaticon-telephone-1"></span> @Model.PhoneNumber</li>
+                  <li><span class="icon flaticon-mail"></span> @Model.Email</li>
+                </ul>
+                <ul class="job-other-info">
+                  <li class="time">Отворени позиции – @Model.JobsCount</li>
+                </ul>
+              </div>
 
+              <div class="btn-box">
+                <a href="@Model.Website" class="theme-btn btn-style-one">Уеб сайт</a>
+                <a class="bookmark-btn"><i class="flaticon-heart"></i></a>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <div class="mt-3 content-last container">
-        <div class="row">
-            <div class="pt-3 col-lg-6">
-                <div class="section-list">
-                    <div>
-                        <h4 class="title py-0">За нас</h4>
-                        <div class="html-section">
-                            @Html.Raw(@Sanitizer.Sanitize(@Model.About))
-                        </div>
+      <div class="job-detail-outer">
+        <div class="auto-container">
+          <div class="row">
+            <div class="content-column col-lg-8 col-md-12 col-sm-12">
+
+                    <div class="job-detail">
+                <h4>Относно</h4>
+                @Model.About
+                 </div>
+
+            @if (Model.GalleryImagesList is not null && !(await Model.GalleryImagesList.IsEmptyAsync()))
+            {
+               <br>
+              <div class="job-detail">
+                   <h4>Галерия</h4>
+           
+                            <div class="row images-outer">
+                                @await foreach (var item in Model.GalleryImagesList)
+                                {
+                                    <div class="col-lg-3 col-md-3 col-sm-6">
+                                        <figure class="image">
+                                            <a href="@Model.GalleryPath\@item" class="lightbox-image" data-fancybox="gallery">
+                                                <img class="bordered lazyload" data-src="@Model.GalleryPath\@item" alt="">
+                                            </a>
+                                        </figure>
+                                    </div>
+                                }
+                            </div>
+                        
                     </div>
-                </div>
-            </div>
-            <div class="pt-3 col-2"></div>
-            <div class="pt-3 col-lg-3">
-                <h3 class="mt-3">Отворени позиции</h3>
-                <div class="search-results">
-                    <div class="search-listing">
-                        @await foreach (var item in jobsByCompany)
-                        {
+                    }
+              <!-- Related Jobs -->
+              @if (await Model.JobsByCompany.AnyAsync())
+                    {
+                        <div class="related-jobs">
+                            <div class="title-box">
+                                <h3>@Model.JobsCount - обяви за работа</h3>
+                            </div>
 
-            <div class="search-listing-details my-4">
-                <a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.CompanyId"></a>
+                    @await foreach (var item in Model.JobsByCompany)
+                      {
+                     <!-- Job Block -->
+                     <div class="job-block ">
+                     <div class="inner-box">
+                    <div class="content">
+                      <span class="company-logo"><img class="rounded-full lazyload" data-src="@SiteImageUrl@item.CompanyLogo" alt=""></span>
+                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                      <ul class="job-info">
+                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                        @if (item.MaxSalary > 0)
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                         }
 
-
-                <div class="search-listing-left desktop-only">
-                    <a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.CompanyId" style="text-decoration:none;">
-                        <div class="image-wrapper">
-                            <img src="@Model.Logo" alt="">
-                        </div>
-                    </a>
-                </div>
-
-
-                <div class="search-listing-center">
-                    <h5 class="job-link-title"><a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" style="text-decoration:none; color:black;">@item.Name</a></h5>
-                    <div class="job-link-location desktop-only">
-                        <span>
-                            @item.WorkType
-
-                        @if (@item.WorkType != null)
-                        {
-        <span class="job-location-separator">|</span>}
-
-                        <span class="city"><i class="fa fa-map-marker-alt"></i>@item.LocationId</span>
-                    </span>
-                </div>
-
-
-
-                <div class="job-link-location mobile-only">
-                    <p class="city"><i class="fa fa-map-markeр-alt"></i>@item.LocationId</p>
-                    <p>@item.WorkType</p>
-                </div>
-                <p class="mobile-only">
-                    <time datetime="1586955066000">@item.CreatedOn.ToString("MM MMMM")</time>
-                </p>
-            </div>
-
-
-            <div class="search-listing-right">
-                <div class="mobile-only">
-                    <a class="job-link hidden-link " target="_self" asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" style="text-decoration:none;">
-                        <div class="image-wrapper">
-                            <img src="@Model.Logo" alt="">
-                        </div>
-                    </a>
-                </div>
-                <p class="desktop-only mb-2">
-
-                </p><span class="icon"></span>
-                <p class="job-link-salary mobile-only mt-3"></p>
-            </div>
-
-        </div>
-
-                        <hr>}
+                         else
+                         {
+                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                         }
+                        
+                      </ul>
+                      <ul class="job-other-info">
+                        <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
+                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                      </ul>
+                      <button class="bookmark-btn"><span class="flaticon-heart"></span></button>
                     </div>
-                    <a class="btn btn-primary btn-main btn-subcolor unset-width " target="_self" asp-controller="Home" asp-action="SearchJobsCompany" asp-route-categoryId="@Model.Id">Виж всички</a>
+                  </div>
                 </div>
+                            }
+
+                        </div>
+                    }
+                </div>
+
+            <div class="sidebar-column col-lg-4 col-md-12 col-sm-12">
+              <aside class="sidebar">
+                <div class="sidebar-widget company-widget">
+                  <div class="widget-content">
+
+                    <ul class="company-info mt-0">
+                      <li>Индустрия: <span>@Model.CategoryName</span></li>
+                      <li>Брой гласували: <span>@Model.VotedUsers</span></li>
+                      <li>Дата на регистрация: <span>@Model.Date.ToString("yyyy")</span></li>
+                      <li>Адрес: <span>@Model.Adress</span></li>
+                      <li>Социална медия:
+                        <div class="social-links">
+                          <a href="@Model.Facebook"><i class="fab fa-facebook-f"></i></a>
+                          <a href="@Model.Twitter"><i class="fab fa-twitter"></i></a>
+                          <a href="@Model.Linkdin"><i class="fab fa-linkedin-in"></i></a>
+
+                        </div>
+                      </li>
+                    </ul>
+
+                    <div class="btn-box"><a href="#" class="theme-btn btn-style-three">                        
+                        <div class="star-rating">
+        <span class="fa fa-star" data-rating="1"></span>
+        <span class="fa fa-star" data-rating="2"></span>
+        <span class="fa fa-star" data-rating="3"></span>
+        <span class="fa fa-star" data-rating="4"></span>
+        <span class="fa fa-star" data-rating="5"></span>
+        <input type="hidden" name="whatever1" class="rating-value" value="@Model.Rating">
+      </div></a></div>
+                  </div>
+                </div>
+
+                @*<div class="sidebar-widget">
+                  <!-- Map Widget -->
+                  <h4 class="widget-title">Job Location</h4>
+                  <div class="widget-content">
+                    <div class="map-outer mb-0">
+                      <div class="map-canvas" data-zoom="12" data-lat="-37.817085" data-lng="144.955631" data-type="roadmap" data-hue="#ffc400" data-title="Envato" data-icon-path="images/resource/map-marker.png" data-content="Melbourne VIC 3000, Australia<br><a href='mailto:info@youremail.com'>info@youremail.com</a>">
+                      </div>
+                    </div>
+                  </div>
+                </div>*@
+
+
+              </aside>
             </div>
-
+          </div>
         </div>
-
-    </div>
-</div>
+      </div>
+    </section>
+    <!-- End Job Detail Section -->
 
 
 

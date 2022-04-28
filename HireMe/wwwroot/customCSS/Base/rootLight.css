@@ -5,6 +5,7 @@
     --Blue2: #0064c8;
     --Purplee: #a16ae8;
     --Bluee: #207dff;
+    --JobSearchButtonBlue: #1da1f2;
     --NavBtnBorder: #fff;
     --HeaderSeparatorBGColor: rgba(0, 100, 200, .75);
     --HeaderUserPicBorder: #0064c8;
@@ -15,13 +16,15 @@
     --BlackFont: #000;
     --HeaderSettingBGColor: #e6e6eb;
     --WhiteBG: #fff;
-    --HeaderBGColor: rgba(10, 10,10, 0.5);
+    --HeaderBGColor: linear-gradient(to right, #207dff 0%, #a16ae8 80%);
     --AvatarAwayBGColor: #ffa534;
     --AvatarOfflineBGColor: #b1c2d9;
     --AvatarOnlineBGColor: #35cd3a;
     --ImageWrapperBase: hsla(0, 0%, 100%, 0.9);
     --BodyFontColor: #000;
     --BodyBGColor: #f4f7fa;
+    --BodyBGColorTransperent: hsla(0, 0%, 100%, 0.8);
+    --BodyBGColorLight: #f5f5fa;
     --MediaBodyColor: #333333;
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

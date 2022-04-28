@@ -1,247 +1,264 @@
-﻿@model CreateCompanyInputModel
+﻿@inject SignInManager<User> _signInManager
+
+@model CreateCompanyInputModel
 
 @{ 
     ViewData["Title"] = "Добави фирма";
     ViewData["Description"] = "Търсете най-подходящите фирми от GrandJob.eu. Разгледайте нашата база данни и намерете подходящите обяви за работа.";
     ViewData["Keywords"] = "company, фирми, добави, фирма, работа";
-    Layout = "Layout/_Create";
-}
+    Layout = "Layout/_Create"; }
 
-<div class="row">
-    <div class="col-sm-12">
-        <ol class="step-indicator">
 
-            <li class="incomplete active is-first">
-                <div class="step-wrapper"><div class="step">1</div></div>
-                <div class="caption">Основна информация</div>
-            </li>
-            <li class="incomplete">
-                <div class="step-wrapper"><div class="step">2</div></div>
-                <div class="caption">Потвърждение</div>
-            </li>
-            <li class="incomplete">
-                <div class="step-wrapper"><div class="step">3</div></div>
-                <div class="caption">Персонал</div>
-            </li>
-            <li class="incomplete is-last">
-                <div class="step-wrapper"><div class="step">4</div></div>
-                <div class="caption">Детайли</div>
-            </li>
-        </ol>
-    </div>
-</div>
+<div class="wrapper">
+    <partial name="../Home/IOSPartials/_LeftSidePartial" />
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="row margin-bottom-20">
-            <div class="col-sm-12">
-                <h3 class="wizard-title">Добавяне на фирма.</h3>
-                <div class="text-light-grey">Да започнем с информация за фирмата. Само на български език.</div>
+    <div class="main-container">
+
+        <div class="main-header desktop-only">
+               
+            <div class="header-menu">
+                <a class="main-header-link" asp-controller="Home" asp-action="Index"><i class="backIcon"></i></a>
+                <a class="main-header-link" asp-controller="Home" asp-action="Index">Начало</a>
+                <a class="main-header-link" asp-controller="Jobs" asp-action="Index" asp-route-Internship="intern">Стажове</a>
+                <a class="main-header-link is-active" asp-controller="Jobs" asp-action="Index">Работа</a>
+                <a class="main-header-link" asp-controller="Contestants" asp-action="Index">Хора</a>
             </div>
         </div>
-        <form asp-controller="Company" asp-action="Create" method="post" enctype="multipart/form-data" id="companyForm">
-
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="Title"></label><span class="required-label">*</span>
-                            <input asp-for="Title" class="form-control" placeholder="Попълнете името на фирмата" name="title" />
-                            <span asp-validation-for="Title" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="Email"></label><span class="required-label">*</span>
-                            <input asp-for="Email" class="form-control" placeholder="Попълнете емайл адрес" name="email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="Website"></label>
-                            <div class="input-group input-group-md mb-3">
-                                <div class="input-group-prepend">
-                                    <a class="btn btn-outline-primary btn-sm btn-link" rel="publisher" href="#">
-                                        <i class="flaticon-web" style="font-size:20px"></i>
-                                    </a>
-                                </div>
-                                <input asp-for="Website" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Въведете линк"  name="website"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <label asp-for="LocationId"></label><span class="required-label">*</span>
-                        <select class="form-control" asp-for="LocationId">
-                            @await foreach (var item in Model.AllLocations)
-                            {
-                            <option value="@item.Value">@item.Value</option>
-                            }
-                        </select>
-                        <span asp-validation-for="LocationId" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <hr>
-                <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-outline-primary next" value="Продължи" />
-            </fieldset>
 
 
+        @if (_signInManager.IsSignedIn(User))
+        {@await Component.InvokeAsync("_Activity")}
 
-
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="Adress"></label><span class="required-label">*</span>
-                            <input asp-for="Adress" class="form-control" placeholder="Адрес на главния офис" name="adress" />
-                            <span asp-validation-for="Adress" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="PhoneNumber"></label><span class="required-label">*</span>
-                            <input asp-for="PhoneNumber" class="form-control" placeholder="Телефонен номер" name="phonenumber" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="EIK"></label><span class="required-label">*</span>
-                            <input asp-for="EIK" class="form-control" name="eik" id="eik" />
-                            <span asp-validation-for="EIK" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-12 mb-3 mb-md-0">
-                        <label for="option-price-2">
-                            <input asp-for="Private" type="checkbox"> <b>Частна компания</b>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <div class="col-md-10">
-                    <i class="fa fa-info-circle" style="color:cornflowerblue"></i> <small class="text-lg-left">Вашият еик или булстат не е публично достъпен и не се запазва в системата !</small>
-                </div>
-
-                <hr>
-                <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-outline-primary next" value="Продължи" />
-            </fieldset>
-
-
-
-
-            <fieldset>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label asp-for="Admin1_Id"></label>
-                            <input asp-for="Admin1_Id" onclick="complate('#AutoComplete')" class="form-control" id="AutoComplete" name="AutoComplete" autocomplete="off" />
-                            <input asp-for="Admin1_Id" type="hidden" onclick="complate('#AutoComplete')" id="AutoCompleteHidden" autocomplete="off" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5">
-                        <div class="form-group">
-                            <label asp-for="Admin2_Id"></label>
-                            <input asp-for="Admin2_Id" onclick="complate('#AutoComplete2')" class="form-control" id="AutoComplete2" name="AutoComplete2" autocomplete="off" />
-                            <input asp-for="Admin2_Id" type="hidden" onclick="complate('#AutoComplete2')" id="AutoComplete2Hidden" autocomplete="off" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-5"> 
-                        <div class="form-group">
-                            <label asp-for="Admin3_Id"></label>
-                            <input asp-for="Admin3_Id" onclick="complate('#AutoComplete3')" class="form-control" id="AutoComplete3" name="AutoComplete3" autocomplete="off" />
-                            <input asp-for="Admin3_Id" type="hidden" onclick="complate('#AutoComplete3')" id="AutoComplete3Hidden" autocomplete="off" />
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-outline-primary next" id="desc" value="Продължи" />
-            </fieldset>
-
-
-
-            <fieldset>
-                @*
-        <b>Искате ли да рекламирате обявата си ?</b>
-        <div class="row form-group">
-            <div class="col-md-12 mb-3 mb-md-0">
-                <label for="option-price-1">
-                    <input type="checkbox" id="option-price-1"> <span class="text-success">3€</span> За 7 дни
-                </label>
-            </div>
-            <div class="col-md-12 mb-3 mb-md-0">
-                <label for="option-price-2">
-                    <input type="checkbox" id="option-price-2"> <span class="text-success">6€</span> За 30 дни
-                </label>
-            </div>
-        </div>
-                *@
-
+        <div class="content-wrapper">
+            <div class="content-section">
+                @*<div class="content-section-title">Добави фирма.</div>*@
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="form-group form-show-validation">
-                            <label asp-for="About"></label><span class="required-label">*</span>
-                            <input asp-for="About" class="form-control" name="about" />
-                            <span asp-validation-for="About" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group form-show-validation">
-                            <label>Лого:</label>
-                            <input asp-for="FormFile" type="file" name="logo" />
-                        </div>
-                    </div>
-                </div>
+                        <ol class="step-indicator">
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <i class="fa fa-info-circle" style="color:cornflowerblue"></i> <strong>Приети файлови формати:</strong>
+                            <li class="incomplete active is-first">
+                                <div class="step-wrapper"><div class="step">1</div></div>
+                                <div class="caption">Основна информация</div>
+                            </li>
+                            <li class="incomplete">
+                                <div class="step-wrapper"><div class="step">2</div></div>
+                                <div class="caption">Потвърждение</div>
+                            </li>
+                            <li class="incomplete">
+                                <div class="step-wrapper"><div class="step">3</div></div>
+                                <div class="caption">Персонал</div>
+                            </li>
+                            <li class="incomplete">
+                                <div class="step-wrapper"><div class="step">4</div></div>
+                                <div class="caption">Детайли</div>
+                            </li>
+                            <li class="incomplete is-last">
+                                <div class="step-wrapper"><div class="step">5</div></div>
+                                <div class="caption">Галерия</div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <form asp-controller="Company" asp-action="Create" method="post" enctype="multipart/form-data" id="companyForm">
+
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="Title"></label><span class="required-label">*</span>
+                                    <input asp-for="Title" class="form-control" placeholder="Попълнете името на фирмата" name="title" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="Email"></label><span class="required-label">*</span>
+                                    <input asp-for="Email" class="form-control" placeholder="Попълнете емайл адрес" name="email" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
                         <br>
-                        <small class="text-lg-left"> Joint Photographic Group (.jpg), Joint Photographic Experts Group (.jpeg), Portable Network Graphics (.png), Graphic Interchange Format (.gif)</small>
-                    </div>
-                </div>
-                <hr>
-                <button type="submit" id="submit" class="btn btn-success btn btn-md btn-floating btn-100 btn-main">Публикувай</button>
-            </fieldset>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="Website"></label>
+                                    <div class="input-group input-group-md mb-3">
+                                        <div class="input-group-prepend">
+                                            <a class="btn btn-sm btn-link" rel="publisher" href="#">
+                                                <i class="socialIcons linkIcon"></i>
+                                            </a>
+                                        </div>
+                                        <input asp-for="Website" class="form-control" aria-describedby="inputGroup-sizing-md" placeholder="Пример: https://www.testfirm.com/" name="website" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <label asp-for="LocationId"></label><span class="required-label">*</span>
+                                <select class="form-control" asp-for="LocationId">
+                                    @await foreach (var item in Model.AllLocations)
+                                    {
+                                        <option value="@item?.Value">@item?.Value</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="LocationId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-primary next" value="Продължи" />
+                    </fieldset>
 
 
 
-        </form>
-    </div>
 
-    <div class="col-md-4">
-        <div class="p-3 mb-5 bg-white">
-            <h3 class="h5 font-weight-bold text-black mb-3">Често задавани въпроси</h3>
-            <hr>
-            <b class="text-letblue">В:</b> <strong>Има ли такса за публикуване на фирма?</strong><br>
-            <b class="text-letblue">О:</b> Няма такси за публикуване на фирма в GrandJob. Това е 100% безплатна услуга, която предлагаме както за работодателите, така и за кандидатите.
-            <hr>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="Adress"></label><span class="required-label">*</span>
+                                    <input asp-for="Adress" class="form-control" placeholder="Адрес на главния офис" name="adress" />
+                                    <span asp-validation-for="Adress" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="PhoneNumber"></label><span class="required-label">*</span>
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="Телефонен номер" name="phonenumber" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="EIK"></label><span class="required-label">*</span>
+                                    <input asp-for="EIK" class="form-control" name="eik" id="eik" />
+                                    <span asp-validation-for="EIK" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-12 mb-3 mb-md-0">
+                                <label for="option-price-2">
+                                    <input asp-for="Private" type="checkbox"> <b>Частна компания</b>
+                                </label>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-md-10">
+                            <i class="infoIcon"></i> <small class="text-lg-left">Вашият еик или булстат не е публично достъпен и не се запазва в системата !</small>
+                        </div>
 
-            <b class="text-letblue">В:</b> <strong>Как да повиша рейтинга на фирмата?</strong><br>
-            <b class="text-letblue">О:</b> Можете да подсилите вашата фирма, като използвате кредитите, които сте закупили. Можете да заредите кредити чрез (кредитна карта, дебитна карта, и PayPal).
-            <hr>
+                        <hr>
+                        <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-primary next" value="Продължи" />
+                    </fieldset>
+
+
+
+
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label asp-for="Admin1_Id"></label>
+                                    <input asp-for="Admin1_Id" onclick="complate('#AutoComplete')" class="form-control" id="AutoComplete" name="AutoComplete" autocomplete="off" />
+                                    <input asp-for="Admin1_Id" type="hidden" onclick="complate('#AutoComplete')" id="AutoCompleteHidden" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label asp-for="Admin2_Id"></label>
+                                    <input asp-for="Admin2_Id" onclick="complate('#AutoComplete2')" class="form-control" id="AutoComplete2" name="AutoComplete2" autocomplete="off" />
+                                    <input asp-for="Admin2_Id" type="hidden" onclick="complate('#AutoComplete2')" id="AutoComplete2Hidden" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <label asp-for="Admin3_Id"></label>
+                                    <input asp-for="Admin3_Id" onclick="complate('#AutoComplete3')" class="form-control" id="AutoComplete3" name="AutoComplete3" autocomplete="off" />
+                                    <input asp-for="Admin3_Id" type="hidden" onclick="complate('#AutoComplete3')" id="AutoComplete3Hidden" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-primary next" id="desc" value="Продължи" />
+                    </fieldset>
+
+
+                    <fieldset>
+
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="About"></label><span class="required-label">*</span>
+                                    <input asp-for="About" class="form-control" name="about" />
+                                    <span asp-validation-for="About" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group form-show-validation">
+                                    <label asp-for="FormFile"></label>
+                                    <div class="col-lg-4 col-md-9 col-sm-8">
+                                        <div class="input-file input-file-image">
+                                            <input asp-for="FormFile" type="file" id="uploadImg" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <i class="infoIcon"></i> <strong>Приети файлови формати:</strong>
+                                <br>
+                                <small class="text-lg-left"> Joint Photographic Group (.jpg), Joint Photographic Experts Group (.jpeg), Portable Network Graphics (.png), Graphic Interchange Format (.gif)</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <input type="button" class="btn btn-default btn btn-md btn-floating btn-100 btn-primary next" id="desc" value="Продължи" />
+                    </fieldset>
+
+
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="dropzone dz-clickable">
+                                    <div class="dz-message" data-dz-message="">
+                                        <h4 class="message">Плъзни файловете си тук</h4>
+
+                                        <div class="note">(Можете да прикачите няколко снимки едновременно, максимален размер <strong>3MB</strong>, <strong>6</strong> бройки.)</div>
+                                        <br>
+                                        <input asp-for="files" type="file" multiple />
+                                        <b>
+                                         <div class="note"><i class="dangerIcon"></i> <strong>Приети файлови формати:</strong> Joint Photographic Group (.jpg), Joint Photographic Experts Group (.jpeg)</div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <button type="submit" id="submit" class="btn btn-success btn btn-md btn-floating btn-100 btn-main">Публикувай</button>
+                    </fieldset>
+
+
+
+                </form>
+            </div>
         </div>
-
     </div>
-
 </div>
-
-
 

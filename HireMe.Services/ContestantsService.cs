@@ -7,9 +7,7 @@ using HireMe.Entities.Models;
 using HireMe.Core.Helpers;
 using HireMe.Entities.Input;
 using Microsoft.EntityFrameworkCore;
-using HireMe.Data;
 using HireMe.Entities.Enums;
-using System;
 using HireMe.ViewModels.Contestants;
 using HireMe.Mapping.Utility;
 
@@ -20,10 +18,9 @@ namespace HireMe.Services
     {
         private readonly IRepository<Contestant> contestantRepository; 
        
-        public ContestantsService(IRepository<Contestant> contestantRepository, FeaturesDbContext _context)
+        public ContestantsService(IRepository<Contestant> contestantRepository)
         {
             this.contestantRepository = contestantRepository;
-          //  this.SeedTest(_context);
         }
 
         public async Task<OperationResult> Create(CreateContestantInputModel viewModel, User user)
@@ -98,6 +95,14 @@ namespace HireMe.Services
             return ent;
         }
 
+        public async Task<int> GetCountByUserId(User user)
+        {
+            var entity = await contestantRepository.Set()
+               .Where(j => j.PosterID == user.Id)
+               .CountAsync();
+
+            return entity;
+        }
 
         public IAsyncEnumerable<Contestant> GetTop(int entitiesToShow)
         {
@@ -118,11 +123,12 @@ namespace HireMe.Services
                FullName = x.FullName, 
                payRate = x.payRate, 
                SalaryType = x.SalaryType, 
+               Speciality = x.Speciality,
                PosterID = x.PosterID, 
                LocationId = x.LocationId 
             })
             .Take(entitiesToShow)
-            .ToAsyncEnumerable();
+            .AsAsyncEnumerable();
 
              return ent;
         }
@@ -158,39 +164,6 @@ namespace HireMe.Services
         }
         */
 
-        public void SeedTest(FeaturesDbContext dbContext)
-        {
-            var test = new List<Contestant>();
-
-            for (int i = 0; i < 50000; i++)
-            {
-                test = new List<Contestant>
-                {
-                new Contestant
-                {
-                FullName = "test Performace",
-                About = "I am a 28-year-old professional with over 8 years of experience working in advertising agencies both.",
-                Age = DateTime.Now,
-                Description= "I am a 28-year-old professional with over 8 years of experience working in advertising agencies both as a graphic designer and as a content writer. I was born in Curitiba, Brazil, where I got a degree in Advertising at Universidade Positivo before moving to Toronto, Canada, where I lived for a year.",
-                SalaryType = SalaryType.month,
-                Experience = 2,
-                Genders = Gender.Male,
-                CategoryId = 2,
-                userSkillsId = "1,5,1999,2222,2212,1111,2044,2043",
-                profileVisiblity = 0,
-                isApproved = ApproveType.Success,
-                isArchived = false,
-                CreatedOn = DateTime.Now,
-                ExpiredOn = DateTime.Now.AddMonths(1),
-                PosterID = "da3bb2af-d040-4b34-aa04-9edcfe117e80"
-                }
-                 
-            };
-                dbContext.Contestant.AddRange(test);
-            }
-           
-            dbContext.SaveChanges();
-        }
 
      
     }

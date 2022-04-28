@@ -1,60 +1,103 @@
-<footer class="ftco-footer ftco-bg-dark ftco-section">
-    <div class="container">
-        <div class="row mb-5">
-            <div class="col-md">
-                <div class="ftco-footer-widget mb-4">
-                    <h2 class="ftco-heading-2">GrandJob</h2>
-                    <p>HireMe е уебсайт, който помага на служители и работодатели да намерят един друг. Фрийлансъри и агенции могат да създадат профил и да направят списък на уменията, и квалификациите си.</p>
-                    <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-3">
-                        <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
-                        <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
-                        <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
-                    </ul>
-                </div>
+﻿
+    <!-- Main Footer -->
+    <footer class="main-footer">
+     @* <div class="auto-container">
+        <!--Widgets Section-->
+        <div class="widgets-section wow fadeInUp">
+          <div class="row">
+            <div class="big-column col-xl-4 col-lg-3 col-md-12">
+              <div class="footer-column about-widget">
+                <div class="logo"><a href="#"><img src="images/logo.svg" alt=""></a></div>
+                <p class="phone-num"><span>Call us </span><a href="thebeehost@support.com">123 456 7890</a></p>
+                <p class="address">329 Queensberry Street, North Melbourne VIC<br> 3051, Australia. <br><a href="mailto:support@superio.com" class="email">support@superio.com</a></p>
+              </div>
             </div>
-            <div class="col-md">
-                <div class="ftco-footer-widget mb-4">
-                    <h2 class="ftco-heading-2">Работодатели</h2>
-                    <ul class="list-unstyled">
-                        <li><a asp-controller="Contestants" asp-action="Index" class="pb-1 d-block">Търси кандидати</a></li>
-                        <li><a asp-controller="Jobs" asp-action="Create" class="pb-1 d-block">Публикувай обява за работа</a></li>
-                        <li><a asp-area="Identity" asp-page="/Account/Manage/Index" class="pb-1 d-block">Контролен панел</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="ftco-footer-widget mb-4 ml-md-4">
-                    <h2 class="ftco-heading-2">Кандидат</h2>
-                    <ul class="list-unstyled">
-                        <li><a asp-controller="Jobs" asp-action="Index" class="pb-1 d-block">Търси работа</a></li>
-                        <li><a asp-area="Identity" asp-page="/Resume/Index" class="pb-1 d-block">Моите файлове</a></li>
-                        <li><a asp-area="Identity" asp-page="/Account/Manage/Index" class="pb-1 d-block">Контролен панел</a></li>
-                        <li><a asp-controller="Categories" asp-action="Index" class="pb-1 d-block">Всички категории</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="ftco-footer-widget mb-4 ml-md-4">
-                    <h2 class="ftco-heading-2">Акаунт</h2>
-                    <ul class="list-unstyled">
-                        <li><a asp-area="Identity" asp-page="/Account/Manage/EditProfile"  class="pb-1 d-block">Настройки на профила</a></li>
-                        <li><a asp-area="Identity" asp-page="/Account/Login" class="pb-1 d-block">Влез</a></li>
-                        <li><a asp-area="Identity" asp-page="/Account/Register" class="pb-1 d-block">Създай акаунт</a></li>
-                        <li><a asp-area="Identity" asp-page="/Account/Manage/Pricing" class="pb-1 d-block">Купи Account-PRO</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="ftco-footer-widget mb-4">
-                    <h2 class="ftco-heading-2">Имате Въпрос?</h2>
-                    <div class="block-23 mb-3">
-                        <ul>
-                            <li><span class="icon icon-map-marker"></span><span class="text">Младост 4, София</span></li>
-                            <li><a href="#"><span class="icon icon-envelope"></span><span class="text">supp.hireme@gmail.com</span></a></li>
-                        </ul>
+
+            <div class="big-column col-xl-8 col-lg-9 col-md-12">
+              <div class="row">
+                <div class="footer-column col-lg-3 col-md-6 col-sm-12">
+                  <div class="footer-widget links-widget">
+                    <h4 class="widget-title">For Candidates</h4>
+                    <div class="widget-content">
+                      <ul class="list">
+                        <li><a href="#">Browse Jobs</a></li>
+                        <li><a href="#">Browse Categories</a></li>
+                        <li><a href="#">Candidate Dashboard</a></li>
+                        <li><a href="#">Job Alerts</a></li>
+                        <li><a href="#">My Bookmarks</a></li>
+                      </ul>
                     </div>
+                  </div>
                 </div>
+
+
+                <div class="footer-column col-lg-3 col-md-6 col-sm-12">
+                  <div class="footer-widget links-widget">
+                    <h4 class="widget-title">For Employers</h4>
+                    <div class="widget-content">
+                      <ul class="list">
+                        <li><a href="#">Browse Candidates</a></li>
+                        <li><a href="#">Employer Dashboard</a></li>
+                        <li><a href="#">Add Job</a></li>
+                        <li><a href="#">Job Packages</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="footer-column col-lg-3 col-md-6 col-sm-12">
+                  <div class="footer-widget links-widget">
+                    <h4 class="widget-title">About Us</h4>
+                    <div class="widget-content">
+                      <ul class="list">
+                        <li><a href="#">Job Page</a></li>
+                        <li><a href="#">Job Page Alternative</a></li>
+                        <li><a href="#">Resume Page</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="footer-column col-lg-3 col-md-6 col-sm-12">
+                  <div class="footer-widget links-widget">
+                    <h4 class="widget-title">Helpful Resources</h4>
+                    <div class="widget-content">
+                      <ul class="list">
+                        <li><a href="#">Site Map</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Privacy Center</a></li>
+                        <li><a href="#">Security Center</a></li>
+                        <li><a href="#">Accessibility Center</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-</footer>
+      </div>
+
+      *@
+      <!--Bottom-->
+      <div class="footer-bottom">
+        <div class="auto-container">
+          <div class="outer-box">
+            <div class="copyright-text">© @DateTime.Today.Year <a href="#">GrandJob</a>.  Всички права запазени.</div>
+            <div class="social-links">
+              <a href="https://www.facebook.com/grandjob.eu/"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://twitter.com/2GG4iId1wp8cO1s/"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll To Top -->
+      <div class="scroll-to-top scroll-to-target" data-target="html"><span class="fa fa-angle-up"></span></div>
+    </footer>
+    <!-- End Main Footer -->

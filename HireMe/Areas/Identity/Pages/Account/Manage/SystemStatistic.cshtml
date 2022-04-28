@@ -2,8 +2,7 @@
 @model SystemStatisticsModel
 @{
     ViewData["Title"] = "Реални данни";
-    Layout = "Layouts/_Statistics";
-
+     Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 }
 
 
@@ -23,6 +22,13 @@
                 <li class="nav-item">
                     <a href="#">@ViewData["Title"]</a>
                 </li>
+               @* <li class="separator">
+                    <i class="flaticon-right-arrow"></i>
+                </li>
+                <li class="nav-item">
+                    <a href="#">@Model.WebDir</a>
+                </li>
+                   *@
             </ul>
         </div>
 
@@ -189,6 +195,258 @@
             </div>
 
         </div>
+
+
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="SeedJobs1" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Please provide amount of job requests:
+                                    </strong>
+                                </h5>
+                                <input asp-for="Input.count" class="form-control" required>
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Normal</span>
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="SeedJobs2" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Please provide amount of job requests:
+                                    </strong>
+                                </h5>
+                                <input asp-for="Input.count" class="form-control" required>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Async</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="DeleteJobs1" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Delete all Jobs
+                                    </strong>
+                                </h5>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Normal</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="DeleteJobs2" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Delete all Jobs Async
+                                    </strong>
+                                </h5>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Async</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="SeedContestants1" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Please provide amount of contestant requests:
+                                    </strong>
+                                </h5>
+                                <input asp-for="Input.count" class="form-control" required>
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Normal</span>
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="SeedContestants2" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Please provide amount of contestnat requests:
+                                    </strong>
+                                </h5>
+                                <input asp-for="Input.count" class="form-control" required>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Async</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="DeleteContestants1" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Delete all Contestants
+                                    </strong>
+                                </h5>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Normal</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="DeleteContestants2" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Delete all Contestants Async
+                                    </strong>
+                                </h5>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Async</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="SeedCompanies1" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Please provide amount of Companies requests:
+                                    </strong>
+                                </h5>
+                                <input asp-for="Input.count" class="form-control" required>
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Normal</span>
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="SeedCompanies2" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Please provide amount of Companies requests:
+                                    </strong>
+                                </h5>
+                                <input asp-for="Input.count" class="form-control" required>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Async</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="DeleteCompanies1" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Delete all Companies
+                                    </strong>
+                                </h5>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Normal</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body ">
+                        <div class="row align-items-center">
+                            <form asp-page-handler="DeleteCompanies2" method="post">
+                                <h5>
+                                    <i class="fas fa-info-circle" style="color:#0094ff"></i><strong>
+                                        Delete all Companies Async
+                                    </strong>
+                                </h5>
+
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    <span class="link-collapse">Execute Async</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="row">
             <div class="col-md-12">

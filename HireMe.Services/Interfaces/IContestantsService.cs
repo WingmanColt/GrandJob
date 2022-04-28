@@ -21,6 +21,7 @@
         IAsyncEnumerable<Contestant> GetLast(int entitiesToShow);
 
         Task<int> GetAllCount();
+        Task<int> GetCountByUserId(User user);
         Task<Contestant> GetByIdAsync(int id);
         Task<ContestantViewModel> GetByIdAsyncMapped(int id);
 

@@ -1,20 +1,18 @@
 ﻿@{
     Layout = "~/Views/Home/_PageLayout.cshtml";
-
-    <link href="~/customCSS/Dashboard/plugins/Using/select2.min.css" rel="stylesheet" />
-    <link href="~/customCSS/Dashboard/plugins/Using/select2-theme.min.css" rel="stylesheet" />
+    <link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/theme_ios/plugins/select2-theme.min.css" />
 }
 
 @RenderBody()
 
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
-    <script src="~/customJS/jobs/create/companySelect.min.js"></script>
-    <script src="~/customJS/jobs/filter/langSelect.min.js"></script>
-    <script src="~/customJS/jobs/filter/tagsSelect.min.js"></script>
-    <script src="~/customJS/jobs/filter/worktypeSelect.min.js"></script>
+    <script defer src="~/customJS/jobs/create/companySelect.min.js"></script>
+    <script defer src="~/customJS/jobs/filter/langSelect.min.js"></script>
+    <script defer src="~/customJS/jobs/filter/tagsSelect.min.js"></script>
+    <script defer src="~/customJS/jobs/filter/worktypeSelect.min.js"></script>
 
     <script src="~/customJS/tinymce/jquery.tinymce.min.js"></script>
     <script src="~/customJS/tinymce/tinymce.min.js"></script>
@@ -25,7 +23,10 @@
             plugins: 'autoresize',
             autoresize_on_init: false,
             max_height: 500,
-            min_height: 400
+            min_height: 400,
+            width: '85vw',
+            skin: localStorage.getItem('lightTheme') === 'true' ? "oxide" :"oxide-dark",
+            content_css: localStorage.getItem('lightTheme') === 'true' ? "default" :"dark"
         });
     </script>
 }

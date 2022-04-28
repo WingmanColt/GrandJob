@@ -1,10 +1,12 @@
 ﻿namespace HireMe.Services
 {
+    using HireMe.Core.Extensions;
     using HireMe.Core.Helpers;
     using HireMe.Data.Repository.Interfaces;
     using HireMe.Entities.Enums;
     using HireMe.Entities.Models;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
     using System;
     using System.Linq;
     using System.Threading;
@@ -15,28 +17,147 @@
         private readonly ILogService logger;
         private readonly IRepository<Jobs> _jobsRepository;
         private readonly IRepository<Contestant> _contestantRepository;
+        private readonly IRepository<Tasks> _tasksRepository;
+        private readonly string _WebUrl;
 
-        public DelayedTask(ILogService logger, 
+        public DelayedTask(
+            IConfiguration config,
+            ILogService logger, 
             IRepository<Jobs> jobsRepository,
-            IRepository<Contestant> contestantRepository)
+            IRepository<Contestant> contestantRepository,
+            IRepository<Tasks> tasksRepository)
         {
             this.logger = logger;
             _jobsRepository = jobsRepository;
             _contestantRepository = contestantRepository;
+            _tasksRepository = tasksRepository;
+
+            _WebUrl = config.GetValue<string>("MySettings:SiteWebCamUrl");
         }
 
         public async Task DoWork(CancellationToken token)
-        {        
+        {
+
+            // while (true)
+            // {
+            //  await ExecuteTaskForJobs();
+            // await ExecuteTaskForContestants();
+            // await Task.Delay(TimeSpan.FromHours(24));
+            // }
+
+
+
+
+
+             while (true)
+             {
+             await ExecuteTaskForTasksStart();
+             await ExecuteUserTasks();
+             await Task.Delay(TimeSpan.FromHours(24));
+             }
+
+
+        }
+        public async Task ExecuteUserTasks()
+        {
+            var entityList = _tasksRepository.Set().AsQueryable()
+                .Where(x => x.Status == TasksStatus.Approved)
+                /*.Select(x => new Tasks
+                {
+                    Id = x.Id,
+                    EndDate = x.EndDate,
+                    StartDate = x.StartDate,
+                    Status = x.Status,
+                    Behaviour = x.Behaviour
+                })*/.ToAsyncEnumerable();
+
+            if (await entityList.AnyAsync())
+            {
+                var now = DateTime.Now;
+
+                await foreach (var entity in entityList)
+                {
+                    if (TimeExtension.IsBetween(now, entity.StartDate, entity.EndDate))
+                    {
+                        entity.Behaviour = TasksBehaviour.Running;
+                        entity.GeneratedLink = $"{_WebUrl}/{Guid.NewGuid()}";
+                        _tasksRepository.Update(entity);
+                    }
+                    else
+                    {
+                        if (entity.EndDate.Day > DateTime.Now.Day)
+                            entity.Behaviour = TasksBehaviour.Ended;
+                        if (entity.StartDate.Day < DateTime.Now.Day)
+                            entity.Behaviour = TasksBehaviour.Idle;
+
+                        _tasksRepository.Update(entity);
+                    }
+                }
             
-           // while (true)
-           // {
-              //  await ExecuteTaskForJobs();
-               // await ExecuteTaskForContestants();
-               // await Task.Delay(TimeSpan.FromHours(24));
-            //}
+
+                OperationResult result = await _tasksRepository.SaveChangesAsync();
+                if (result.Success)
+                {
+                    await logger.Create($"Meeting task is hitting start date now", null, LogLevel.Info, null);
+                }
+           }
+
+        }
+        public async Task ExecuteTaskForTasksStart()
+        {
+            var all = _tasksRepository.Set()
+                .Where(t => t.StartDate >= DateTime.Now)
+                .Select(x => new Tasks
+                {
+                    Id = x.Id,
+                    Status = x.Status
+                })
+                .ToAsyncEnumerable();
+
+            if (await all.AnyAsync())
+            {
+                await foreach (var entity in all)
+                {
+                    entity.Status = TasksStatus.Waiting;
+                    _tasksRepository.Update(entity);
+                }
+
+                OperationResult result = await _tasksRepository.SaveChangesAsync();
+                if (result.Success)
+                {
+                    await logger.Create($"Meeting task is hitting start date now", null, LogLevel.Info, null);
+                }
+            }
 
         }
 
+        public async Task ExecuteTaskForTasksEnd()
+        {
+            var all = _tasksRepository.Set()
+                .Where(t => t.EndDate >= DateTime.Now)
+                .Select(x => new Tasks
+                {
+                    Id = x.Id,
+                    Status = x.Status
+                })
+                .ToAsyncEnumerable();
+
+            if (await all.AnyAsync())
+            {
+                await foreach (var entity in all)
+                {
+                    entity.Status = TasksStatus.Success;
+                    _tasksRepository.Update(entity);
+                }
+
+                OperationResult result = await _tasksRepository.SaveChangesAsync();
+                if (result.Success)
+                {
+                    await logger.Create($"Meeting task is hitting end date now", null, LogLevel.Info, null);
+                }
+            }
+
+        }
         public async Task ExecuteTaskForJobs()
         {
             var all = _jobsRepository.Set()

@@ -20,6 +20,8 @@ namespace HireMe.Data.Repository.Interfaces
 
         Task<OperationResult> SaveChangesAsync();
 
+        OperationResult SaveChanges();
+
         Task<TEntity> GetByIdAsync(int id);
 
         void Dispose();

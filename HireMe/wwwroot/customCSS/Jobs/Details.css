@@ -73,12 +73,12 @@
         transform: translateY(-7px);
     }
 
-
+    /*
 .job-preview .job-header {
     padding: 20px;
     background-color: #e6e6eb;
     border-radius: 0 0 30px 30px
-}
+}*/
 
     .job-preview .job-header .job-header-top {
         border-radius: 0 0 30px 30px;
@@ -167,7 +167,7 @@
 
 @media screen and (max-width:991px) {
     .job-preview .job-header .job-header-top .job-title h1 {
-        font-size: 1.5rem
+        font-size: 1rem
     }
 
     .job-preview .job-header .job-header-top .job-title p {
@@ -197,7 +197,8 @@
     padding: 2rem;
     background-color: #f5f5fa;
     margin-bottom: 2rem;
-    border-radius: 30px
+    border-radius: 30px;
+
 
 }
 
@@ -207,21 +208,31 @@
     }
 
     .job-preview .job-details-box .subtitle {
-        margin-bottom: .5rem
+        margin-bottom: .5rem;
+        font-weight: 700;
+        font-family: "Montserrat", sans-serif;
     }
 
     .job-preview .job-details-box p {
-        font-size: 1.3rem;
-        font-weight: 700;
+        font-size: 1rem;
         font-family: "Montserrat", sans-serif
     }
 
+
 @media screen and (max-width:991px) {
     .job-preview .job-details-box p {
-        font-size: 16px
+        font-size: 16px       
+    }
+    .job-preview .job-details-box {
+        padding: 0;
     }
 }
-
+@media screen and (max-width:321px) {
+    .job-preview .job-details-box {
+        display:inline-grid;
+        padding: 0;
+    }
+}
 .html-section ul {
     padding-left: 1rem;
     margin-bottom: 0
@@ -482,3 +493,122 @@
     width: unset;
     margin-bottom: 0
 }
+
+/*Details*/
+
+.job-post-item {
+    z-index: 0;
+    background: #fff;
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+    .job-post-item h2 {
+        font-size: 28px;
+    }
+
+        .job-post-item h2 a {
+            color: #000000;
+        }
+
+    .job-post-item .one-third {
+        width: calc(100% - 145px);
+    }
+
+@media (max-width: 991.98px) {
+    .job-post-item .one-third {
+        width: 100%;
+    }
+}
+
+.job-post-item .one-third .subadge {
+    color: rgba(0, 0, 0, 0.3);
+    color: #206dfb;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.job-post-item .one-forth {
+    width: 145px;
+}
+
+@media (max-width: 991.98px) {
+    .job-post-item .one-forth {
+        width: 100%;
+    }
+}
+
+.job-post-item .one-forth > div .icon {
+    width: 40px;
+    height: 40px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.job-post-item .icon {
+    border: none !important;
+    background: #ffefdb !important;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 992px) {
+    .job-post-item .icon {
+        opacity: 0;
+    }
+}
+
+.job-post-item .icon span {
+    color: #fdab44;
+}
+
+.job-post-item .job-post-item-body span, .job-post-item .job-post-item-body a {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.job-post-item:hover, .job-post-item:focus {
+    -webkit-box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 24px 5px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+    .job-post-item:hover .icon, .job-post-item:focus .icon {
+        background: #fdab44 !important;
+        opacity: 1;
+    }
+
+        .job-post-item:hover .icon span, .job-post-item:focus .icon span {
+            color: #fff;
+        }
+
+.tagcloud a {
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 4px 10px;
+    margin-bottom: 7px;
+    margin-right: 4px;
+    border-radius: 4px;
+    color: #000000;
+    border: 1px solid #ccc;
+    font-size: 11px;
+}
+
+    .tagcloud a:hover {
+        border: 1px solid #000;
+    }

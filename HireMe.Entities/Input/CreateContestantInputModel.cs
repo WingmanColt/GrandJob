@@ -11,9 +11,7 @@
         public virtual int Id { get; set; }
 
         // Main
-        [Required(ErrorMessage = "Моля напишете трите си имена.")]
-        [StringLength(50, ErrorMessage = "{0} трябва да е между {2} и {1} символи.", MinimumLength = 10)]
-        [Display(Name = "Имена")]
+        [Display(Name = "Име и фамилия")]
         public string FullName { get; set; }
 
         [Display(Name = "Пол")]
@@ -29,10 +27,16 @@
         public DateTime? Age { get; set; }
 
         // Details
-        [Required(ErrorMessage = "Моля, напишете специалността си.")]
+        [Required(ErrorMessage = "Моля, опишете кратко с какво се занимавате.")]
         [StringLength(100, ErrorMessage = "{0} трябва да е между {2} и {1} символи.", MinimumLength = 10)]
-        [Display(Name = "Специалност:")]
+        [Display(Name = "Кратко описание:")]
         public string About { get; set; }
+
+        // Details
+        [Required(ErrorMessage = "Моля, напишете специалността си (Инжинер, Механик...)")]
+        [StringLength(20, ErrorMessage = "{0} трябва да е между {2} и {1} символи.", MinimumLength = 3)]
+        [Display(Name = "Специалност:")]
+        public string Speciality { get; set; }
 
         [Required(ErrorMessage = "Моля, опишете себе си в описанието.")]
         [StringLength(100000, ErrorMessage = "{0} трябва да е между {2} и {1} символи.", MinimumLength = 20)]
@@ -44,7 +48,7 @@
         public int Experience { get; set; }
 
        // [Range(0, 9999)]
-        [Display(Name = "Заплащане")]
+        [Display(Name = "Заплащане (лв)")]
         public int payRate { get; set; }
 
         [Display(Name = "Вид заплащане")]
@@ -119,6 +123,13 @@
         public string PosterID { get; set; }
         public ApproveType isApproved { get; set; }
         public bool isArchived { get; set; }
+
+        // Custom
+        public double Rating { get; set; }
+        public uint Views { get; set; }
+        public int VotedUsers { get; set; }
+
+        public string Logo { get; set; }
 
     }
 

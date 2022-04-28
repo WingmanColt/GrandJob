@@ -1,0 +1,33 @@
+﻿@inject SignInManager<User> _signInManager
+
+@{
+    Layout = "_MasterLayout";
+}
+
+  <div class="page-wrapper">
+
+    <!-- Preloader -->
+    <div class="preloader"><div class="lds-ripple"><div></div><div></div></div></div>
+
+    @if (_signInManager.IsSignedIn(User))
+    {
+         <!-- Header Area -->
+        @await Component.InvokeAsync("_HeaderMenu", new {isDashboard = false})
+    }
+    else
+    {  
+         <!-- Header Area -->
+        <partial name="../Home/Partials/_HeaderPartial" />
+    }
+
+    @RenderBody()
+
+    <!-- Footer Area -->
+    <partial name="../Home/Partials/_FooterPartial" />
+</div>
+
+
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

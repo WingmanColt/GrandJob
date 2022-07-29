@@ -6,12 +6,12 @@
             {
                 <li class="prev">
                     <a asp-route-currentpage="1">
-                       <i class="fa fa-arrow-left"></i>
+                       <i class="las la-arrow-left"></i>
                     </a>
                 </li>
                 <li>
                     <a asp-route-currentpage="@(Model.CurrentPage - 1)">
-                       <i class="fa fa-arrow-left"></i>
+                       <i class="las la-arrow-left"></i>
                     </a>
                 </li>
             }
@@ -27,13 +27,13 @@
             {
                 <li>
                     <a asp-route-currentpage="@(Model.CurrentPage + 1)">
-                        <i class="fa fa-arrow-right"></i>
+                        <i class="las la-arrow-right"></i>
                     </a>
                 </li>
 
                 <li class="next">
                     <a asp-route-currentpage="@(Model.TotalPages)">
-                        <i class="fa fa-arrow-right"></i>
+                        <i class="las la-arrow-right"></i>
                     </a>
                 </li>
             }

@@ -8,9 +8,11 @@
               <div class="content">
                 <h3>Ние сме компания</h3>
                 <p>Ако сте работодател и искате да дадете възможност на нови таланти да покажат уменията си.</p>
-                <a class="theme-btn btn-style-five call-modal signup" data-modal="#register-modal">Регистрирайте се</a>
-              </div>
-              <figure class="image"><img class="lazyload" data-src="https://creativelayers.net/themes/superio/images/resource/employ.png" alt=""></figure>
+                @*<a class="theme-btn btn-style-five call-modal signup" data-modal="#register-modal">Регистрирайте се</a>*@
+                <a asp-area="Identity" asp-page="/Account/Register" asp-route-employer="true" class="theme-btn btn-style-five employeer">Регистрирайте се</a>
+
+            </div>
+              <figure class="image"><img class="lazyload" data-src="https://grandjob.eu/theme_superio/images/background/employ.webp" width="221" height="281" alt=""></figure>
             </div>
           </div>
 
@@ -20,9 +22,9 @@
               <div class="content">
               <h3>Аз съм кандидат</h3>
                 <p>Търсиш нови позиции или тепърва започваш кариерния си път. Избери бутона 'Регистрирай ме', а ние ще те опътим.</p>
-                <a class="theme-btn btn-style-five call-modal signup" data-modal="#register-modal">Регистрирай ме</a>
+                <a asp-area="Identity" asp-page="/Account/Register" class="theme-btn btn-style-five employee">Регистрирайте се</a>
               </div>
-              <figure class="image"><img class="lazyload" data-src="https://creativelayers.net/themes/superio/images/resource/candidate.png" alt=""></figure>
+              <figure class="image"><img class="lazyload" data-src="https://grandjob.eu/theme_superio/images/background/candidate.webp" width="207" height="283" alt=""></figure>
             </div>
           </div>
         </div>

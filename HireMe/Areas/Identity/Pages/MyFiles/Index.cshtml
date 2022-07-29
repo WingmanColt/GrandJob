@@ -36,7 +36,7 @@
                         <tr>
                           <th>Име</th>
                           <th>Рейтинг</th>
-                          <th>Брой гласове</th>
+                          <th>Гласували</th>
                           <th>Дата на качване</th>
                           <th>Още</th>
                         </tr>
@@ -57,14 +57,23 @@
                             }
 
                           </td>
-                          <td class="applied">@item.Rating / 5</td>
-                          <td class="applied">@item.RatingVotes</td>
+                          <td class="applied">                               
+                              <div class="star-rating">
+                                    <span class="fa fa-star" data-rating="1"></span>
+                                    <span class="fa fa-star" data-rating="2"></span>
+                                    <span class="fa fa-star" data-rating="3"></span>
+                                    <span class="fa fa-star" data-rating="4"></span>
+                                    <span class="fa fa-star" data-rating="5"></span>
+                                    <input type="hidden" class="rating-value" value="@item.Rating">
+                                </div>
+                          </td>
+                          <td class="applied">@item.VotedUsers</td>
                           <td>@item.Date.ToString("MM MMMM")</td>
                           <td>
                             <div class="option-box">
                               <ul class="option-list">
                                 <li>@*{ string encryptedId = _cipherService.Encrypt(@item.FileId); }*@
-                                     <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Виж">
+                                     <a asp-controller="Resume" asp-action="GetFile" asp-route-id="@item.Id" data-text="Виж">
                                     <span class="la la-eye"></span></a>
                                  </li>
                                 <li>

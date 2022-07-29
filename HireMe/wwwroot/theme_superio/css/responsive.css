@@ -2,12 +2,37 @@
 
 @media only screen and (max-width: 1600px){
 	/*NEW ADDED*/
-	.dashboard-option .dropdown-menu {
+	.subscribe-section-two .testimonial-block {
+	width:1024px;
+	}
+		.social-btn-two.external-btn {
+		width: 160px;
+	}
+		.dashboard-option .dropdown-menu {
 		width: 400px;
 		height: 400px;
 	}
+		.dashboard-option .dropdown-menu.notify {
+			width: 300px;
+			height: unset;
+		}
+		.dashboard-option .dropdown-menu.chosen {
+			width: 200px;
+			height: unset;
+			overflow-x:hidden;
+		}
+			.dashboard-option .dropdown-menu.chosen li a {
+				padding: 0;
+			}
+
+			.dashboard-option .dropdown-menu li a {
+			font-size: .8em;
+		}
 
 		.dashboard-option .dropdown-menu li a span {
+			font-size: 2rem;
+		}
+			.dashboard-option .dropdown-menu li a span {
 			font-size: 2.2em;
 		}
 	.main-menu .navigation > li{
@@ -85,7 +110,9 @@
 		padding: 36px 0;
 	}
 
-
+	.subscribe-section-two .background-image {
+		left: 50px;
+	}
 	.header-span{
 		height: 80px;
 	}
@@ -100,10 +127,6 @@
 
 	.main-header .logo{
 		margin-right: 60px;
-	}
-
-	.user-sidebar .sidebar-inner{
-		padding: 40px 30px;
 	}
 
 	.user-sidebar{
@@ -166,6 +189,12 @@
 
 
 @media only screen and (max-width: 1366px){
+	.subscribe-section-two .testimonial-block {
+		width: 1024px;
+	}
+	.social-btn-two.external-btn {
+		width: 160px;
+	}
 	.main-header .outer-box .upload-cv{
 		margin-right: 0;
 	}
@@ -567,6 +596,9 @@
 
 
 @media only screen and (min-width: 768px){
+	.social-btn-two.external-btn {
+		width: 160px;
+	}
 	.main-menu .navigation > li > ul,
 	.main-menu .navigation > li > ul > li > ul,
 	.main-menu .navigation > li > .mega-menu{
@@ -597,7 +629,13 @@
 		padding-bottom: 0;
 		border-bottom: 0;
 	}
+	.subscribe-section-two .background-image {
+		left: -50px;
+	}
 
+	.subscribe-section-two {
+		padding: 105px 0 108px;
+	}
 	.app-section{
 		text-align: center;
 	}
@@ -668,19 +706,14 @@
 		margin-bottom: 20px;
 	}
 
-	.job-search-form .ui-selectmenu-button.ui-button,
-	.job-search-form .form-group input, 
-	.job-search-form .form-group select, 
-	.job-search-form .form-group textarea{
-		line-height: 20px;
-		padding: 25px 0;
-		padding-left: 70px;
-		border-radius: 5px;
-		height: 70px;
-		background-color: #ffffff;
-		box-shadow: 0px 6px 15px rgba(64, 79, 104, 0.05);
-		border-radius: 8px;
-	}
+		.job-search-form .ui-selectmenu-button.ui-button,
+		.job-search-form .form-group input,
+		.job-search-form .form-group select,
+		.job-search-form .form-group textarea {
+			padding: unset;
+			height: 60px;
+			text-align: center;
+		}
 
 	.job-search-form .chosen-container-single .chosen-single{
 		line-height: 20px;
@@ -1008,8 +1041,22 @@
 
 
 @media only screen and (max-width: 767px){
+	.social-btn-two.external-btn {
+		width: 160px;
+	}
+	.user-sidebar .sidebar-inner {
+		padding: 40px 30px;
+	}
 
 	/*NEW ADDED*/
+	.job-search-form .ui-selectmenu-button.ui-button,
+	.job-search-form .form-group input,
+	.job-search-form .form-group select,
+	.job-search-form .form-group textarea {
+		padding: unset;
+		height: 60px;
+		text-align: center;
+	}
 	.dashboard-option .dropdown-menu {
 		width:300px;
 		height:250px;
@@ -1260,7 +1307,31 @@
 
 @media only screen and (max-width: 599px){
 
+	.social-btn-two.external-btn {
+		width: 70px;
+	}
+	.social-btn-two i {
+		margin-left: -9px;
+	}
 	/*NEW ADDED*/
+	.job-search-form .ui-selectmenu-button.ui-button,
+	.job-search-form .form-group input,
+	.job-search-form .form-group select,
+	.job-search-form .form-group textarea {
+		padding: unset;
+		height: 50px;
+		text-align: center;
+	}
+	.user-sidebar .sidebar-inner {
+		padding: 40px 30px;
+	}
+	.logo svg,
+	.logo-loader svg,
+	.logo-loader, .logo-loader img,
+	.logo img {
+		transform: translate(-10%,-20%);
+	}
+
 	.dashboard-option .dropdown-menu {
 		width: 290px;
 		height: 280px;
@@ -1294,7 +1365,7 @@
 	}
 
 	.banner-section:before{
-		background-image: url(../images/icons/shape-4.png);
+		background-image: url(../images/icons/shape-4.webp);
 		height: auto;
 		bottom: 0;
 		top: -60px;
@@ -1857,6 +1928,30 @@
 
 @media only screen and (max-width: 479px){
 	/*NEW ADDED*/
+	.job-search-form .ui-selectmenu-button.ui-button,
+	.job-search-form .form-group input,
+	.job-search-form .form-group select,
+	.job-search-form .form-group textarea {
+		padding: unset;
+		height: 50px;
+		text-align: center;
+	}
+	.social-btn-two.external-btn {
+		width: 70px;
+	}
+	.social-btn-two i {
+		margin-left: -9px;
+	}
+	.user-sidebar .sidebar-inner {
+		padding: 40px 30px;
+	}
+	.logo svg,
+	.logo-loader svg,
+	.logo-loader, .logo-loader img,
+	.logo img {
+		transform: translate(-10%,-20%);
+	}
+
 	.dashboard-option .dropdown-menu {
 		width: 270px;
 		height: 270px;

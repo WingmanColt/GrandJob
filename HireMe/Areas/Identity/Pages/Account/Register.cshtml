@@ -2,14 +2,104 @@
 @model RegisterModel
 
 @{
-    ViewData["Title"] = "Регистрация като кандидат";
-    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+    ViewData["Title"] = "Регистрация";
+    Layout = "/Areas/Identity/Pages/_LayoutLogin.cshtml";
 }
+    <!-- Info Section -->
+    <div class="login-section">
+      <div class="image-layer" style="background-image: url(/theme_superio/images/background/12.webp);"></div>
+      <div class="outer-box">
+        <!-- Login Form -->
+        <div class="login-form default-form">
+          <div class="form-inner">
+            <h3>Регистрирай се</h3>
 
+            <!--Login Form-->
+             <form method="post" asp-route-e="@(Model.getEmployer ? true : false)"> 
+
+              <div asp-validation-summary="All" class="text-danger"></div>
+
+              <div class="form-group">
+               <label>Емайл</label>
+               <input asp-for="Input.Email" class="form-control" autocomplete="on" placeholder="Емайл" required/>
+              </div>
+
+              <div class="form-group">
+               <label asp-for="Input.FirstName"></label>
+               <input asp-for="Input.FirstName" class="form-control" autocomplete="on" placeholder="Име" required/>
+              </div>
+
+              <div class="form-group">
+               <label asp-for="Input.LastName"></label>
+               <input asp-for="Input.LastName" class="form-control" autocomplete="on" placeholder="Фамилия" required/>
+              </div>
+
+              <div class="form-group">
+               <label>Парола</label>
+               <input asp-for="Input.Password" class="form-control" autocomplete="off" placeholder="Парола" required/>
+              </div>
+
+              <div class="form-group">
+               <label asp-for="Input.ConfirmPassword"></label>
+               <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="off" placeholder="Повтори паролата" required/>
+              </div>
+
+            <div class="form-group">          
+             <div class="form-check">
+                            @{
+                                if (Model.getEmployer)
+                                {
+                                    @Html.CheckBoxFor(x => x.Input.isEmployer, new { @checked = "checked" })
+
+                                }
+                                else
+                                {
+                                    @Html.CheckBoxFor(x => x.Input.isEmployer)
+                                }
+                            }   
+                    <label class="form-check-label" for="flexCheckDefault">
+                       Регистрирай ме като работодател
+                    </label>
+                 </div>
+                </div>
+
+                  <div class="form-group">
+                    <button class="theme-btn btn-style-one" type="submit">Регистрация</button>
+                  </div>
+                </form>
+
+                <div class="bottom-box">
+              <div class="btn-box row">
+              
+            @if (Model.ExternalLogins?.Count > 0)
+            {
+            <form id="external" asp-area="Identity" asp-page="/Account/ExternalLogin" method="post">
+                <div class="col-lg-12 col-md-12 external-row">
+                    @foreach (var provider in Model.ExternalLogins)
+                        {
+               
+                    <button type="submit" class="theme-btn social-btn-two external-btn @provider.DisplayName.ToLower()-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                        <i class="lab la-@provider.DisplayName.ToLower()" style="font-size:2rem;"></i> @provider.DisplayName
+                    </button>
+                
+                        }
+                           </div>
+            </form>
+            }
+         
+              </div>
+                </div>
+              </div>
+            </div>
+            <!--End Login Form -->
+          </div>
+        </div>
+        <!-- End Info Section -->
+    @*
     <br>
     <br>
     <div class="row">
-        @* Center pos *@
+       
         <div class="col-md-3">
         </div>
         <div class="col-md-6">
@@ -81,3 +171,4 @@
         </div>
     </div>
 
+    *@

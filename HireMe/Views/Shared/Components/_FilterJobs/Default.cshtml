@@ -1,12 +1,20 @@
 ﻿@model Filter
 
+<style>
+    .select2-container--bootstrap {
+  height: 8vh;
+}
+ .select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
+        background: #fff !important;
+    }
+</style>
           <!-- Filters Column -->
           <div class="filters-column col-lg-4 col-md-12 col-sm-12">
             <div class="inner-column">
               <div class="filters-outer">
 
-                <a class="btn btn-sm btn-outline-success" href="#" onclick="$('#filterForm').submit();" @*onclick="submitFilters()"*@ style="margin-left:90%">
-                <i class="fas fa-check-circle"></i>
+                <a class="btn btn-sm btn-outline-success" href="#" onclick="$('#filterForm').submit();" @*onclick="submitFilters()"*@ style="margin-left:90%; color:#62D935; font-size:2rem;">
+                <i class="las la-check-circle"></i>
                </a>
 
 
@@ -17,8 +25,8 @@
                 <div class="filter-block">
                   <h4>Търси по ключови думи</h4>
                   <div class="form-group">
-                    <input asp-for="SearchString" type="text" placeholder="Име на обява, специалност, фирма">
-                    <span class="icon flaticon-search-3"></span>
+                    <input asp-for="Name" type="text" placeholder="Име на обява, специалност, фирма">
+                    <span class="icon las la-search"></span>
                   </div>
                 </div>
 

@@ -6,39 +6,36 @@ using sib_api_v3_sdk.Model;
 using System.Collections.Generic;
 using System;
 using HireMe.Core.Helpers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Linq;
 using NToastNotify.Helpers;
 
 namespace HireMe.Services
 {
     public class SenderService : ISenderService
     {
-        private readonly IConfiguration _configuration;
-
-        public SenderService(IConfiguration configuration)
-        {
-            _configuration = configuration;
-
-        }
+        public SenderService() { }
         public async Task<OperationResult> SendEmailAsync(string email, string subject, string message)
         {
-            var apiInstance2 = new AccountApi();
-            GetAccount result2 = apiInstance2.GetAccount();
-
-            var apiInstance = new TransactionalEmailsApi();
-            var templateId = 2;  // long? | Id of the template
-
-            var list = new List<string>();
-            list.Add((email));
-            
-            var sendEmail = new SendEmail(list, null, null, null, null, null, null, ( subject, message ), null); // SendTestEmail |
-                                                                                                                 // 
-            var apiInstanceContacts = new ContactsApi();
-
             try
             {
+                var apiInstance2 = new AccountApi();
+                GetAccount result2 = apiInstance2.GetAccount();
+
+                var apiInstance = new TransactionalEmailsApi();
+                var templateId = 2;  // long? | Id of the template
+
+                //     var list = new List<SendSmtpEmailTo>();
+                var sender = new SendSmtpEmailSender() { Email = "supp.grandjob@gmail.com", Name = "GrandJob" };
+                //  list.Add(new SendSmtpEmailTo() { Email = email, Name = email.GetUntilOrEmpty("@") });
+
+
+                SendSmtpEmailTo smtpEmailTo = new SendSmtpEmailTo(email, email);
+                List<SendSmtpEmailTo> To = new List<SendSmtpEmailTo>();
+                To.Add(smtpEmailTo);
+
+                var sendEmail = new SendSmtpEmail(sender, To, null, null, null, message, subject, null, null, null, templateId, null, null, null); // SendTestEmail |
+                                                                                                                                                   // 
+                var apiInstanceContacts = new ContactsApi();
+
 
                 var contactExists = await apiInstanceContacts.GetContactsAsync();
                 var contactList = contactExists.Contacts.ToJson();
@@ -58,8 +55,8 @@ namespace HireMe.Services
 
                 // Send a template to your test list
 
-                await apiInstance.SendTemplateAsync(templateId, sendEmail);
-                return OperationResult.SuccessResult(null);
+                await apiInstance.SendTransacEmailAsync(sendEmail);
+                return OperationResult.SuccessResult("");
             }
             catch (Exception e)
             {

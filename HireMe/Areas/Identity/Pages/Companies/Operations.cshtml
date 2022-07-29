@@ -9,14 +9,14 @@
     <section class="user-dashboard">
       <div class="dashboard-outer">
         <div class="upper-title-box">
-            @if(@Model.Input?.Title.Length > 0)
+            @if(@Model.Input?.Title?.Length > 0)
             {
           <h3>@Model.Input?.Title</h3>
           <div class="text">Редактиране</div>
             } 
             else
             {
-          <h3>Кадидатури</h3>
+          <h3>Фирма</h3>
           <div class="text">Добавяне</div>
             }
         </div>
@@ -32,24 +32,24 @@
                   <h4>Основна информация</h4>
 
                     <div class="desktop-only">
-                        <a href="@Model.ReturnUrl" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="fa fa-times" aria-hidden="true"></i></a>
-                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="fa fa-check"></i></button> 
+                        <a href="@Model.ReturnUrl" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="las la-times" aria-hidden="true"></i></a>
+                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="las la-check"></i></button> 
                     </div>
                 </div>
 
                 <div class="widget-content">
-                     <div asp-validation-summary="All" class="text-danger"></div>
 
                   <div class="uploading-outer">
                     <div class="uploadButton">
                       <input class="uploadButton-input" asp-for="Input.FormFile" type="file" id="upload" />
-                      <label class="uploadButton-button ripple-effect" for="upload"> <img class="thumb lazyload" data-src="@Model.Input.PictureFullPath" alt="Избери"> </label>
+                      <label class="uploadButton-button ripple-effect" for="upload"> <img class="thumb upload-inside lazyload" data-src="@Model.Input?.PictureFullPath" alt="Избери"> </label>
                       <span class="uploadButton-file-name"></span>
                     </div>
 
                     <div class="text">Максималният размер е 2MB, а форматът трябва да е jpg, jpeg или png</div>
                   </div>
-                   
+
+                   <div asp-validation-summary="All" class="text-danger"></div>   
                  
                     <div class="row">
                       <!-- Input -->
@@ -66,7 +66,7 @@
 
                       <!-- Input -->
                       <div class="form-group col-lg-6 col-md-12">
-                        <label asp-for="Input.PhoneNumber"></label>
+                        <label asp-for="Input.PhoneNumber"></label><span class="label-required">*</span>
                         <input type="text" asp-for="Input.PhoneNumber" required>
                       </div>
 
@@ -138,7 +138,7 @@
                          <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fa fa-globe" style="font-size:30px"></i>
+                              <i class="las la-globe" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input type="text" asp-for="Input.Website" placeholder="Личен сайт">
@@ -151,7 +151,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-facebook-square" style="font-size:30px"></i>
+                              <i class="lab la-facebook-square" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Facebook" aria-label="https://facebook.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -164,7 +164,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-linkedin-in" style="font-size:30px"></i>
+                              <i class="lab la-linkedin-in" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Linkdin" aria-label="https://linkdin.com/in/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -177,7 +177,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-twitter" style="font-size:30px"></i>
+                              <i class="lab la-twitter" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Twitter" aria-label="https://twitter.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -194,12 +194,12 @@
             <div class="ls-widget">
               <div class="tabs-box">
                 <div class="widget-title">
-                  <h4><i class="label-info fas fa-info-circle"></i> Регистрирани хора от персонала ви</h4>
+                  <h4><i class="label-info las la-info-circle"></i> Регистрирани хора от персонала ви</h4>
                 </div>
                  <div class="widget-content">  
                   <strong>Ако искате конкретни лица да могат да управляват обявите ви за работа.</strong>
                   <div class="text">- Моля въведете техните емайл адреси, задължително е да имат регистрация в нашата система.</div>
-                  <a href="#">Прочети повече тук !</a>
+                 @* <a href="#">Прочети повече тук !</a>*@
                   <br>
                     <div class="row">
                       <!-- Input -->
@@ -261,17 +261,17 @@
 
                   </div>
 
-            @if (Model.Input.MyGalleryImages is not null)
+            @if (Model.MyGalleryImages is not null)
             {
           <div class="carousel-outer wow fadeInUp">
 
           <div class="companies-carousel owl-carousel owl-theme default-dots">
-                                @await foreach (var item in Model.Input.MyGalleryImages)
+                                @await foreach (var item in Model.MyGalleryImages)
                                 {
                                      <div class="company-block">
                                         <figure class="image" style="width:unset; height:unset; border-radius:unset;">
-                                            <a href="@Model.Input.GalleryFullPath\@item" class="lightbox-image" data-fancybox="gallery">
-                                                <img class="bordered lazyload" data-src="@Model.Input.GalleryFullPath\@item" alt="">
+                                            <a href="@Model.Input?.GalleryFullPath\@item" class="lightbox-image" data-fancybox="gallery">
+                                                <img class="bordered lazyload" data-src="@Model.Input?.GalleryFullPath\@item" alt="">
                                             </a>
                                         </figure>
                                         </div>
@@ -286,8 +286,8 @@
 
                   <div class="row mobile-only">
                        <div class="form-group col-lg-6 col-md-12">
-                       <a href="@Model.ReturnUrl" class="theme-btn btn-style-default"><i class="fa fa-times" aria-hidden="true"></i> Затвори</a>
-                       <button type="submit" class="theme-btn btn-style-four"><i class="fa fa-check"></i> Запази</button> 
+                       <a href="@Model.ReturnUrl" class="theme-btn btn-style-default"><i class="las la-times" aria-hidden="true"></i> Затвори</a>
+                       <button type="submit" class="theme-btn btn-style-four"><i class="las la-check"></i> Запази</button> 
                        </div>
 
                    </div>

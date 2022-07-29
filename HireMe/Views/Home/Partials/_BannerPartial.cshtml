@@ -7,7 +7,7 @@
           <div class="content-column col-lg-7 col-md-12 col-sm-12">
             <div class="inner-column wow fadeInUp" data-wow-delay="1000ms">
               <div class="title-box">
-                              <h3>Добре дошли, надяваме се да <span class="colored">откриете</span>, това което търсите !</h3>
+                <h3>Добре дошли, надяваме се да <span class="colored">откриете</span>, това което търсите !</h3>
                 <div class="text">Намери нови позиции, Възможности за работа и кариера</div>
               </div>
 
@@ -16,16 +16,16 @@
                 <form asp-controller="Jobs" asp-action="Index" asp-route-SearchString="SearchString" asp-route-LocationId="LocationId" method="get">
                   <div class="row">
                     <div class="form-group col-lg-5 col-md-12 col-sm-12">
-                      <span class="icon flaticon-search-1"></span>
+                      <span class="icon las la-search"></span>
                       <input asp-for="SearchString" placeholder="Ключови думи">
                     </div>
                     <!-- Form Group -->
                     <div class="form-group col-lg-4 col-md-12 col-sm-12 location">
-                      <span class="icon flaticon-map-locator"></span>
+                      <span class="icon las la-map-marked"></span>
                       
                             @if (Model.AllLocations is not null)
                             {
-                                <select class="chosen-select" asp-for="LocationId">
+                                <select class="form-select form-select-lg" asp-for="LocationId">
                                     @await foreach (var item in Model.AllLocations)
                                     {
                                         <option value="@item?.Value">@item?.Text</option>
@@ -58,31 +58,31 @@
 
           <div class="image-column col-lg-5 col-md-12">
             <div class="image-box">
-              <figure class="main-image wow fadeIn" data-wow-delay="500ms"><img src="https://creativelayers.net/themes/superio/images/resource/banner-img-1.png" alt=""></figure>
+              <figure class="main-image wow fadeIn" data-wow-delay="500ms"><img class="lazyload" data-src="https://grandjob.eu/theme_superio/images/background/banner-img-1.webp" width="606" height="734" alt=""></figure>
 
               <!-- Info BLock One -->
               <div class="info_block anm wow fadeIn" data-wow-delay="1000ms" data-speed-x="2" data-speed-y="2">
-                <span class="icon flaticon-email-3"></span>
+                <span class="icon las la-envelope"></span>
                 <p>Винаги сме готови да помогнем</p>
               </div>
 
               <!-- Info BLock Two -->
               <div class="info_block_two anm wow fadeIn" data-wow-delay="2000ms" data-speed-x="1" data-speed-y="1">
                 <p>Таланти</p>
-                <div class="image"><img src="https://creativelayers.net/themes/superio/images/resource/multi-peoples.png" alt=""></div>
+                <div class="image"><img class="lazyload" data-src="https://grandjob.eu/theme_superio/images/background/multi-peoples.webp" width="209" height="54" alt=""></div>
               </div>
 
               <!-- Info BLock Three -->
               <div class="info_block_three anm wow fadeIn" data-wow-delay="1500ms" data-speed-x="4" data-speed-y="4">
-                <span class="icon flaticon-briefcase"></span>
+                <span class="icon las la-briefcase"></span>
                 <p>Имаш фирма?</p>
                 <span class="sub-text">Добави обяви</span>
-                <span class="right_icon fa fa-check"></span>
+                <span class="right_icon las la-check"></span>
               </div>
 
               <!-- Info BLock Four -->
               <div class="info_block_four anm wow fadeIn" data-wow-delay="2500ms" data-speed-x="3" data-speed-y="3">
-                <span class="icon flaticon-file"></span>
+                <span class="icon las la-file-pdf"></span>
                 <div class="inner">
                   <p>Качи CV</p>
                   <span class="sub-text">Отнема само секунди</span>

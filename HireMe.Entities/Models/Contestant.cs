@@ -1,7 +1,9 @@
 ﻿using Ardalis.GuardClauses;
 using HireMe.Entities.Enums;
 using HireMe.Entities.Input;
+using HireMe.Entities.View;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HireMe.Entities.Models
@@ -22,11 +24,10 @@ namespace HireMe.Entities.Models
         public string Speciality { get; set; }
         public string Description { get; set; }
         public int Experience { get; set; }
-        public int payRate { get; set; }
+        public int? payRate { get; set; }
         public SalaryType SalaryType { get; set; }
         public int profileVisiblity { get; set; }
         public string WorkType { get; set; }
-        public uint profileViews { get; set; }
 
 
         // Web presence
@@ -38,7 +39,9 @@ namespace HireMe.Entities.Models
         public string Github { get; set; }
         public string Dribbble { get; set; }
 
-        public PromotionEnum Promotion { get; set; }
+        public PackageType Promotion { get; set; }
+        public PremiumPackage PremiumPackage { get; set; }
+
         public double Rating { get; set; }
         public int RatingVotes { get; set; }
         public int VotedUsers { get; set; }
@@ -58,12 +61,15 @@ namespace HireMe.Entities.Models
         [NotMapped]
         public bool isInFavourites { get; set; }
 
+        //[NotMapped]
+      //  public bool isPromoteVerified { get; set; }
+
         public void Update(CreateContestantInputModel viewModel, ApproveType approved, User user)
         {
             Id = viewModel.Id;
 
-            Guard.Against.NullOrEmpty(viewModel.FullName, nameof(viewModel.FullName));
-            FullName = viewModel.FullName;
+           // Guard.Against.NullOrEmpty(viewModel.FullName, nameof(viewModel.FullName));
+            FullName = $"{user.FirstName} {user.LastName}"; 
 
             Guard.Against.NullOrEmpty(viewModel.Description, nameof(viewModel.Description));
             Description = viewModel.Description;
@@ -81,9 +87,14 @@ namespace HireMe.Entities.Models
 
             LanguagesId = viewModel.LanguagesId;
             Experience = viewModel.Experience;
+
+            if (viewModel.payRate > 0)
             payRate = viewModel.payRate;
+
             profileVisiblity = viewModel.profileVisiblity;
             WorkType = viewModel.WorkType;
+            Promotion = viewModel.Promotion;
+            PremiumPackage = viewModel.PremiumPackage;
 
             Website = viewModel.Website;
             Portfolio = viewModel.Portfolio;

@@ -1,41 +1,33 @@
-(function($) {
+(function ($) {
 	
 	"use strict";
-	
+
 	//Hide Loading Box (Preloader)
 	function handlePreloader() {
-		if($('.preloader').length){
+		if ($('.preloader').length) {
 			$('.preloader').delay(200).fadeOut(500);
 		}
 	}
 
+	$(window).on('load', function () {
+		handlePreloader();
+	});
+	if ($('.js-scroll-to-id').length) {
+		function scrollToIdInit() {
+			const targets = document.querySelectorAll('.js-scroll-to-id');
+			if (!targets.length) return;
 
-	function rellaxInit() {
-		const target = document.querySelectorAll('.js-rellax')
-		if (!target) return;
-	
-		var rellax = new Rellax('.js-rellax', {
-			breakpoints: [576, 768, 1025]
-		});
-	}
-	rellaxInit();
-
-
-	function scrollToIdInit() {
-		const targets = document.querySelectorAll('.js-scroll-to-id');
-		if (!targets.length) return;
-	
-		targets.forEach(el => {
-			el.addEventListener('click', (e) => {
-				if (document.querySelector('.is-pin-active'))
-					document.querySelector('.is-pin-active').classList.remove('is-pin-active')
+			targets.forEach(el => {
+				el.addEventListener('click', (e) => {
+					if (document.querySelector('.is-pin-active'))
+						document.querySelector('.is-pin-active').classList.remove('is-pin-active')
 					el.classList.add('is-pin-active')
-			})
-		});
-	}
-	scrollToIdInit();
-	
+				}, { passive: true })
+			});
+		}
+		scrollToIdInit();
 
+	}
 	if($('.js-tab-menu').length) {
 		const target = document.querySelector('.js-tab-menu');
 		const SMcontroller = new ScrollMagic.Controller();
@@ -61,7 +53,7 @@
 		window.addEventListener('resize', () => {
 			sections.forEach(el => {
 				sceneDuration += el.offsetHeight
-			})
+			}, { passive: true })
 
 			const sceneOffset = document.querySelector('.main-header').offsetHeight;
 			scene.duration(sceneDuration);
@@ -73,7 +65,7 @@
 			const sceneOffset = document.querySelector('.main-header').offsetHeight;
 			scene.offset('-' + sceneOffset + 'px');
 			scene.refresh();
-		})
+		}, { passive: true })
 	}
 
 
@@ -113,7 +105,7 @@
 
 
 	//Jquery Knob animation  // Pie Chart Animation
-	if($('.dial').length){
+	/*if($('.dial').length){
           var elm = $('.dial');
           var color = elm.attr('data-fgColor');  
           var perc = elm.attr('value');  
@@ -157,7 +149,7 @@
 					}
 				});
 			}
-    }
+    }*/
 
 
 
@@ -210,7 +202,7 @@
 			smartSpeed: 500,
 			autoplay: true,
 			autoplayTimeout:10000,
-			navText: [ '<span class="flaticon-back"></span>', '<span class="flaticon-next"></span>' ],
+			navText: ['<span class="las la-caret-left"></span>', '<span class="las la-caret-right"></span>' ],
 			responsive:{
 				0:{
 					items:1
@@ -228,6 +220,20 @@
 		});    		
 	}
 
+	//testimonial Carousel
+	if ($('.testimonial-carousel').length) {
+		$('.testimonial-carousel').owlCarousel({
+			loop: true,
+			margin: 15,
+			items: 1,
+			nav: false,
+			smartSpeed: 500,
+			autoplay: true,
+			autoplayTimeout: 7000,
+			navText: ['<span class="las la-caret-left"></span>', '<span class="las la-caret-right"></span>'],
+		});
+	}
+
 	// Product Carousel Slider
 	if ($('.gallery-widget .image-carousel').length && $('.gallery-widget .thumbs-carousel').length) {
 
@@ -242,7 +248,7 @@
 					items: 1,
 					margin: 0,
 					nav: true,
-					navText: [ '<span class="icon flaticon-back"></span>', '<span class="icon flaticon-next"></span>' ],
+					navText: ['<span class="las la-caret-left"></span>', '<span class="las la-caret-right"></span>'],
 					dots: false,
 					autoplay: true,
 					autoplayTimeout: 5000
@@ -261,7 +267,7 @@
 					margin: 30,
 					items: 1,
 					nav: false,
-					navText: [ '<span class="icon flaticon-back"></span>', '<span class="icon flaticon-next"></span>' ],
+					navText: ['<span class="las la-caret-left"></span>', '<span class="las la-caret-right"></span>'],
 					dots: false,
 					center: false,
 					autoplay: true,
@@ -309,7 +315,7 @@
 	}
 
 	// Rating Review
-	function ratingOverview(ratingElem) {
+	/*function ratingOverview(ratingElem) {
         $(ratingElem).each(function() {
             var dataRating = $(this).attr('data-rating');
             if (dataRating >= 4.0) {
@@ -342,24 +348,26 @@
         $('.leave-rating .selected').removeClass('selected');
         $radio.closest('label').addClass('selected');
     });
+	*/
 
 	// Input Upload 
-    var uploadButton = {
-        $button: $('.uploadButton-input'),
-        $nameField: $('.uploadButton-file-name')
-    };
-    uploadButton.$button.on('change', function() {
-        _populateFileField($(this));
-    });
+	if ($('.uploadButton-input').length) {
+		var uploadButton = {
+			$button: $('.uploadButton-input'),
+			$nameField: $('.uploadButton-file-name')
+		};
+		uploadButton.$button.on('change', function () {
+			_populateFileField($(this));
+		});
 
-    function _populateFileField($button) {
-        var selectedFile = [];
-        for (var i = 0; i < $button.get(0).files.length; ++i) {
-            selectedFile.push($button.get(0).files[i].name + '<br>');
-        }
-        uploadButton.$nameField.html(selectedFile);
-    }
-
+		function _populateFileField($button) {
+			var selectedFile = [];
+			for (var i = 0; i < $button.get(0).files.length; ++i) {
+				selectedFile.push($button.get(0).files[i].name + '<br>');
+			}
+			uploadButton.$nameField.html(selectedFile);
+		}
+	};
 	//Header Search
 	if($('.mobile-search-btn').length) {
 		$('.mobile-search-btn').on('click', function() {
@@ -371,16 +379,17 @@
 	}
 
 	/*=== Header Search Active ===*/
-	$(".header-search-form input").focus(function(){
-	  $(this).parent().addClass("active");
-	  $('body').addClass('search-active')
-	});
-	$(".header-search-form input").focusout(function(){
-	  $(this).parent().removeClass("active");
-	  $('.search-list').slideUp();
-	  $('body').removeClass('search-active')
-	});
-
+	if ($('.header-search-form').length) {
+		$(".header-search-form input").focus(function () {
+			$(this).parent().addClass("active");
+			$('body').addClass('search-active')
+		});
+		$(".header-search-form input").focusout(function () {
+			$(this).parent().removeClass("active");
+			$('.search-list').slideUp();
+			$('body').removeClass('search-active')
+		});
+	};
 
 	/*=== User Sidebar / On mobile view ===*/
 	if($('#toggle-user-sidebar').length) {
@@ -431,7 +440,7 @@
 	if($('.custom-select-box').length){
 		$('.custom-select-box').selectmenu().selectmenu('menuWidget').addClass('overflow');
 	}
-
+	/*
 	//Chosen Seclect Box
 	if($('.chosen-select').length){
 		$(".chosen-select").chosen({
@@ -451,10 +460,14 @@
 	if ($('.sortby-select').length) {
     	$('.sortby-select').select2();
 	}
-
+	*/
 	// Tooltip
 	$(function () {
-	  $('[data-toggle="tooltip"]').tooltip()
+		if (typeof jQuery.ui != 'undefined') {
+			if ($('[data-toggle="tooltip"]').length) {
+				$('[data-toggle="tooltip"]').tooltip()
+			}
+		}
 	})
 	/*
 	// Open modal in AJAX callback
@@ -514,7 +527,7 @@
 	}
 
 	//Fact Counter + Text Count
-	if($('.count-box').length){
+	/*if($('.count-box').length){
 		$('.count-box').appear(function(){
 	
 			var $t = $(this),
@@ -540,7 +553,7 @@
 			}
 			
 		},{accY: 0});
-	}
+	}*/
 
 	//Progress Bar
 	if($('.progress-line').length){
@@ -572,38 +585,40 @@
 
 
 	//Salary Range Slider
-	if ($('.salary-range-slider').length) {
+	if (typeof jQuery.ui != 'undefined') {
+		if ($('.salary-range-slider').length) {
 
-		var minVal = $('#MinSalary').val();
-		var maxVal = $('#MaxSalary').val();
+			var minVal = $('#MinSalary').val();
+			var maxVal = $('#MaxSalary').val();
 
-		$( ".salary-range-slider" ).slider({
-			range: true,
-			min: 0,
-			max: 100000,
-			values: [minVal, maxVal],
-			slide: function( event, ui ) {
-				$( ".salary-amount .min" ).text( ui.values[0]);
-				$(".salary-amount .max").text(ui.values[1]);
+			$(".salary-range-slider").slider({
+				range: true,
+				min: 0,
+				max: 100000,
+				values: [minVal, maxVal],
+				slide: function (event, ui) {
+					$(".salary-amount .min").text(ui.values[0]);
+					$(".salary-amount .max").text(ui.values[1]);
 
-			}
-		});
-		
-		$( ".salary-amount .min" ).text( $( ".salary-range-slider" ).slider( "values", 0 )); 
-		$(".salary-amount .max").text($(".salary-range-slider").slider("values", 1));
+				}
+			});
+
+			$(".salary-amount .min").text($(".salary-range-slider").slider("values", 0));
+			$(".salary-amount .max").text($(".salary-range-slider").slider("values", 1));
 
 
-		$('form').submit(function () {
-		if($("#MinSalary").length) {
-			$("#MinSalary").val($(".salary-range-slider").slider("values", 0));
+			$('form').submit(function () {
+				if ($("#MinSalary").length) {
+					$("#MinSalary").val($(".salary-range-slider").slider("values", 0));
+				}
+				if ($("#MaxSalary").length) {
+					$("#MaxSalary").val($(".salary-range-slider").slider("values", 1));
+				}
+				return true;
+			});
+
 		}
-		if ($("#MaxSalary").length) {
-			$("#MaxSalary").val($(".salary-range-slider").slider("values", 1));
-		}
-return true;
-});
-
-	}
+	};
 
 	//LightBox / Fancybox
 	if($('.lightbox-image').length) {
@@ -691,15 +706,196 @@ return true;
 		headerStyle();
 	});
 
-/* ==========================================================================
-   When document is loading, do
-   ========================================================================== */
-	
-	$(window).on('load', function() {
-		handlePreloader();
-	});	
+	if ($('#select-identifier').length) {
+
+		$('#select-identifier').on('select2:open', function (e) {
+			var container = $(this).select('select2-container');
+			var position = container.offset().top;
+			var availableHeight = $(window).height() - position - container.outerHeight();
+			var bottomPadding = 60; // Set as needed
+			$('.select2-search__field').css('max-height', (availableHeight - bottomPadding) + 'px');
+			$('.select2-group').css('max-height', (availableHeight - bottomPadding) + 'px');
+
+		});
+	};
+
+	if (("a[data-modal]").length) {
+		$("a[data-modal]").on('click', function (event) {
+
+			var valueID = $(this).attr("data-id");
+			var valueJobID = $(this).attr("data-JobId");
+			$('#apply-modal').append('<input type="hidden" name="Id" value="' + valueID + '" />');
+
+			event.preventDefault();
+			this.blur();
+
+			$('#rateForm').submit(function (event) {
+				$(this).append('<input id="RInput.resumeId" type="hidden" name="RInput.resumeId" value="' + valueID + '" /> <input id="RInput.JobId" type="hidden" name="RInput.JobId" value="' + valueJobID + '" />');
+				return true;
+			});
+
+			var userID = $(this).attr("data-user");
+			$('#taskForm').submit(function (event) {
+				$(this).append('<input id="TaskInput.ReceiverId" type="hidden" name="TaskInput.ReceiverId" value="' + userID + '" />');
+				return true;
+			});
+
+			$('#deleteForm').submit(function (event) {
+				$(this).append('<input id="Model.Id" type="hidden" name="Model.Id" value="' + valueID + '" /> <input id="RInput.JobId" type="hidden" name="RInput.JobId" value="' + valueJobID + '" />');
+				return true;
+			});
+
+			$($(this).data('modal')).modal({
+				closeExisting: true,
+				fadeDuration: 300,
+				fadeDelay: 0.15
+			});
+
+			return false;
+		});
+	};
+
+		if ((".star-rating").length) {
+
+		var $star_rating = $('.star-rating .la');
+
+		var SetRatingStar = function () {
+			return $star_rating.each(function () {
+				if (parseInt($star_rating.siblings('input.rating-value').val()) >= parseInt($(this).data('rating'))) {
+					return $(this).css('color', 'goldenrod');//.removeClass('fa-star-o').addClass('fa-star');
+				} else {
+					return $(this).css('color', '#a6a6a64f')//.removeClass('fa-star').addClass('fa-star-o');
+				}
+			});
+		};
+
+		$star_rating.on('click', function () {
+			$star_rating.siblings('input.rating-value').val($(this).data('rating'));
+			return SetRatingStar();
+		});
+
+		SetRatingStar();
+	};
+
+	if (("#loginForm").length) {
+		$("#loginForm").submit(function (e) {
+
+			$('.form-inner').css('visibility', 'hidden')
+			$('.preloader').fadeIn(500);
+
+			e.preventDefault();
+			var valdata = $(this).serialize();
+
+			$.ajax({
+				url: '/Account/Login/',
+				type: "POST",
+				dataType: 'json',
+				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+				data: valdata,
+				success: function (response) {
+					location.reload();
+				},
+				error: function (e) {
+					$('.form-inner').css('visibility', 'visible')
+					$('.preloader').fadeOut(100);
+
+					var message = $("#message");
+					if (e.responseJSON) {
+						message.html(e.responseJSON.errorMessage);
+					}
+				}
+
+			});
+		});
+	};
 
 })(window.jQuery);
 
 
 
+function CheckAvailability(valId) {
+	$.ajax({
+		url: '/Jobs/UpdateFavourite/',
+		type: "POST",
+		dataType: "json",
+		data: { id: valId },
+		success: function (response) {
+			$("#favCounter").html(response.jobCount);
+			var vmTemplateName2 = "'" + valId + "-jobLi'";
+			var vmTemplateName3 = "'" + valId + "-heartIcon'";
+
+
+			if (response.isExisted == false) {
+				$("#favUl").append('<li id="' + valId + '-jobLi"><a style="padding:7px 3px;" href="/jobs/info/' + valId + '"><span class="lar la-image"></span><small>' + response.job.name + '</small></a></li>');
+				$("[id=" + vmTemplateName3 + "]").removeClass('lar la-heart').addClass('las la-heart');
+			}
+			else {
+				$("[id=" + vmTemplateName2 + "]").remove();
+				$("[id=" + vmTemplateName3 + "]").removeClass('las la-heart').addClass('lar la-heart');
+			}
+
+		},
+		error: function (e) {
+
+		}
+
+	});
+};
+
+function CheckAvailabilityCompany(valId) {
+	$.ajax({
+		url: '/Company/UpdateFavourite/',
+		type: "POST",
+		dataType: "json",
+		data: { id: valId },
+		success: function (response) {
+			$("#favCounter").html(response.jobCount);
+			var vmTemplateName2 = "'" + valId + "-companyLi'";
+			var vmTemplateName3 = "'" + valId + "-heartIcon'";
+
+			if (response.isExisted == false) {
+				$("#favUl").append('<li id="' + valId + '-companyLi"><a style="padding:7px 3px;" href="/companies/info/' + valId + '"><span class="lar la-image"></span><small>' + response.company.title + '</small></a></li>');
+				$("[id=" + vmTemplateName3 + "]").removeClass('lar la-heart').addClass('las la-heart');
+			}
+			else {
+				$("[id=" + vmTemplateName2 + "]").remove();
+				$("[id=" + vmTemplateName3 + "]").removeClass('las la-heart').addClass('lar la-heart');
+			}
+
+		},
+		error: function (e) {
+
+		}
+
+	});
+};
+
+
+
+function CheckAvailabilityContestants(valId) {
+	$.ajax({
+		url: '/Contestants/UpdateFavourite/',
+		type: "POST",
+		dataType: "json",
+		data: { id: valId },
+		success: function (response) {
+			$("#favCounter").html(response.jobCount);
+			var vmTemplateName2 = "'" + valId + "-contestantLi'";
+			var vmTemplateName3 = "'" + valId + "-heartIcon'";
+
+			if (response.isExisted == false) {
+				$("#favUl").append('<li id="' + valId + '-contestantLi"><a style="padding:7px 3px;" href="/candidates/info/' + valId + '"><span class="lar la-image"></span><small>' + response.contestant.fullName + '</small></a></li>');
+				$("[id=" + vmTemplateName3 + "]").removeClass('lar la-heart').addClass('las la-heart');
+			}
+			else {
+				$("[id=" + vmTemplateName2 + "]").remove();
+				$("[id=" + vmTemplateName3 + "]").removeClass('las la-heart').addClass('lar la-heart');
+			}
+
+		},
+		error: function (e) {
+
+		}
+
+	});
+};

@@ -14,7 +14,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    [Authorize(Roles = "Admin, Moderator")]
+    [Authorize(Roles = "Admin")]
     public partial class UsersModel : PageModel
     {
         private readonly UserManager<User> _userManager;
@@ -34,7 +34,6 @@
         public IAsyncEnumerable<User> List { get; set; }
         public string Sort { get; set; }
         public string Role { get; set; }
-        public string ReturnUrl { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int currentPage = 1, string Sort = null, string Role = null)
         {
@@ -43,12 +42,11 @@
             {
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
-            if (user.Role != Roles.Admin)
+            if (!user.Role.Equals(Roles.Admin))
             {
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
 
-            ReturnUrl = Url.Page("Users", new { currentPage = currentPage, area = "Identity" });
 
             var all = _accountService.GetAllAsNoTracking()
                 .Select(x => new User

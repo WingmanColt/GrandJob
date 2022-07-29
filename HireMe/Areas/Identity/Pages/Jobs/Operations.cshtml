@@ -12,7 +12,7 @@
     <section class="user-dashboard">
       <div class="dashboard-outer">
         <div class="upper-title-box">
-            @if(@Model.Input?.Name.Length > 0)
+            @if(Model.Input?.Name?.Length > 0)
             {
           <h3>@Model.Input?.Name</h3>
           <div class="text">Редактиране</div>
@@ -35,8 +35,8 @@
                   <h4>Основна информация</h4>
 
                     <div class="desktop-only">
-                      <a href="" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="fa fa-times" aria-hidden="true"></i></a>
-                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="fa fa-check"></i></button> 
+                      <a href="" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="las la-times" aria-hidden="true"></i></a>
+                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="las la-check"></i></button> 
                     </div>
                 </div>
 
@@ -69,11 +69,11 @@
                       <div class="form-group col-lg-6 col-md-12">
                         <label asp-for="Input.WorkType"></label><span class="label-required">*</span>
                         <select class="selectWork" id="id_label_multiple3" multiple="multiple" style="width: 100%">
-                              @if (Model.Worktypes is not null && Model.Input?.Worktypes is not null)
+                              @if (Model.Worktypes is not null)
                               {
                                   @foreach (var item in Model.Worktypes)
                                   {
-                                       <option value="@item?" selected="selected">@item?</option>
+                                       <option value="@item" selected="selected">@item</option>
                                   }
                               }
                        </select>
@@ -84,11 +84,11 @@
                       <div class="form-group col-lg-6 col-md-12">
                         <label asp-for="Input.CompanyId"></label><span class="label-required">*</span>
                         <select class="selectCompany" style="width: 100%">
-                              @if (Model.Companies is not null && Model.Input?.CompanyId > 0)
+                              @if (Model.AllCompanies is not null && Model.Input?.CompanyId > 0)
                               {
-                                  await foreach (var item in Model.Companies)
+                                  await foreach (var item in Model.AllCompanies)
                                   {
-                                       <option value="@item?" selected="selected">@item?</option>
+                                       <option value="@item?.Id" selected="selected">@item?.Title</option>
                                   }
                               }
                        </select>
@@ -135,12 +135,12 @@
                       <!-- Input -->
                       <div class="form-group col-lg-3 col-md-12">
                         <label asp-for="Input.MinSalary"></label>
-                        <input type="text" asp-for="Input.MinSalary" placeholder="пример: 1200">
+                        <input asp-for="Input.MinSalary" placeholder="пример: 1200">
                       </div>
                         <!-- Input -->
                       <div class="form-group col-lg-3 col-md-12">
                         <label asp-for="Input.MaxSalary"></label>
-                        <input type="text" asp-for="Input.MaxSalary" placeholder="пример: 4000">
+                        <input asp-for="Input.MaxSalary" placeholder="пример: 4000">
                       </div>
 
   
@@ -169,9 +169,9 @@
                           <label>Тагове</label>
                                <select class="selectTags" id="id_label_multiple2" multiple="multiple" style="width: 75%">
                                 @{
-                                    if (Model.Skills != null && Model.Input?.TagsId is not null)
+                                    if (Model.AllTags is not null && Model.Input.TagsId is not null)
                                     {
-                                        await foreach (var item in Model.Skills)
+                                        await foreach (var item in Model.AllTags)
                                         {
                                             <option value="@item?.Id" selected="selected">@item?.Title</option>
                                         }
@@ -186,56 +186,57 @@
                       <label>Езици</label>
                        <select class="selectLang form-control" id="id_label_multiple55" multiple="multiple" style="width: 75%">
                                 @{
-                                    if (Model.Languages != null && Model.Input?.LanguageId is not null)
+                                    if (Model.AllLanguages is not null && Model.Input.LanguageId is not null)
                                     {
-                                        await foreach (var item in Model.Languages)
+                                        await foreach (var item in Model.AllLanguages)
                                         {
-                                            <option value="@item?.Id" selected="selected">@item?.Name</option>
-                                        }
-                                    }
-                                }
-                            </select>
-                            <input asp-for="Input.LanguageId" type="hidden" id="selectLang_Value" required/>
-                      </div>
+                                                        <option value="@item?.Id" selected="selected">@item?.Name</option>
+                                                    }
+                                                }
+                                            }
+                                        </select>
+                                        <input asp-for="Input.LanguageId" type="hidden" id="selectLang_Value" required/>
+                                    </div>
 
 
-                      <!-- Input -->
-                      <div class="form-group col-lg-3 col-md-12">
-                      <label>Опит</label>
-                            <select asp-for="Input.ExprienceLevels" asp-items="Html.GetEnumSelectList<ExprienceLevels>()"></select>
-                      </div>
+                                    <!-- Input -->
+                                    <div class="form-group col-lg-3 col-md-12">
+                                        <label>Опит</label>
+                                        <select asp-for="Input.ExprienceLevels" asp-items="Html.GetEnumSelectList<ExprienceLevels>()"></select>
+                                    </div>
 
 
 
-                      <!-- Input -->
-                     <div class="col-lg-12 col-md-12">
-                    <textarea asp-for="Input.Description" id="mytextarea" rows="12" cols="12"></textarea>
-                     <strong><i class="label-info fas fa-info-circle"></i> Препоръчваме да използвате минимум 200 думи в описанието.</strong>
+                                    <!-- Input -->
+                                    <div class="col-lg-12 col-md-12">
+                                        <textarea asp-for="Input.Description" id="mytextarea" rows="12" cols="12"></textarea>
+                                        <strong><i class="label-info las la-info-circle"></i> Препоръчваме да използвате минимум 200 думи в описанието.</strong>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
                     </div>
 
-                      </div>
+                    <!-- Ls widget -->
+                    <div class="ls-widget">
+                        <div class="tabs-box">
+                            <div class="widget-title">
+                                <h4>Промотиране</h4>
+                             <select asp-for="Input.PremiumPackagePre" class="chosen-select" asp-items="Html.GetEnumSelectList<PremiumPackage>()"></select>                     
 
-                    </div>
-                  
-                </div>
-              </div>
+                            </div>
 
-             <!-- Ls widget -->
-            <div class="ls-widget">
-              <div class="tabs-box">
-                <div class="widget-title">
-                  <h4>Промотиране</h4>
-                </div>
+                            <div class="widget-content">  
+                                <div class="row">
 
-                 <div class="widget-content">  
-                     <div class="row">
-
-                     </div>
-
-                   <div class="row mobile-only">
+                                        @await Html.PartialAsync("Partials/_Promotions")
+                                    <div class="row mobile-only">
                        <div class="form-group col-lg-6 col-md-12">
-                       <a href="" class="theme-btn btn-style-default"><i class="fa fa-times" aria-hidden="true"></i> Затвори</a>
-                       <button type="submit" class="theme-btn btn-style-four"><i class="fa fa-check"></i> Запази</button> 
+                       <a href="" class="theme-btn btn-style-default"><i class="las la-times" aria-hidden="true"></i> Затвори</a>
+                       <button type="submit" class="theme-btn btn-style-four"><i class="las la-check"></i> Запази</button> 
                        </div>
 
                    </div>
@@ -243,7 +244,7 @@
                   
                 </div>
               </div>
-
+            </div>
             </form>
 
           </div>

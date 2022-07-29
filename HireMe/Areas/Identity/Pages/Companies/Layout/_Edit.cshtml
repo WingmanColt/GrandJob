@@ -1,15 +1,19 @@
 ﻿@{
     Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 }
-<link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/customCSS/Base/autoComplate.min.css">
+<link defer rel="stylesheet" href="~/customCSS/Base/autoComplate.min.css">
+<link defer rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" asp-append-version="true">
 
 @RenderBody()
 
 
 @section Scripts {
 
-    <script src="~/customJS/Dashboard/plugin/dropzone/dropzone.min.js"></script>
-    <script>
+    <script src="~/theme_superio/js/dropzone.js"></script>
+    <script defer type="text/javascript">
+
+        Dropzone.autoDiscover = false;
+
         Dropzone.options.UploadZone = {
             url: "/Company/Upload",
             autoProcessQueue: false,

@@ -21,10 +21,8 @@
         private readonly UserManager<User> _userManager;
         private readonly IFilesService _FilesService;
         private readonly IBaseService _baseService;
-        private readonly string _FilePath;
 
-        public string _SiteUrl;
-        public string _FilesUploadLimit;
+        private readonly string _FilePath;
 
         public IndexModel(
             IConfiguration config,
@@ -36,9 +34,7 @@
             _FilesService = FilesService;
             _baseService = baseService;
 
-            _SiteUrl = config.GetValue<string>("MySettings:FilesUrl"); 
-            _FilesUploadLimit = config.GetValue<string>("FilesUploadLimit");
-            _FilePath = config.GetValue<string>("MySettings:FilePathHosting");
+            _FilePath = config.GetValue<string>("CVPaths:myFilesCVPath");
         }
 
         [BindProperty]
@@ -85,12 +81,12 @@
 
             if (Input.FormFile != null)
             {
-                Input.FileId = await _baseService.UploadFileAsync(Input.FormFile, null, user);
+                Input.FileId = await _baseService.UploadFileAsync(Input.FormFile, null, null, FileType.MyFilesCV, user);
 
                 if (Input.FileId is not null)
                 {
                     var lenght = Input.FormFile.FileName.Length > 40 ? Input.FormFile.FileName.Length - 30 : Input.FormFile.FileName.Length;
-                    OperationResult result = await _FilesService.Create(Input.FormFile.FileName.Substring(0, lenght), Input.FileId, user);
+                    OperationResult result = await _FilesService.Create(Input.FormFile.FileName.Substring(0, lenght), null, Input.FileId, user);
 
                     if (result.Success)
                         _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "качване.", 2000);
@@ -124,16 +120,15 @@
                 return RedirectToPage("/Account/Errors/AccessDeniedContent", new { Area = "Identity" });
             }
 
-            string entId = entity.FileId;
             OperationResult result = await _FilesService.Delete(entity);
 
-             string folderClearedName = Path.Combine(_FilePath, StringHelper.Filter(user?.Email));
-             bool systemDeleted =  _baseService.Delete($"{folderClearedName}\\{entId}");
+            string folderClearedName = Path.Combine(_FilePath, StringHelper.Filter(user?.Email));
+            bool systemDeleted =  _baseService.Delete(folderClearedName);
 
             if (result.Success && systemDeleted)
-                    _baseService.ToastNotify(ToastMessageState.Info, "", "файлът е премахнат.", 2000);
+                    _baseService.ToastNotify(ToastMessageState.Info, "Успешно", "файлът е премахнат.", 2000);
                 else
-                    await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "", "файлът не се изтри.","Files/Index", 5000);
+                    await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Грешка", "файлът не се изтри.","Files/Index", 5000);
 
             return RedirectToPage();
         }

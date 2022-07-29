@@ -36,7 +36,7 @@
                         <!-- ls Switcher -->
                         <div class="ls-switcher">
                             <div class="showing-result">
-                            <div class="text">Показани са <strong>@Model.Pager.PageSize</strong> от <strong>@Model.Pager.TotalItems</strong> обяви</div>
+                            <div class="text">Показани са <strong>@Model.Pager.TotalItems</strong> фирми</div>
                             </div>
                         </div>
 
@@ -67,14 +67,14 @@
                                         <span class="company-logo"><img data-src="@SiteImageUrl@item.Logo" class="lazyload" alt=""></span>
                                         <h4><a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id">@item.Title</a></h4>
                                         <ul class="job-info">
-                                            <li><span class="icon flaticon-map-locator"></span> @item.LocationId</li>
-                                            <li>        
+                                            <li><span class="icon las la-map-marked"></span> @item.LocationId</li>
+                                            <li>
                                                 <div class="star-rating">
-                                                    <span class="fa fa-star" data-rating="1"></span>
-                                                    <span class="fa fa-star" data-rating="2"></span>
-                                                    <span class="fa fa-star" data-rating="3"></span>
-                                                    <span class="fa fa-star" data-rating="4"></span>
-                                                    <span class="fa fa-star" data-rating="5"></span>
+                                                    <span class="las la-star" data-rating="1"></span>
+                                                    <span class="las la-star" data-rating="2"></span>
+                                                    <span class="las la-star" data-rating="3"></span>
+                                                    <span class="las la-star" data-rating="4"></span>
+                                                    <span class="las la-star" data-rating="5"></span>
                                                     <input type="hidden" name="whatever1" class="rating-value" value="@item.Rating">
                                                 </div>
                                             </li>

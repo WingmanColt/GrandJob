@@ -132,19 +132,19 @@
         public async Task<OperationResult> SaveChangesAsync()
         {
             var success = await this.context.SaveChangesAsync() > 0;
-            return success ? OperationResult.SuccessResult(null) : OperationResult.FailureResult("Changes saving failure!");
+            return success ? OperationResult.SuccessResult("") : OperationResult.FailureResult("Changes saving failure!");
         }
         public OperationResult SaveChanges()
         {
             var success = this.context.SaveChanges() > 0;
-            return success ? OperationResult.SuccessResult(null) : OperationResult.FailureResult("Changes saving failure!");
+            return success ? OperationResult.SuccessResult("") : OperationResult.FailureResult("Changes saving failure!");
         }
 
 
         public async Task<TEntity> GetByIdAsync(int id)
         {
-            var ent = await this.dbSet.FindAsync(id);
-            return ent;
+            var ent = this.dbSet;
+            return await ent.FindAsync(id);
         }
 
         public void Dispose()

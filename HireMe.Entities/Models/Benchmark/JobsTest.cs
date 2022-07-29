@@ -15,11 +15,11 @@
         public string Adress { get; set; }
         public string Description { get; set; }
 
-        public uint MinSalary { get; set; }
-        public uint MaxSalary { get; set; }
+        public int? MinSalary { get; set; }
+        public int? MaxSalary { get; set; }
         public SalaryType SalaryType { get; set; }
 
-        public PromotionEnum Promotion { get; set; }
+        public PackageType Promotion { get; set; }
 
         public double Rating { get; set; }
         public int RatingVotes { get; set; }

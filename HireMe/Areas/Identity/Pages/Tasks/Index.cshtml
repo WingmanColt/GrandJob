@@ -15,13 +15,6 @@
 }
 
 <style>
-    .badge-normal {
-        background-color: cornflowerblue;
-    }
-
-    .badge-video {
-        background-color: #8d15a0;
-    }
     .table td, .table th {
         overflow: auto !important;
     }
@@ -96,7 +89,7 @@
                           <td>@item.StartDate.ToString("MM/dd/yyyy h:mm tt")<br>@item.EndDate.ToString("MM/dd/yyyy h:mm tt")</td>
                           <td class="dropdown hidden-caret">
                                                 <a href="#" class="btn btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-info-circle"></i>
+                                                    <i class="las la-info-circle"></i>
                                                 </a>
                                                 <ul class="dropdown-menu">
                                                     <li>@item.About </li>
@@ -105,7 +98,7 @@
                               </td>
                                             <td class="dropdown hidden-caret">
                                                 <a href="#" class="btn btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-h"></i>
+                                                   <i class="las la-cog" style="font-size:2rem;" ></i>
                                                 </a>
                                                 <ul class="dropdown-menu">
                                                     <li>
@@ -114,13 +107,13 @@
                                                             @if (item.Behaviour == TasksBehaviour.Running)
                                                             {
                                                                 <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-text="@item.GeneratedLink" class="dropdown-item">
-                                                                    <span class="fas fa-video"></span> Към видео разговор
+                                                                    <span class="las la-video"></span> Към видео разговор
                                                                 </a>
                                                             }
                                                             else
                                                             {
                                                                 <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-text="@item.GeneratedLink" class="dropdown-item">
-                                                                    <span class="fas fa-video-slash"></span> Към видео разговор
+                                                                    <span class="las la-video-slash"></span> Към видео разговор
                                                                 </a>
                                                             }
                                                         }
@@ -128,14 +121,14 @@
                                                         @if (item.Status == TasksStatus.Waiting)
                                                         {
                                                             <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Approved" class="dropdown-item">
-                                                                <span class="fas fa-check-circle"></span> Приеми задачата
+                                                                <span class="las la-check-circle"></span> Приеми задачата
                                                             </a>
                                                             <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Rejected" class="dropdown-item">
-                                                                <span class="fas fa-trash-alt"></span> Отхвърли задачата
+                                                                <span class="las la-trash-alt"></span> Отхвърли задачата
                                                             </a>
                                                         }
                                                         <a role="button" data-modal="#apply-modal" class="dropdown-item call-modal">
-                                                            <span class="fas fa-comments"></span> Изпрати съобщение
+                                                            <span class="las la-comments"></span> Изпрати съобщение
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -170,11 +163,11 @@
             <ul class="breadcrumbs">
                 <li class="nav-home">
                     <a asp-area="Identity" asp-page="/Account/Manage/Index">
-                        <i class="fas fa-home"></i>
+                        <i class="las la-home"></i>
                     </a>
                 </li>
                 <li class="separator">
-                    <i class="fas fa-arrow-right"></i>
+                    <i class="las la-arrow-right"></i>
                 </li>
                 <li class="nav-item">
                     <a href="#">@ViewData["Title"]</a>
@@ -240,25 +233,25 @@
                                             </td>
                                             <td class="dropdown hidden-caret">
                                                 <a href="#" class="btn btn-round dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-ellipsis-h"></i>
+                                                    <i class="las la-ellipsis-h"></i>
                                                 </a>
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a role="button" data-toggle="modal" data-target="#detailsModal" class="dropdown-item">
-                                                            <span class="fas fa-eye"></span> Преглед
+                                                            <span class="las la-eye"></span> Преглед
                                                         </a>
                                                         @if (item.Level == TaskLevel.Video && item.Status == TasksStatus.Approved)
                                                         {
                                                             @if (item.Behaviour == TasksBehaviour.Running)
                                                             {
                                                                 <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-id="@item.GeneratedLink" class="dropdown-item">
-                                                                    <span class="fas fa-video"></span> Към видео разговор
+                                                                    <span class="las la-video"></span> Към видео разговор
                                                                 </a>
                                                             }
                                                             else
                                                             {
                                                                 <a asp-area="Identity" asp-page="/Webcam/Index" asp-route-id="@item.GeneratedLink" class="dropdown-item">
-                                                                    <span class="fas fa-video-slash"></span> Към видео разговор
+                                                                    <span class="las la-video-slash"></span> Към видео разговор
                                                                 </a>
                                                             }
                                                         }
@@ -266,14 +259,14 @@
                                                         @if (item.Status == TasksStatus.Waiting)
                                                         {
                                                             <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Approved" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
-                                                                <span class="fas fa-check-circle"></span> Приеми задачата
+                                                                <span class="las la-check-circle"></span> Приеми задачата
                                                             </a>
                                                             <a asp-controller="Tasks" asp-action="Status" asp-route-id="@item.Id" asp-route-T="@TasksStatus.Rejected" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
-                                                                <span class="fas fa-trash-alt"></span> Отхвърли задачата
+                                                                <span class="las la-trash-alt"></span> Отхвърли задачата
                                                             </a>
                                                         }
                                                         <a role="button" data-toggle="modal" data-target="#messageModal" class="dropdown-item">
-                                                            <span class="fas fa-comments"></span> Изпрати съобщение
+                                                            <span class="las la-comments"></span> Изпрати съобщение
                                                             @{
                                                                 ViewData["taskId"] = item.Id;
                                                                 ViewData["TaskTitle"] = item.Title;

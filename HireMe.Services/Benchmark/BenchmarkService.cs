@@ -42,7 +42,7 @@ namespace HireMe.Services.Benchmark
                 test = new List<JobsTest>                {
                 new JobsTest
                 {                //Id = i,                CategoryId = 12,                CompanyId = 1,                Name = $"Job - {i}",                //WorkType = Entities.Enums.WorkType.Full,                ExprienceLevels = Entities.Enums.ExprienceLevels.Beginner,                Description = "Lorem Ipsum",                LocationId = "София",                LanguageId = null,                MinSalary = 11,                MaxSalary = 111,                SalaryType = Entities.Enums.SalaryType.day,                Adress = "test",                TagsId = null,                PosterID = posterId,                CreatedOn = DateTime.Now,                ExpiredOn = DateTime.Now.AddMonths(1),
-                Promotion = Entities.Enums.PromotionEnum.Default,                isApproved = ApproveType.Success,                isArchived = false                }               };            }
+                Promotion = Entities.Enums.PackageType.Bronze,                isApproved = ApproveType.Success,                isArchived = false                }               };            }
 
             await dbContext.AddRangeAsync(test);
             await dbContext.SaveChangesAsync();
@@ -57,7 +57,7 @@ namespace HireMe.Services.Benchmark
                 test = new List<JobsTest>                {
                 new JobsTest
                 {                //Id = i,                CategoryId = 12,                CompanyId = 5,                Name = $"Job - {i}",                //WorkType = Entities.Enums.WorkType.Full,                ExprienceLevels = Entities.Enums.ExprienceLevels.Beginner,                Description = "Lorem Ipsum",                LocationId = "София",                LanguageId = null,                MinSalary = 11,                MaxSalary = 111,                SalaryType = Entities.Enums.SalaryType.day,                Adress = "test",                TagsId = null,                PosterID = posterId,                CreatedOn = DateTime.Now,                ExpiredOn = DateTime.Now.AddMonths(1),
-                Promotion = Entities.Enums.PromotionEnum.Default,                isApproved = ApproveType.Success,                isArchived = false                }               };                dbContext.JobsTest.AddRange(test);            }
+                Promotion = Entities.Enums.PackageType.Bronze,                isApproved = ApproveType.Success,                isArchived = false                }               };                dbContext.JobsTest.AddRange(test);            }
 
             dbContext.SaveChanges();
             watch.Stop();

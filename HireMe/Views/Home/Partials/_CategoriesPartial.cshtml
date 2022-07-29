@@ -18,93 +18,25 @@
             <div class="inner-box">
               <div class="content">
                 <span class="icon @item.Icon"></span>
-                <h4><a href="#">@item.Title_BG</a></h4>
+                <h4><a>@item.Title_BG</a></h4>
+
+                <form method="post" asp-controller="Jobs" asp-action="Index" asp-route-categoryid="@item.Id">
+                <button type="submit" style="font-size:.675em">@item.JobsCount Обяви</button>
+                </form>
+
+                <form method="post" asp-controller="Contestants" asp-action="Index" asp-route-categoryid="@item.Id">
+                <button type="submit" style="font-size:.675em">@item.CandidatesCount Кандидати</button>
+                </form>
               </div>
             </div>
           </div>
 
           }
-       
 
-          @*
-          <!-- Category Block -->
-          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
-            <div class="inner-box">
-              <div class="content">
-                <span class="icon flaticon-promotion"></span>
-                <h4><a href="#">Marketing</a></h4>
-                <p>86 open positions)</p>
-              </div>
-            </div>
-          </div>
 
-          <!-- Category Block -->
-          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
-            <div class="inner-box">
-              <div class="content">
-                <span class="icon flaticon-vector"></span>
-                <h4><a href="#">Design</a></h4>
-                <p>43 open positions)</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Category Block -->
-          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
-            <div class="inner-box">
-              <div class="content">
-                <span class="icon flaticon-web-programming"></span>
-                <h4><a href="#">Development</a></h4>
-                <p>(12 open positions)</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Category Block -->
-          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
-            <div class="inner-box">
-              <div class="content">
-                <span class="icon flaticon-headhunting"></span>
-                <h4><a href="#">Human Resource</a></h4>
-                <p>55 open positions)</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Category Block -->
-          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
-            <div class="inner-box">
-              <div class="content">
-                <span class="icon flaticon-rocket-ship"></span>
-                <h4><a href="#">Project Management</a></h4>
-                <p>(2 open positions)</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Category Block -->
-          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
-            <div class="inner-box">
-              <div class="content">
-                <span class="icon flaticon-support-1"></span>
-                <h4><a href="#">Customer Service</a></h4>
-                <p>(2 open positions)</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Category Block -->
-          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
-            <div class="inner-box">
-              <div class="content">
-                <span class="icon flaticon-first-aid-kit-1"></span>
-                <h4><a href="#">Health and Care</a></h4>
-                <p>(25 open positions)</p>
-              </div>
-            </div>
-          </div>
-
-          *@
+        </div>
+          <div class="sec-title text-center">
+          <a asp-controller="Categories" asp-action="Index">Виж всички</a>
         </div>
       </div>
     </section>

@@ -4,7 +4,9 @@
     var user = await _userManager.GetUserAsync(User);
 
     String pageName = ViewContext.RouteData.Values["page"].ToString();
-    String folderName = ViewContext.RouteData.Values["page"].ToString().Split('/')[1];
+    //String folderName = ViewContext.RouteData.Values["page"].ToString().Split('/')[1];
+    String handlerName = ViewContext.RouteData.Values["handler"]?.ToString();
+
 }
 
     <!-- Sidebar Backdrop -->
@@ -20,13 +22,13 @@
               <a asp-area="Identity" asp-page="/Account/Manage/Index"> <i class="la la-home"></i> Начало</a>
           </li>
           
-          <li class="@(pageName == "/Account/Manage/EditProfile" ? "active" : "")">
+          <li  class="@(pageName == "/Account/Manage/EditProfile" ? "active" : "")">
               <a asp-area="Identity" asp-page="/Account/Manage/EditProfile"><i class="la la-user-tie"></i>Моят профил</a>
           </li>
             @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
             {
            <li class="@(pageName == "/Resume/Index" ? "active" : "")">
-             <a asp-area="Identity" asp-page="/Resume/Index"><i class="las la-feather"></i>Кандидатствани обяви</a>
+             <a asp-area="Identity" asp-page="/Resume/Index"><i class="las la-feather"></i>Изпратени кандидатури</a>
            </li>
 
           <li class="@(pageName == "/my-files/index" ? "active" : "")">
@@ -36,26 +38,26 @@
 
           @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
            {
-           <li class="@(pageName == "/list/jobs" ? "active" : "")">
+           <li class="@(pageName == "/Resume/Index" ? "active" : "")">
+             <a asp-area="Identity" asp-page="/Resume/Index"><i class="las la-cloud-download-alt"></i>Получени кандидатури</a>
+           </li>
+           <li class="@(handlerName == "Jobs" ? "active" : "")">
               <a asp-area="Identity" asp-page="/List" asp-page-handler="Jobs"><i class="la la-file-invoice"></i>Обяви за работа</a>
            </li>
-           }
 
-            @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-            {
-            <li class="@(pageName == "/list/companies" ? "active" : "")">
+            <li class="@(handlerName == "Companies" ? "active" : "")">
                     <a asp-area="Identity" asp-page="/List" asp-page-handler="Companies"><i class="la la-briefcase"></i>Фирми</a>
            </li>
            }
 
            @if(user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
            {
-            <li class="@(pageName == "/list/contestants" ? "active" : "")">
-              <a asp-area="Identity" asp-page="/List" asp-page-handler="Contestants"><i class="las la-id-badge"></i>Кандидатури</a>
+            <li class="@(handlerName == "Contestants" ? "active" : "")">
+              <a asp-area="Identity" asp-page="/List" asp-page-handler="Contestants"><i class="las la-id-badge"></i>Профил на кандидат</a>
             </li>
            }
 
-          <li class="@(pageName == "/Tasks/" ? "active" : "")">
+          <li class="@(pageName == "/Tasks/Index" ? "active" : "")">
               <a asp-area="Identity" asp-page="/Tasks/Index"><i class="las la-tasks"></i> Задачи</a>
             </li>
 
@@ -73,6 +75,9 @@
 
            @if (user.Role.Equals(Roles.Admin))
             {
+           <li class="@(pageName == "/Account/Manage/Logs" ? "active" : "")">
+           <a asp-area="Identity" asp-page="/Account/Manage/Logs"><i class="las la-history"></i>Системни грешки</a>
+           </li>  
            <li class="@(pageName == "/Account/Manage/Users" ? "active" : "")">
            <a asp-area="Identity" asp-page="/Account/Manage/Users"><i class="las la-users-cog"></i>Потребители</a>
            </li>   

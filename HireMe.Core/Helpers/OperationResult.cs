@@ -9,11 +9,19 @@ namespace HireMe.Core.Helpers
             this.Success = true;
             this.Id = id;
         }
-        protected OperationResult(string message)
+        protected OperationResult(bool isSucceed, string messageOutput)
         {
-            this.Success = false;
-            this.FailureMessage = message;
+            if(!isSucceed)
+            {
+                this.Success = false;
+                this.FailureMessage = messageOutput;
+            } else
+            {
+                this.Success = isSucceed;
+                this.SuccessMessage = messageOutput;
+            }
         }
+
         protected OperationResult(Exception ex)
         {
             this.Success = false;
@@ -21,15 +29,20 @@ namespace HireMe.Core.Helpers
         }
         public bool Success { get; protected set; }
         public string FailureMessage { get; protected set; }
+        public string SuccessMessage { get; protected set; }
         public int? Id { get; set; }
         public Exception Exception { get; protected set; }
         public static OperationResult SuccessResult(int? id)
         {
             return new OperationResult(id);
         }
+        public static OperationResult SuccessResult(string messageOutput)
+        {
+            return new OperationResult(true, messageOutput);
+        }
         public static OperationResult FailureResult(string message)
         {
-            return new OperationResult(message);
+            return new OperationResult(false, message);
         }
         public static OperationResult ExceptionResult(Exception ex)
         {

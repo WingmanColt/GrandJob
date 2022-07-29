@@ -1,9 +1,5 @@
 ﻿@{
     Layout = "/Areas/Identity/Pages/_Layout.cshtml";
-
-    <link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css"/>
-    <link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/customCSS/Dashboard/plugins/Using/select2-theme.min.css" />
-
 }
 
 @section Scripts {
@@ -15,10 +11,11 @@
     <script defer src="~/customJS/contestants/filter/worktypeSelect.js"></script>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/tinymce.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.0/jquery.tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.2/tinymce.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5.6.2/jquery.tinymce.min.js"></script>
 
     <script>
+        $(window).on( "load", function() {
         tinymce.init({
 
             selector: '#mytextarea',
@@ -27,7 +24,8 @@
             max_height: 700,
             min_height: 600
         });
-    </script>     
+        });
+    </script>   
 }
 
 @RenderBody()

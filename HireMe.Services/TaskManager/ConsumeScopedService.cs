@@ -18,10 +18,11 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await DoWork(stoppingToken);
+            //await DoWork(stoppingToken);
+            await DoWork2(stoppingToken);
         }
 
-        private async Task DoWork(CancellationToken stoppingToken)
+       /* private async Task DoWork(CancellationToken stoppingToken)
         {
 
             using (var scope = Services.CreateScope())
@@ -31,6 +32,19 @@
                         .GetRequiredService<IDelayedTask>();
 
                 await scopedProcessingService.DoWork(stoppingToken);
+            }
+        }
+       */
+        private async Task DoWork2(CancellationToken stoppingToken)
+        {
+
+            using (var scope = Services.CreateScope())
+            {
+                var scopedProcessingService =
+                    scope.ServiceProvider
+                        .GetRequiredService<IDelayedTask>();
+
+                await scopedProcessingService.DoWorkMonthly(stoppingToken);
             }
         }
 

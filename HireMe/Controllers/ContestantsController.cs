@@ -34,11 +34,15 @@ namespace HireMe.Controllers
         private readonly ISkillsService _skillsService;
         private readonly ILocationService _locationService;
 
+        private readonly IBaseService _baseService;
+        private readonly IPromotionService _promotionService;
         private readonly IFavoritesService _favoriteService;
 
         public ContestantsController(
             IConfiguration config,
             UserManager<User> userManager,
+            IBaseService baseService,
+            IPromotionService promotionService,
             IContestantsService contestantsService,
             IContestantDetailsService contestantDetailsService,
             ICategoriesService categoriesService,
@@ -49,6 +53,8 @@ namespace HireMe.Controllers
         {
             _config = config;
             _userManager = userManager;
+            _baseService = baseService;
+            _promotionService = promotionService;
 
             _contestantsService = contestantsService;
             _contestantDetailsService = contestantDetailsService;
@@ -77,6 +83,8 @@ namespace HireMe.Controllers
 
             var entity = _contestantsService.GetAllAsNoTracking()
                     .Where(x => (x.isApproved == ApproveType.Success) && !x.isArchived && (x.profileVisiblity == 0))
+                    .OrderByDescending(x => x.PremiumPackage)
+                    .OrderByDescending(x => x.Rating)
                     .Select(x => new Contestant
                     {
                      Id = x.Id,
@@ -88,6 +96,7 @@ namespace HireMe.Controllers
                      payRate = x.payRate,
                      Speciality = x.Speciality,
                      Promotion = x.Promotion,
+                     PremiumPackage = x.PremiumPackage,
                      isInFavourites = _favoriteService.isInFavourite(user, PostType.Contestant, x.Id.ToString())
                     });
 
@@ -111,7 +120,7 @@ namespace HireMe.Controllers
 
         [HttpPost]
         [Route("candidates/all")]
-        public async Task<IActionResult> Index(Filter filter, int currentPage = 1)
+        public async Task<IActionResult> Index(Filter filter, int categoryid, int currentPage = 1)
         {
             var user = await _userManager.GetUserAsync(User);
             var viewModel = new ContestantViewModel
@@ -123,6 +132,8 @@ namespace HireMe.Controllers
 
             var entity = _contestantsService.GetAllAsNoTracking()
                     .Where(x => (x.isApproved == ApproveType.Success) && !x.isArchived && (x.profileVisiblity == 0))
+                    .OrderByDescending(x => x.PremiumPackage)
+                    .OrderByDescending(x => x.Rating)
                     .Select(x => new Contestant
                     {
                         Id = x.Id,
@@ -139,13 +150,14 @@ namespace HireMe.Controllers
                         Logo = x.Logo,
                         Speciality = x.Speciality,
                         Promotion = x.Promotion,
+                        PremiumPackage = x.PremiumPackage,  
                         isInFavourites = _favoriteService.isInFavourite(user, PostType.Contestant, x.Id.ToString())
                     });
 
 
-            if (!String.IsNullOrEmpty(filter.SearchString))
+            if (!String.IsNullOrEmpty(filter.Name))
             {
-                string[] skills = filter.SearchString?.Split("%2C");
+                string[] skills = filter.Name?.Split("%2C");
                 entity = entity.Where(x => ((IList)skills).Contains(x.userSkillsId));
             }
             if (!String.IsNullOrEmpty(filter.LanguageId))
@@ -161,7 +173,8 @@ namespace HireMe.Controllers
             {
                 entity = entity.Where(x => x.CategoryId == filter.CategoryId);
             }
-
+            if (categoryid > 0)
+                entity = entity.Where(x => x.CategoryId == categoryid);
 
             if (filter.SortBy?.Capacity > 0)
             {
@@ -239,12 +252,47 @@ namespace HireMe.Controllers
             contestant.LanguagesMapped = _langService.GetAll<LanguageViewModel>(contestant.LanguagesId, true);
 
             contestant.CategoryName = await _categoryService.GetNameById(contestant.CategoryId);
+            contestant.Views++;
 
             return View(contestant);
         }
 
 
+        public async Task<ActionResult> RefreshPost(int id, string returnUrl)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
 
+            var entity = await _contestantsService.GetByIdAsync(id);
+            if (entity == null)
+            {
+                return RedirectToAction("NotFound", "Home");
+            }
+
+            Promotion existEntity = await _promotionService.GetPromotion(PostType.Contestant, entity.Id);
+            if (existEntity is not null)
+            {
+                if (existEntity.RefreshCount > 0)
+                {
+                    existEntity.RefreshCount -= 1;
+                    await _promotionService.Update(existEntity, user);
+
+                    await _contestantsService.RefreshDate(entity);
+                    _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Обновихте обявата си.", 3000);
+                } 
+                else _baseService.ToastNotify(ToastMessageState.Error, "Несупешна операция", "нямате в наличност обновления за тази обява.", 6000);
+
+            }
+            else _baseService.ToastNotify(ToastMessageState.Error, "Несупешна операция", "не сте промотирали тази обява.", 6000);
+
+            if (!String.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("Index", "Home");
+        }
         [Authorize(Roles = "Admin, Moderator")]
         public async Task<ActionResult> Approve(int id, ApproveType T, string returnUrl, [FromServices] IBaseService _baseService, [FromServices] INotificationService _notifyService)
         {
@@ -267,13 +315,14 @@ namespace HireMe.Controllers
                     switch (T)
                     {
                         case ApproveType.Waiting:
-                            await _notifyService.Create("Моля редактирайте вашата кандидатура отново с коректни данни.", "identity/contestant/index", DateTime.Now, NotifyType.Warning, "fas fa-sync-alt", contestant.PosterID, user.Id).ConfigureAwait(false);
+                            await _notifyService.Create("Моля редактирайте вашата кандидатура отново с коректни данни.", "identity/list/contestants", DateTime.Now, NotifyType.Warning, null, contestant.PosterID, user.Id).ConfigureAwait(false);
                             break;
                         case ApproveType.Rejected:
-                            await _notifyService.Create("Последно добавената ви кандидатура е отхвърлена.", "identity/contestant/index", DateTime.Now, NotifyType.Danger, "fas fa-ban", contestant.PosterID, user.Id).ConfigureAwait(false);
+                            await _notifyService.Create("Последно добавената ви кандидатура е отхвърлена.", "identity/list/contestants", DateTime.Now, NotifyType.Danger, null, contestant.PosterID, user.Id).ConfigureAwait(false);
                             break;
                         case ApproveType.Success:
-                            await _notifyService.Create("Последно добавената ви кандидатура е одобрена.", "identity/contestant/index", DateTime.Now, NotifyType.Information, "fas fa-check", contestant.PosterID, user.Id).ConfigureAwait(false);
+                        await _categoriesService.Update(contestant.CategoryId, false, CategoriesEnum.Increment).ConfigureAwait(false);
+                        await _notifyService.Create("Последно добавената ви кандидатура е одобрена.", "identity/list/contestants", DateTime.Now, NotifyType.Information, null, contestant.PosterID, user.Id).ConfigureAwait(false);
                             break;
                     }
                 

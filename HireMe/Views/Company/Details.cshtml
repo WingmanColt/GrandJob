@@ -16,6 +16,7 @@
     string imageFullPath = SiteImageUrl + Model.Logo; 
 }
 
+<link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'"  href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" asp-append-version="true">
 
     <!-- Job Detail Section -->
     <section class="job-detail-section">
@@ -29,10 +30,10 @@
                 <span class="company-logo"><img class="lazyload" data-src="@imageFullPath" alt=""></span>
                 <h4><a href="#">@Model.Title</a></h4>
                 <ul class="job-info">
-                  <li><span class="icon flaticon-map-locator"></span> @Model.LocationId</li>
-                  <li><span class="icon flaticon-briefcase"></span> Category Name</li>
-                  <li><span class="icon flaticon-telephone-1"></span> @Model.PhoneNumber</li>
-                  <li><span class="icon flaticon-mail"></span> @Model.Email</li>
+                  <li><span class="icon las la-map-marked"></span> @Model.LocationId</li>
+                  <li><span class="icon las la-briefcase"></span> @Model.CategoryName</li>
+                  <li><span class="icon las la-phone-volume"></span> @Model.PhoneNumber</li>
+                  <li><span class="icon las la-envelope"></span> @Model.Email</li>
                 </ul>
                 <ul class="job-other-info">
                   <li class="time">Отворени позиции – @Model.JobsCount</li>
@@ -40,8 +41,11 @@
               </div>
 
               <div class="btn-box">
+                @if(!String.IsNullOrEmpty(Model.Website))
+                {
                 <a href="@Model.Website" class="theme-btn btn-style-one">Уеб сайт</a>
-                <a class="bookmark-btn"><i class="flaticon-heart"></i></a>
+                }
+                <a class="bookmark-btn"><i class="las la-heart" style="line-height:unset;"></i></a>
               </div>
             </div>
           </div>
@@ -70,7 +74,7 @@
                                     <div class="col-lg-3 col-md-3 col-sm-6">
                                         <figure class="image">
                                             <a href="@Model.GalleryPath\@item" class="lightbox-image" data-fancybox="gallery">
-                                                <img class="bordered lazyload" data-src="@Model.GalleryPath\@item" alt="">
+                                                <img class="bordered lazyload" data-src="@Model.GalleryPath\@item" width="150" height="150" alt="">
                                             </a>
                                         </figure>
                                     </div>
@@ -96,15 +100,15 @@
                       <span class="company-logo"><img class="rounded-full lazyload" data-src="@SiteImageUrl@item.CompanyLogo" alt=""></span>
                       <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
                       <ul class="job-info">
-                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                        <li><span class="icon las la-map-marked"></span>@item.LocationId</li>                       
                         @if (item.MaxSalary > 0)
                          {
-                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                          <li><span class="icon las la-wallet"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
                          }
 
                          else
                          {
-                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                          <li><span class="icon las la-wallet"></span>Не е посочено</li>
                          }
                         
                       </ul>
@@ -112,7 +116,7 @@
                         <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
                         <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
                       </ul>
-                      <button class="bookmark-btn"><span class="flaticon-heart"></span></button>
+                      <button class="bookmark-btn"><span class="las la-heart" style="line-height:unset;"></span></button>
                     </div>
                   </div>
                 </div>
@@ -134,9 +138,9 @@
                       <li>Адрес: <span>@Model.Adress</span></li>
                       <li>Социална медия:
                         <div class="social-links">
-                          <a href="@Model.Facebook"><i class="fab fa-facebook-f"></i></a>
-                          <a href="@Model.Twitter"><i class="fab fa-twitter"></i></a>
-                          <a href="@Model.Linkdin"><i class="fab fa-linkedin-in"></i></a>
+                          <a href="@Model.Facebook"><i class="lab la-facebook-f"></i></a>
+                          <a href="@Model.Twitter"><i class="lab la-twitter"></i></a>
+                          <a href="@Model.Linkdin"><i class="lab la-linkedin-in"></i></a>
 
                         </div>
                       </li>
@@ -144,11 +148,11 @@
 
                     <div class="btn-box"><a href="#" class="theme-btn btn-style-three">                        
                         <div class="star-rating">
-        <span class="fa fa-star" data-rating="1"></span>
-        <span class="fa fa-star" data-rating="2"></span>
-        <span class="fa fa-star" data-rating="3"></span>
-        <span class="fa fa-star" data-rating="4"></span>
-        <span class="fa fa-star" data-rating="5"></span>
+        <span class="las la-star" data-rating="1"></span>
+        <span class="las la-star" data-rating="2"></span>
+        <span class="las la-star" data-rating="3"></span>
+        <span class="las la-star" data-rating="4"></span>
+        <span class="las la-star" data-rating="5"></span>
         <input type="hidden" name="whatever1" class="rating-value" value="@Model.Rating">
       </div></a></div>
                   </div>

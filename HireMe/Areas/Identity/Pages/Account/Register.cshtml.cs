@@ -1,6 +1,7 @@
 ﻿using HireMe.Core.Helpers;
 using HireMe.Entities.Enums;
 using HireMe.Entities.Models;
+using HireMe.Services;
 using HireMe.Services.Interfaces;
 using HireMe.Utility;
 using Microsoft.AspNetCore.Authentication;
@@ -25,7 +26,7 @@ namespace HireMe.Areas.Identity.Pages.Account
 
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly ILogService _logger;
         private readonly INotificationService _notifyService;
         private readonly IBaseService _baseService;
         private readonly ISenderService _senderService;
@@ -37,7 +38,7 @@ namespace HireMe.Areas.Identity.Pages.Account
             RoleManager<IdentityRole> roleManager,
             INotificationService notifyService,
             IBaseService baseService,
-            ILogger<RegisterModel> logger,
+            ILogService logger,
             ISenderService senderService)
         {
             _userManager = userManager;
@@ -51,12 +52,10 @@ namespace HireMe.Areas.Identity.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
-        public string ReturnUrl { get; set; }
-
         [TempData]
         public string ErrorMessage { get; set; }
 
-
+        public bool getEmployer { get; set; }
         public class InputModel
         {
             [Required]
@@ -85,37 +84,40 @@ namespace HireMe.Areas.Identity.Pages.Account
             [Display(Name = "Потвърди паролата")]
             [Compare("Password", ErrorMessage = "Паролите не съвпадат.")]
             public string ConfirmPassword { get; set; }
+
+            public bool isEmployer { get; set; }
         }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string employer = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             if (_signInManager.IsSignedIn(User))
             {
-                return Redirect(returnUrl);
+                return Redirect("./Manage/Index");
             }
 
-            ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+
+            if (employer?.Length > 0)
+                getEmployer = true;
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(bool e)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             if (_signInManager.IsSignedIn(User))
             {
-                return LocalRedirect(returnUrl);
+                return RedirectToPage("./Manage/Index");
             }
 
+
+            getEmployer = e;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
-
                 var user = new User
                 {
                     isExternal = false,
@@ -123,16 +125,14 @@ namespace HireMe.Areas.Identity.Pages.Account
                     UserName = StringHelper.GetUntilOrEmpty(Input.Email, "@"),
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
+                    Role =  (Input.isEmployer || getEmployer) ? Roles.Employer : Roles.User,
                     PictureName = "200x200.jpg"
                 };
-
 
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var email = await _userManager.GetEmailAsync(user);
 
@@ -142,8 +142,11 @@ namespace HireMe.Areas.Identity.Pages.Account
                         values: new { userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    await _senderService.SendEmailAsync(email, "Потвърди емайл адрес", callbackUrl);
-                    var count = await _userManager.Users.CountAsync().ConfigureAwait(false);
+                   var emailResult = await _senderService.SendEmailAsync(email, "Потвърди емайл адрес", callbackUrl).ConfigureAwait(false);
+                    if (!emailResult.Success)
+                        await _logger.Create(emailResult.FailureMessage, "RegisterPost", Entities.Enums.LogLevel.Danger, Input.Email);
+
+                        var count = await _userManager.Users.CountAsync().ConfigureAwait(false);
 
                     if (count == 1)
                     {
@@ -157,24 +160,31 @@ namespace HireMe.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _userManager.AddToRoleAsync(user, "User");
-                        user.Role = Roles.User;
+                        if (!Input.isEmployer)
+                        {
+                            await _userManager.AddToRoleAsync(user, "User");
+                            user.Role = Roles.User;
+                        } 
+                        else
+                        {
+                            await _userManager.AddToRoleAsync(user, "Employer");
+                            user.Role = Roles.Employer;
+                        }
                     }
 
 
-                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/editprofile", DateTime.Now, NotifyType.Information, "fas fa-edit", user.Id, null).ConfigureAwait(false);
+                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/edit-profile", DateTime.Now, NotifyType.Information, null, user.Id, null).ConfigureAwait(false);
 
-                    _baseService.ToastNotify(ToastMessageState.Alert, "Детайли", "Моля попълнете личните си данни.", 9000);
                     _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "се регистрирахте. Благодарим ви за отделеното време !", 5000);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, isEmployer = Input.isEmployer ? true : false });
                     }
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return RedirectToPage("./Manage/Index");
                     }
 
                 }

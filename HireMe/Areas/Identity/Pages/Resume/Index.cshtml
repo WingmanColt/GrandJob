@@ -3,7 +3,7 @@
 @model IndexModel
 
 @{
-    ViewData["Title"] = "Моите файлове";
+    ViewData["Title"] = "Кандидатури";
     Layout = "/Areas/Identity/Pages/_Layout.cshtml";
 }
 
@@ -13,11 +13,19 @@
     <section class="user-dashboard">
       <div class="dashboard-outer">
         <div class="upper-title-box">
+        @if (Model.UserEntity.Role.Equals(Roles.User) || Model.UserEntity.Role.Equals(Roles.Contestant))
+         {
+         <h3>Кандидатури</h3>
+         }
+        @if (Model.UserEntity.Role.Equals(Roles.Employer) || Model.UserEntity.Role.Equals(Roles.Recruiter))
+         {
+         <h3>Получени Кандидатури</h3>
+         }
         <div class="row">
                     <div class="col-lg-12">
-                      <h4>Резюме</h4>
+                       <div class="text">Архив</div>
                        <div class="chosen-outer">
-                       <a class="theme-btn btn-style-danger call-modal mid-right" data-modal="#apply-modal"><i class="fa fa-plus"></i> Добави</a>
+                       <a class="theme-btn btn-style-danger call-modal mid-right" data-modal="#apply-modal"><i class="las la-plus"></i> Добави</a>
                       </div>
                     </div>
          </div>
@@ -53,18 +61,31 @@
 
                             @if(item.LastAppliedJob?.Length > 0)
                             {
-                            <span class="info"><i class="icon flaticon-briefcase"></i> @item.LastAppliedJob</span>
+                            <span class="info"><i class="icon las la-briefcase"></i> @item.LastAppliedJob</span>
                             }
 
                           </td>
-                          <td class="applied">@item.Rating / 5</td>
+                          <td class="applied">
+                                <div class="star-rating">
+                                    <span class="las la-star" data-rating="1"></span>
+                                    <span class="las la-star" data-rating="2"></span>
+                                    <span class="las la-star" data-rating="3"></span>
+                                    <span class="las la-star" data-rating="4"></span>
+                                    <span class="las la-star" data-rating="5"></span>
+                                    <input type="hidden" class="rating-value" value="@item.Rating">
+                                </div>
+                          </td>
                           <td class="applied">@item.RatingVotes</td>
                           <td>@item.Date.ToString("MM MMMM")</td>
                           <td>
                             <div class="option-box">
                               <ul class="option-list">
                                 <li>@*{ string encryptedId = _cipherService.Encrypt(@item.FileId); }*@
-                                     <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Виж">
+                                     <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.JobId" data-text="Към обявата">
+                                    <span class="las la-paste"></span></a>
+                                 </li>
+                                <li>@*{ string encryptedId = _cipherService.Encrypt(@item.FileId); }*@
+                                     <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Прегледай CV">
                                     <span class="la la-eye"></span></a>
                                  </li>
                                 <li>
@@ -80,7 +101,59 @@
                      }
 
                       </tbody>
-                    </table>
+                       @if (Model.ResultArchive is not null && await Model.ResultArchive.AnyAsync())
+                                    {
+                                        <tbody>
+
+                                            @await foreach (var item in Model.ResultArchive)
+                                            {
+                                            <tr>
+                                                <td>
+                                                    <h6>@item.Title</h6>
+
+                                                    @if (item.LastAppliedJob?.Length > 0)
+                                                    {
+                                                        <span class="info"><i class="icon las la-briefcase"></i> @item.LastAppliedJob</span>
+                                                    }
+
+                                                </td>
+                                                <td class="applied">
+                                                    <div class="star-rating">
+                                                        <span class="las la-star" data-rating="1"></span>
+                                                        <span class="las la-star" data-rating="2"></span>
+                                                        <span class="las la-star" data-rating="3"></span>
+                                                        <span class="las la-star" data-rating="4"></span>
+                                                        <span class="las la-star" data-rating="5"></span>
+                                                        <input type="hidden" class="rating-value" value="@item.Rating">
+                                                    </div>
+                                                </td>
+                                                <td class="applied">@item.RatingVotes</td>
+                                                <td>@item.Date.ToString("MM MMMM")</td>
+                                                <td>
+                                                    <div class="option-box">
+                                                        <ul class="option-list">
+                                                            <li>@*{ string encryptedId = _cipherService.Encrypt(@item.FileId); }*@
+                                                                <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.JobId" data-text="Към обявата">
+                                                                    <span class="las la-paste"></span></a>
+                                                            </li>
+                                                            <li>@*{ string encryptedId = _cipherService.Encrypt(@item.FileId); }*@
+                                                                <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Прегледай CV">
+                                                                    <span class="la la-eye"></span></a>
+                                                            </li>
+                                                            <li>
+                                                                <form asp-page-handler="Delete" asp-route-id="@item.Id" method="post">
+                                                                    <button data-text="Изтрий" type="submit"><span class="la la-trash"></span></button>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            }
+
+                                        </tbody>
+                                    }
+                                </table>
                   </div>
                 </div>
               </div>
@@ -117,8 +190,8 @@
         <div class="bottom-box">
           <div class="btn-box row">
               <div class="col-lg-12">
-                   <button class="theme-btn btn-style-three" type="submit"><i class="fa fa-upload"></i> Качи</button>
-                   <a href="#" class="theme-btn btn-style-default bottom-right" rel="modal:close"><i class="fa fa-times"></i> Затвори</a>
+                   <button class="theme-btn btn-style-three" type="submit"><i class="las la-upload"></i> Качи</button>
+                   <a href="#" class="theme-btn btn-style-default bottom-right" rel="modal:close"><i class="las la-times"></i> Затвори</a>
                 </div>
                
           </div>

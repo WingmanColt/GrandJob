@@ -5,15 +5,18 @@
     using HireMe.Entities.Enums;
     using HireMe.Entities.Input;
     using HireMe.Entities.Models;
+    using HireMe.Services;
     using HireMe.Services.Interfaces;
+    using HireMe.StoredProcedures.Enums;
+    using HireMe.StoredProcedures.Interfaces;
     using HireMe.Utility;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.Extensions.Configuration;
-    using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.Threading.Tasks;
 
     [ValidateAntiForgeryToken]
@@ -23,12 +26,16 @@
     {
         private readonly UserManager<User> _userManager;
         private readonly IJobsService _jobsService;
+        private readonly IspJobService _spJobService;
         private readonly ICategoriesService _categoriesService;
         private readonly ILocationService _locationService;
         private readonly ICompanyService _companyService;
         private readonly ILanguageService _langService;
         private readonly ISkillsService _skillsService;
         private readonly IBaseService _baseService;
+        private readonly ILogService _logService;
+
+
         private readonly string _ImagePathShow;
 
         public OperationsModel(
@@ -36,37 +43,51 @@
             ICategoriesService categoriesService,
             ILocationService locationService,
             IJobsService jobsService,
+            IspJobService spJobService,
             ICompanyService companyService,
             ILanguageService langService,
             ISkillsService skillsService,
             IConfiguration config,
-            IBaseService baseService)
+            IBaseService baseService,
+            ILogService logService)
         {
             _userManager = userManager;
             _categoriesService = categoriesService;
             _locationService = locationService;
             _jobsService = jobsService;
+            _spJobService = spJobService;
             _companyService = companyService;
             _langService = langService;
             _skillsService = skillsService;
             _baseService = baseService;
+            _logService = logService;
 
             _ImagePathShow = config.GetValue<string>("MySettings:CompanyImageUrl");
 
         }
 
+        public IAsyncEnumerable<SelectListModel> AllCategories { get; set; }
+        public IAsyncEnumerable<SelectListModel> AllLocations { get; set; }
+
+        public IAsyncEnumerable<Company> AllCompanies { get; set; }
+        public IAsyncEnumerable<Skills> AllTags { get; set; }
+        public IAsyncEnumerable<Language> AllLanguages { get; set; }
+
+        public string[] Worktypes { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
-        public class InputModel : CreateJobInputModel { }
+        public class InputModel : CreateJobInputModel {
+
+            [NotMapped]
+            public PremiumPackage PremiumPackagePre { get; set; }
+        }
+
 
         [BindProperty]
         public Company Company { get; set; }
-        public string ReturnUrl { get; set; }
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            ReturnUrl = Url.PageLink();
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -77,13 +98,11 @@
                 return RedirectToPage("/Account/Manage/Pricing", new { Area = "Identity" });
             }
 
-            AllLocations = _locationService.GetAllSelectList();
-            AllCategories = _categoriesService.GetAllSelectList();
-
-            var job = await _jobsService.GetByIdAsync(id);
             LoadData(user, Input?.WorkType, Input?.LanguageId, Input?.TagsId);
 
-            if (id > 0 && job is not null && user.Id == job.PosterID)
+            Jobs job = await _spJobService.GetByIdAsync<Jobs>(id);
+
+            if (id > 0 && job is not null && (user.Id == job?.PosterID || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator)))
             {
                 Input = new InputModel
                 {
@@ -104,26 +123,29 @@
                     Views = job.Views,
                     ApplyCount = job.ApplyCount,
                     Rating = job.Rating,
-                    isApproved = job.isApproved
+                    isApproved = job.isApproved,
+                    Promotion = job.Promotion,
+                    PremiumPackage = job.PremiumPackage,
+                    PremiumPackagePre = job.PremiumPackage
                 };
+
+                LoadData(user, Input?.WorkType, Input?.LanguageId, Input?.TagsId);
 
                 Company = await _companyService.GetByIdAsync(Input.CompanyId);
                 Input.CompanyLogo = _ImagePathShow + Company?.Logo;
             }
+
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int Id)
         {
-           // ReturnUrl = Url.PageLink();
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
-
-            var job = await _jobsService.GetByIdAsync(Id);
 
             LoadData(user, Input?.WorkType, Input?.LanguageId, Input?.TagsId);
 
@@ -132,7 +154,7 @@
                 return Page();
             }
 
-            //var more = HttpContext.Request.Form.Files;
+            var job = await _spJobService.GetByIdAsync<Jobs>(Id);
 
             OperationResult result;
 
@@ -144,47 +166,65 @@
 
             Input.CompanyLogo = Company.Logo;
 
-            if (Id > 0 && job is not null && user.Id == job.PosterID)
+            if (Id > 0 && job is not null && (user.Id == job?.PosterID || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator)))
             {
                 Input.Id = Id;
 
-                result = await _jobsService.Update(Input, user);
+                result = await _spJobService.CRUD(Input, JobCrudActionEnum.Update, true, "NotMapped", user);
+
                 if (result.Success)
-                    _baseService.ToastNotify(ToastMessageState.Success, "Успешна", "операция.", 2000);
+                {
+                    if (!Input.PremiumPackagePre.Equals(PremiumPackage.None))
+                        return RedirectToPage("/Checkout/Index", new { package = (int)Input.PremiumPackagePre, productId = result.Id, PostType = (int)PostType.Job });
+                    else
+                    {
+                        _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "редактирахте вашата обява.", 2000);
+                        return Redirect("~/Identity/List/Jobs");
+                    }
+                }
+                else await _logService.Create(result.FailureMessage, Input.Name, LogLevel.Danger, user?.UserName).ConfigureAwait(false);
+
+
+
             }
 
             if (job is null)
             {
-                result = await _jobsService.Create(Input, user);
+                bool checkCount = await _spJobService.GetAllCountBy(new { PosterId = user.Id }) >= int.Parse(user.AccountType.GetShortName());
+                if (checkCount)
+                {
+                    _baseService.ToastNotify(ToastMessageState.Warning, "Отказана операция", $"Имате право да добавяте само {user.AccountType.GetShortName()} обяви.", 2000);
+                    return Redirect("~/Identity/List/Jobs");
+                }
+            
+                result = await _spJobService.CRUD(Input, JobCrudActionEnum.Create, true, "NotMapped", user);
 
                 if (result.Success)
                 {
-                    _baseService.ToastNotify(ToastMessageState.Success, "Успешна", "операция.", 2000);
+                    if (!Input.PremiumPackagePre.Equals(PremiumPackage.None))
+                        return RedirectToPage("/Checkout/Index", new { package = (int)Input.PremiumPackagePre, productId = result.Id, PostType = (int)PostType.Job });
+                    else
+                    {
+                        _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "добавихте обява.", 2000);
+                        return Redirect("~/Identity/List/Jobs");
+                    }
                 }
+                else await _logService.Create(result.FailureMessage, Input.Name, LogLevel.Danger, user?.UserName).ConfigureAwait(false);
+
             }
 
-            if(!String.IsNullOrEmpty(ReturnUrl))
-                return Redirect(ReturnUrl);
-            else
             return RedirectToPage();
         }
 
-        public IAsyncEnumerable<Company> Companies { get; set; }
-        public IAsyncEnumerable<SelectListModel> AllCategories { get; set; }
-        public IAsyncEnumerable<SelectListModel> AllLocations { get; set; }
-        public IAsyncEnumerable<Skills> Skills { get; set; }
-        public IAsyncEnumerable<Language> Languages { get; set; }
-        public string[] Worktypes { get; set; }
 
         private void LoadData(User user, string workType, string languages, string skills)
         {
             AllLocations = _locationService.GetAllSelectList();
             AllCategories = _categoriesService.GetAllSelectList();
 
-            Companies = _companyService.GetAll(user);
-            Languages = _langService.GetAll<Language>(languages, false);
-            Skills = _skillsService.GetAll<Skills>(skills, false);
-
+            AllCompanies = _companyService.GetAll(user);
+            AllLanguages = _langService.GetAll<Language>(languages, false);
+            AllTags = _skillsService.GetAll<Skills>(skills, false);
             Worktypes = workType?.Split(',');
         }
     }

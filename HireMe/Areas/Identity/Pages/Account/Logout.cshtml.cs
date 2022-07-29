@@ -28,7 +28,7 @@ namespace HireMe.Areas.Identity.Pages.Account
                 _baseService.ToastNotify(ToastMessageState.Info, "Успешно", "излязохте от профила си.", 4000);
             }
 
-            return RedirectToPage("/Index");
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> OnPost()
@@ -39,7 +39,7 @@ namespace HireMe.Areas.Identity.Pages.Account
                 _baseService.ToastNotify(ToastMessageState.Info, "Успешно", "излязохте от профила си.", 1000);
             }
 
-            return RedirectToPage("/Index");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

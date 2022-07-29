@@ -15,7 +15,7 @@
     <section class="user-dashboard">
       <div class="dashboard-outer">
         <div class="upper-title-box">
-            @if(@Model.Input?.FullName.Length > 0)
+            @if(Model.Input?.FullName?.Length > 0)
             {
           <h3>@Model.Input?.FullName</h3>
           <div class="text">Редактиране</div>
@@ -38,8 +38,8 @@
                   <h4>Основна информация</h4>
 
                     <div class="desktop-only">
-                       <a href="" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="fa fa-times" aria-hidden="true"></i></a>
-                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="fa fa-check"></i></button> 
+                       <a href="" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="las la-times" aria-hidden="true"></i></a>
+                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="las la-check"></i></button> 
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                       <!-- Input -->
                       <div class="form-group col-lg-6 col-md-12">
                         <label asp-for="Input.FullName"></label><span class="label-required">*</span>
-                        <input type="text" asp-for="Input.FullName" required>
+                        <input type="text" asp-for="Input.FullName" value="@Model.FullName" disabled>
                       </div>
 
                      <!-- Input -->
@@ -143,7 +143,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-facebook-square" style="font-size:30px"></i>
+                              <i class="lab la-facebook-square" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Facebook" aria-label="https://facebook.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -156,7 +156,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-linkedin-in" style="font-size:30px"></i>
+                              <i class="lab la-linkedin-in" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Linkdin" aria-label="https://linkdin.com/in/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -169,7 +169,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-twitter" style="font-size:30px"></i>
+                              <i class="lab la-twitter" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Twitter" aria-label="https://twitter.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -182,7 +182,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-github" style="font-size:30px"></i>
+                              <i class="lab la-github" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Github" aria-label="https://github.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -195,7 +195,7 @@
                        <div class="input-group" style="flex-wrap: unset;">
                          <div class="input-group-prepend">
                             <a class="btn label-info" rel="publisher" href="#">
-                              <i class="fab fa-dribbble" style="font-size:30px"></i>
+                              <i class="lab la-dribbble" style="font-size:30px"></i>
                              </a>
                          </div>
                         <input asp-for="Input.Dribbble" aria-label="https://dribbble.com/" aria-describedby="inputGroup-sizing-sm" placeholder="Потребителско име" />
@@ -229,7 +229,7 @@
                        <!-- Input -->
                       <div class="form-group col-lg-6 col-md-12">
                       <label asp-for="Input.payRate"></label>
-                      <input asp-for="Input.payRate"  placeholder="Въведете желаната сума" />
+                      <input asp-for="Input.payRate" placeholder="Въведете желаната сума" />
                       </div>
 
 
@@ -331,7 +331,7 @@
                       <!-- Input -->
                      <div class="col-lg-12 col-md-12">
                     <textarea asp-for="Input.Description" id="mytextarea" rows="12" cols="12"></textarea>
-                     <strong><i class="label-info fas fa-info-circle"></i> Препоръчваме да използвате минимум 200 думи в описанието.</strong>
+                     <strong><i class="label-info las la-info-circle"></i> Препоръчваме да използвате минимум 200 думи в описанието.</strong>
                     </div>
 
                       </div>
@@ -345,17 +345,19 @@
               <div class="tabs-box">
                 <div class="widget-title">
                   <h4>Промотиране</h4>
+                 <select asp-for="Input.PremiumPackagePre" class="chosen-select" asp-items="Html.GetEnumSelectList<PremiumPackage>()"></select>                     
+
                 </div>
 
                  <div class="widget-content">  
                      <div class="row">
-
+                        @await Html.PartialAsync("Partials/_Promotions")             
                      </div>
 
                    <div class="row mobile-only">
                        <div class="form-group col-lg-6 col-md-12">
-                       <a href="" class="theme-btn btn-style-default"><i class="fa fa-times" aria-hidden="true"></i> Затвори</a>
-                       <button type="submit" class="theme-btn btn-style-four"><i class="fa fa-check"></i> Запази</button> 
+                       <a href="" class="theme-btn btn-style-default"><i class="las la-times" aria-hidden="true"></i> Затвори</a>
+                       <button type="submit" class="theme-btn btn-style-four"><i class="las la-check"></i> Запази</button> 
                        </div>
 
                    </div>

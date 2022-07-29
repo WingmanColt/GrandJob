@@ -1,6 +1,7 @@
 ﻿namespace HireMe.Entities.Input
 {
     using HireMe.Entities.Enums;
+    using HireMe.Entities.View;
     using Microsoft.AspNetCore.Http;
     using System;
     using System.Collections.Generic;
@@ -49,7 +50,7 @@
 
        // [Range(0, 9999)]
         [Display(Name = "Заплащане (лв)")]
-        public int payRate { get; set; }
+        public int? payRate { get; set; }
 
         [Display(Name = "Вид заплащане")]
         public SalaryType SalaryType { get; set; }
@@ -99,8 +100,8 @@
 
         public string Dribbble { get; set; }
 
-        public PromotionEnum Promotion { get; set; }
-
+        public PackageType Promotion { get; set; }
+        public PremiumPackage PremiumPackage { get; set; }
         // Resume
         [Display(Name = "Резюме")]
         public string ResumeFileId { get; set; }

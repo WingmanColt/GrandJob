@@ -51,13 +51,11 @@ namespace HireMe.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync()
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             if (_signInManager.IsSignedIn(User))
             {
-                return Redirect(returnUrl);
+                return RedirectToPage("./Manage/Index");
             }
 
             if (!string.IsNullOrEmpty(ErrorMessage))
@@ -70,19 +68,17 @@ namespace HireMe.Areas.Identity.Pages.Account
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            ReturnUrl = returnUrl;
-
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             if (_signInManager.IsSignedIn(User))
             {
-                return LocalRedirect(returnUrl);
+                return RedirectToPage("./Manage/Index");
             }
+
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
@@ -90,33 +86,34 @@ namespace HireMe.Areas.Identity.Pages.Account
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
-                    User user = await _userManager.FindByEmailAsync(Input.Email);
-                    var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                    User user = await _userManager.FindByEmailAsync(Input?.Email);
+
+                if(user is null)
+                {
+                ModelState.AddModelError(string.Empty, "Не съществува такъв потребител.");
+                    return Page();
+                }
+                var result = await _signInManager.PasswordSignInAsync(user?.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
                     _baseService.ToastNotify(ToastMessageState.Info, "Здравейте!", "Успешно влязохте в профила си.", 1000);
-                    return LocalRedirect(returnUrl);
+                    return RedirectToPage("./Manage/Index");
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { RememberMe = Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
-                    _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Проблем", "Профилът е заключен за 24 часа.", "login", 4000);
+                    await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Проблем", "Профилът е заключен за 24 часа.", "login", 4000);
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    if(user.EmailConfirmed != true)
+                    if(!user.EmailConfirmed)
                     {
                      ModelState.AddModelError(string.Empty, "Моля потвърдете вашия емайл адрес за да влезете в системата ни !");
-                    }
-                    else
-                    {
-                     ModelState.AddModelError(string.Empty, "Възникна грешка, опитайте по-късно.");
-                     _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Проблем", "Възникна грешка, опитайте по-късно.", "login", 4000);
                     }
 
                     return Page();

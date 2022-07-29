@@ -13,6 +13,7 @@
 
     string SiteImageUrl = config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
 }
+<link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'"  href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" asp-append-version="true">
 
 
     <!-- Job Detail Section -->
@@ -26,16 +27,20 @@
                 <div class="job-block-seven">
                   <div class="inner-box">
                     <div class="content">
-                      <span class="company-logo"><img class="lazyload" data-src="@SiteImageUrl@Model.CompanyLogo" alt=""></span>
+                      <span class="company-logo" ><img class="lazyload" data-src="@SiteImageUrl@Model.CompanyLogo" style="border: 1px solid @Model.PremiumPackage.GetDescription()" alt=""></span>
                       <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a></h4>
                       <ul class="job-info">
-                        <li><span class="icon flaticon-map-locator"></span> @Model.LocationId</li>
-                        <li><span class="icon flaticon-clock-3"></span> @Model.CreatedOn.ToString("MM MMMM")</li>
+                        <li><span class="icon las la-map-marked"></span> @Model.LocationId</li>
+                        <li><span class="icon las la-clock"></span> @Model.CreatedOn.ToString("MM MMMM")</li>
                         @if (Model.MinSalary > 0)
                         {
-                        <li><span class="icon flaticon-money"></span> @Model.MinSalary - @Model.MaxSalary</li>
+                        <li><span class="icon las la-money-bill-wave"></span> @Model.MinSalary - @Model.MaxSalary</li>
                         }
-                      </ul>
+                        @if (!Model.PremiumPackage.Equals(PremiumPackage.None))
+                        {
+                        <li> <span class="icon @Model.PremiumPackage.GetShortName() @Model.PremiumPackage.GetPrompt()" style="color:@Model.PremiumPackage.GetDescription();"></span> @Model.PremiumPackage.GetDisplayName() обява</li>
+                        } 
+                    </ul>
                       <ul class="job-other-info">
                         @*
                         <li class="privacy">Private</li>
@@ -61,7 +66,7 @@
                                      <div class="company-block">
                                         <figure class="image" style="width:unset; height:unset; border-radius:unset;">
                                             <a href="@Model.GalleryPath\@item" class="lightbox-image" data-fancybox="gallery">
-                                                <img class="bordered lazyload" data-src="@Model.GalleryPath\@item" alt="">
+                                                <img class="bordered lazyload" data-src="@Model.GalleryPath\@item" width="150" height="150" alt="">
                                             </a>
                                         </figure>
                                         </div>
@@ -109,18 +114,18 @@
                      <div class="job-block col-lg-4 col-md-6 col-sm-12">
                      <div class="inner-box">
                     <div class="content">
-                      <span class="company-logo"><img class="rounded-full" src="@SiteImageUrl@item.CompanyLogo" alt=""></span>
+                      <span class="company-logo"><img class="rounded-full lazyload" data-src="@SiteImageUrl@item.CompanyLogo" alt=""></span>
                       <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
                       <ul class="job-info">
-                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                        <li><span class="icon las la-map-marked"></span>@item.LocationId</li>                       
                         @if (item.MaxSalary > 0)
                          {
-                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                          <li><span class="icon las la-wallet"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
                          }
 
                          else
                          {
-                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                          <li><span class="icon las la-wallet"></span>Не е посочено</li>
                          }
                         
                       </ul>
@@ -146,7 +151,7 @@
               <aside class="sidebar">
                 <div class="btn-box">
                   <a class="theme-btn btn-style-one call-modal" data-modal="#apply-modal">Кандидатствай</a>
-                  <a class="raport-btn call-modal" data-modal="#raport-modal" data-toggle="tooltip" data-placement="bottom" title="Докладвай обявата"><i class="flaticon-cancel"></i></a>
+                  <a class="raport-btn call-modal" data-modal="#raport-modal" data-toggle="tooltip" data-placement="bottom" title="Докладвай обявата"><i class="las la-exclamation-circle" style="line-height:unset;"></i></a>
                   @{string iconType = @Model.isInFavourites ? "las" : "lar";}
                       <button type="button" value='Submit' onclick="CheckAvailability(@Model.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
                         <i class="@iconType la-heart" id="@Model.Id-heartIcon" style="line-height:unset;"></i>
@@ -162,35 +167,35 @@
                      @if (Model.ExprienceLevels > 0)
                          {
                       <li>
-                        <i class="icon icon-case icon-custom-color"></i>
+                       <i class="icon las la-business-time"></i>
                         <h5>Ниво:</h5>
                         <span>@Model.ExprienceLevels.GetDisplayName()</span>
                       </li>
                          }
                       <li>
-                        <i class="icon icon-one-finger-click icon-custom-color"></i>
+                        <i class="icon las la-eye"></i>
                         <h5>Преглеждания</h5>
                         <span>@Model.Views</span>
                       </li>
                       <li>
-                        <i class="icon icon-location"></i>
+                        <i class="icon las la-map-marked"></i>
                         <h5>Адрес:</h5>
                         <span>@Model.Adress</span>
                       </li>
                       <li>
-                        <i class="icon icon-user-2"></i>
+                        <i class="icon las la-industry"></i>
                         <h5>Категория:</h5>
                         <span>@Model.CategoryName</span>
                       </li>
                       <li>
-                        <i class="icon icon-rate"></i>
+                        <i class="icon las la-hand-holding-usd"></i>
                         <h5>Заплащане:</h5>
                         <span>на @Model.SalaryType.GetDisplayName()</span>
                       </li>
                       @if (Model.WorkType != null)
                       {
                       <li>
-                        <i class="icon icon-rate"></i>
+                        <i class="icon las la-handshake"></i>
                         <h5>Тип:</h5>
                         <span>@Model.WorkType.Replace(",", "; ")</span>
                       </li>
@@ -257,9 +262,9 @@
                       <li>Адрес: <span>@Model.company.Adress</span></li>
                       <li>Социална медия:
                         <div class="social-links">
-                          <a href="@Model.company.Facebook"><i class="fab fa-facebook-f"></i></a>
-                          <a href="@Model.company.Twitter"><i class="fab fa-twitter"></i></a>
-                          <a href="@Model.company.Linkdin"><i class="fab fa-linkedin-in"></i></a>
+                          <a href="@Model.company.Facebook"><i class="lab la-facebook-f"></i></a>
+                          <a href="@Model.company.Twitter"><i class="lab la-twitter"></i></a>
+                          <a href="@Model.company.Linkdin"><i class="lab la-linkedin-in"></i></a>
                         </div>
                       </li>
                     </ul>
@@ -267,11 +272,11 @@
                     <div class="btn-box">
                         <a class="theme-btn btn-style-three">
                          <div class="star-rating">
-        <span class="fa fa-star" data-rating="1"></span>
-        <span class="fa fa-star" data-rating="2"></span>
-        <span class="fa fa-star" data-rating="3"></span>
-        <span class="fa fa-star" data-rating="4"></span>
-        <span class="fa fa-star" data-rating="5"></span>
+        <span class="las la-star" data-rating="1"></span>
+        <span class="las la-star" data-rating="2"></span>
+        <span class="las la-star" data-rating="3"></span>
+        <span class="las la-star" data-rating="4"></span>
+        <span class="las la-star" data-rating="5"></span>
         <input type="hidden" name="whatever1" class="rating-value" value="@Model.company.Rating">
       </div>
                     </a></div>

@@ -68,7 +68,7 @@ namespace HireMe.Services
             return entity;
             }
 
-        private IQueryable<Logs> GetAllAsNoTracking()
+        public IQueryable<Logs> GetAllAsNoTracking()
         {
             return logsRepository.Set().AsNoTracking();
         }

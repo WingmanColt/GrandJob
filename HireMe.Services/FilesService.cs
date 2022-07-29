@@ -2,6 +2,7 @@
 using HireMe.Data.Repository.Interfaces;
 using HireMe.Entities.Models;
 using HireMe.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,24 +15,26 @@ namespace HireMe.Services
     public class FilesService : IFilesService
     {
         private readonly IRepository<Files> _Repository;
-        private readonly int _FilesSizeLimit;
+
+        private readonly int _FilesUploadLimit;
 
         public FilesService(IConfiguration config, IRepository<Files> Repository)
         {
             _Repository = Repository;
-            _FilesSizeLimit = config.GetValue<int>("MySettings:FilesUploadLimit");
+
+            _FilesUploadLimit = config.GetValue<int>("CVPaths:FilesUploadLimit");
         }
 
-        public async Task<OperationResult> Create(string title, string fileid, User user)
+        public async Task<OperationResult> Create(string title, string LastAppliedJob, string fileid, User user)
         {
             if (await IsFilesExists(user.Email, title))
             {
                 return OperationResult.FailureResult("Вече съществува такъв файл !");
             }
 
-            if (await GetFilesByUserCount(user.Email) >= _FilesSizeLimit)
+            if (await GetFilesByUserCount(user.Email) >= _FilesUploadLimit)
             {
-                return OperationResult.FailureResult($"Достигнахте лимита за качване на файлове. Ограничението е: {_FilesSizeLimit}");
+                return OperationResult.FailureResult($"Достигнахте лимита за качване на файлове. Ограничението е: {_FilesUploadLimit}");
             }
 
 
@@ -40,7 +43,8 @@ namespace HireMe.Services
                 Title = title,
                 FileId = fileid,
                 Date = DateTime.Now,
-                UserId = user.Email
+                UserId = user.Email,
+                LastAppliedJob = LastAppliedJob
             };
 
             await _Repository.AddAsync(Files);
@@ -115,6 +119,7 @@ namespace HireMe.Services
             if (entity.Rating < (double)maxRating)
             {
                 entity.Rating += ((entity.Rating * entity.RatingVotes) + rating) / (entity.RatingVotes + 1);
+                entity.VotedUsers += 1;
 
                 await _Repository.SaveChangesAsync();
                 return true;
@@ -134,13 +139,10 @@ namespace HireMe.Services
 
             return ent;
         }
-
-        private async Task<bool> IsFileExists(string email)
+        public async Task<Files> GetByLastAppliedJob(string LastAppliedJob)
         {
-            string checkFileId = StringHelper.Filter(email.GetUntilOrEmpty("@"));
-            var result = await _Repository.Set().AsNoTracking().AnyAsync(x => x.UserId.Contains(email) && x.FileId.Contains(checkFileId));
-            return result;
-
+            var ent = await _Repository.Set().FirstOrDefaultAsync(p => p.LastAppliedJob == LastAppliedJob);
+            return ent;
         }
         private async Task<bool> IsFilesExists(string userId, string title)
         {
@@ -154,5 +156,12 @@ namespace HireMe.Services
             return result;
         }
 
+/* private async Task<bool> IsFileExists(string email)
+ {
+     string checkFileId = StringHelper.Filter(email.GetUntilOrEmpty("@"));
+     var result = await _Repository.Set().AsNoTracking().AnyAsync(x => x.UserId.Contains(email) && x.FileId.Contains(checkFileId));
+     return result;
+
+ }*/
     }
 }

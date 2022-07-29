@@ -1,58 +1,45 @@
-﻿@inject SignInManager<User> _signInManager
-
-@model CategoriesViewModel
+﻿@model CategoriesViewModel
 
 @{ ViewData["Title"] = "Всички индустрии";
     ViewData["Description"] = "Търсете новата си работа по категориите изброени тук.";
     ViewData["Keywords"] = "categories, industry, категории, индустрия";
-    Layout = "~/Views/Home/_PageLayout.cshtml"; }
+    Layout = "~/Views/Home/_PageLayout.cshtml"; 
+}
 
-<link href="~/theme_ios/plugins/Hexagon.min.css" rel="stylesheet">
-<div class="wrapper">
-    <partial name="../Home/IOSPartials/_LeftSidePartial" />
-
-    <div class="main-container">
-
-        <div class="main-header desktop-only">
-            <div class="header-menu">
-                <a class="main-header-link" asp-controller="Home" asp-action="Index">Начало</a>
-                <a class="main-header-link" asp-controller="Jobs" asp-action="Index" asp-route-Internship="intern">Стажове</a>
-                <a class="main-header-link" asp-controller="Jobs" asp-action="Index">Работа</a>
-                <a class="main-header-link" asp-controller="Contestants" asp-action="Index">Хора</a>
-            </div>
+<!-- Job Categories -->
+@if (Model.List is not null)
+{
+    <section class="job-categories desktop-only">
+      <div class="auto-container">
+        <div class="sec-title text-center">
+          <h2>Популярни индустрии</h2>
+         @* <div class="text">2020 jobs live - 293 added today.</div>*@
         </div>
+        <div class="row wow fadeInUp">
 
-
-        @if (_signInManager.IsSignedIn(User))
+       @await foreach (var item in Model.List)
         {
-            @await Component.InvokeAsync("_Activity")}
-    <div class="content-wrapper" style="padding:unset;">
+          <!-- Category Block -->
+          <div class="category-block-three col-lg-3 col-md-6 col-sm-12">
+            <div class="inner-box">
+              <div class="content">
+                <span class="icon @item.Icon"></span>
+                <h4><a>@item.Title_BG</a></h4>
 
-        <div class="grid">
-            <ul id="hexGrid">
-                @if (Model.List != null)
-                {
-                    await foreach (var item in Model.List)
-                    {
-            <li class="hex">
-                <div class="hexIn">
-                    <a class="hexLink" href="#">
-                        <div class='img' style='background-image: url(/theme_ios/assets/categories/svg/@item.Icon.Replace(item.Icon, $"{item.Icon.LastWord()}.svg"));'></div>
-                        <h1 id="demo1">@item.Title_BG</h1>
-                    </a>
-                </div>
-            </li>
-                    }
-                }
+                <form method="post" asp-controller="Jobs" asp-action="Index" asp-route-categoryid="@item.Id">
+                <button type="submit" style="font-size:.675em">@item.JobsCount Обяви за работа</button>
+                </form>
 
-                            </ul>
+                 <form method="post" asp-controller="Contestants" asp-action="Index" asp-route-categoryid="@item.Id">
+                <button type="submit" style="font-size:.675em">@item.CandidatesCount Кандидати</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          }
         </div>
-
-
-
-    </div>
-        </div>
-    </div>
-
-
-
+      </div>
+    </section>
+    }
+    <!-- End Job Categories -->

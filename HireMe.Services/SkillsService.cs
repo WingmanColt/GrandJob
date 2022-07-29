@@ -30,7 +30,7 @@ namespace HireMe.Services
             if (isMapped)
             {
                 var entity = GetAllAsNoTracking()
-                .Where(x => ((IList)words).Contains(x.Id.ToString()))
+                .Where(x => ((IList)words).Contains(x.Title))
                 .To<T>()
                 .AsAsyncEnumerable();
 
@@ -39,7 +39,7 @@ namespace HireMe.Services
             else
             {
                 var entity = GetAllAsNoTracking()
-                .Where(x => ((IList)words).Contains(x.Id.ToString()))
+                .Where(x => ((IList)words).Contains(x.Title))
                 .AsAsyncEnumerable();
 
                 return (IAsyncEnumerable<T>)entity;

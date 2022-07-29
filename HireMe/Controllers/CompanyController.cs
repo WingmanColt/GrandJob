@@ -5,8 +5,11 @@ using HireMe.Entities.Input;
 using HireMe.Entities.Models;
 using HireMe.Mapping.Utility;
 using HireMe.Services.Interfaces;
+using HireMe.StoredProcedures.Enums;
+using HireMe.StoredProcedures.Interfaces;
 using HireMe.ViewModels.Company;
 using HireMe.ViewModels.Favorites;
+using HireMe.ViewModels.Jobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -130,9 +133,9 @@ namespace HireMe.Controllers
                     Rating = x.Rating
                 })*/;
 
-            if (!String.IsNullOrEmpty(filter.SearchString))
+            if (!String.IsNullOrEmpty(filter.Name))
             {
-                entity = entity.Where(x => x.Title.Contains(filter.SearchString));
+                entity = entity.Where(x => x.Title.Contains(filter.Name));
             }
 
 
@@ -191,7 +194,7 @@ namespace HireMe.Controllers
 
         [AllowAnonymous]
         [Route("companies/info/{id}")]
-        public async Task<IActionResult> Details(int id, [FromServices] IJobsService _jobsService, [FromServices] ICategoriesService _categoryService, [FromServices] IFavoritesService _favouriteService)
+        public async Task<IActionResult> Details(int id, [FromServices] IspJobService _spJobService, [FromServices] IJobsService _jobsService, [FromServices] ICategoriesService _categoryService, [FromServices] IFavoritesService _favouriteService)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -201,12 +204,13 @@ namespace HireMe.Controllers
                 return RedirectToAction("Index", "Company");
             }
 
-            company.JobsByCompany = _jobsService.GetAllByEntity(company.Id, true, 3, _favouriteService, user);
-            company.JobsCount = await _jobsService.GetAllCountBy(company.Id, true).ConfigureAwait(false);
+            company.JobsByCompany = await _spJobService.GetAll<JobsViewModel>(new { CompanyId = company?.Id, CurrentUser = user?.Id }, JobGetActionEnum.GetAllBy, false, null);
+            
+            company.JobsCount =  await _spJobService.GetAllCountBy(new { CompanyId = company?.Id }).ConfigureAwait(false);
             company.GalleryImagesList = company.GalleryImages?.Split(',').ToAsyncEnumerable();
             company.GalleryPath = Path.Combine(_GalleryPath, StringHelper.Filter(company.Email));
             company.CategoryName = await _categoryService.GetNameById(company.CategoryId);
-
+            
             return this.View(company);
         }
 
@@ -232,13 +236,13 @@ namespace HireMe.Controllers
                     switch (T)
                     {
                         case ApproveType.Waiting:
-                            await _notifyService.Create("Моля редактирайте вашата фирма отново с коректни данни.", "identity/companies/index", DateTime.Now, NotifyType.Warning, "fas fa-sync-alt", company.PosterId, user.Id).ConfigureAwait(false);
+                            await _notifyService.Create("Моля редактирайте вашата фирма отново с коректни данни.", "identity/list/companies", DateTime.Now, NotifyType.Warning, null, company.PosterId, user.Id).ConfigureAwait(false);
                         break;
                         case ApproveType.Rejected:
-                            await _notifyService.Create("Последно добавената ви фирма е отхвърлена.", "identity/companies/index", DateTime.Now, NotifyType.Danger, "fas fa-ban", company.PosterId, user.Id).ConfigureAwait(false);
+                            await _notifyService.Create("Последно добавената ви фирма е отхвърлена.", "identity/list/companies", DateTime.Now, NotifyType.Danger, null, company.PosterId, user.Id).ConfigureAwait(false);
                         break;
                         case ApproveType.Success:
-                            await _notifyService.Create("Последно добавената ви фирма е одобрена.", "identity/companies/index", DateTime.Now, NotifyType.Information, "fas fa-check", company.PosterId, user.Id).ConfigureAwait(false);
+                            await _notifyService.Create("Последно добавената ви фирма е одобрена.", "identity/list/companies", DateTime.Now, NotifyType.Information, null, company.PosterId, user.Id).ConfigureAwait(false);
                         break;
                     }   
             }

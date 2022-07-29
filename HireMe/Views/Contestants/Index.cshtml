@@ -54,7 +54,7 @@
                         <!-- ls Switcher -->
                         <div class="ls-switcher">
                             <div class="showing-result">
-                                <div class="text">Показани са <strong>@Model.Pager.TotalItems</strong> обяви</div>
+                                <div class="text">Показани са <strong>@Model.Pager.TotalItems</strong> кандидати</div>
                             </div>
 
                         </div>
@@ -83,16 +83,17 @@
                                             <button type="button" value='Submit' onclick="CheckAvailabilityContestants(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
                                                 <span class="@iconType la-heart" id="@item.Id-heartIcon"></span>
                                             </button>
-                                        <span class="thumb"><img class="lazyload" data-src="@FullImage" alt=""></span>
+                                        <span class="thumb" style="border: 1px solid @item.PremiumPackage.GetDescription()"><img class="lazyload" data-src="@FullImage" alt=""></span>
                                         <h3 class="name"><a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">@item.FullName</a></h3>
                                         <span class="cat">@item.Speciality</span>
                                         <ul class="job-info">
-                                            <li><span class="icon flaticon-map-locator"></span> @item.LocationId</li>
+                                            <li><span class="icon las la-map-marked"></span> @item.LocationId</li>
 
                                             @if (item.payRate > 0)
                                             {
-                                                <li><span class="icon flaticon-money"></span> @item.payRate / @item.SalaryType.GetDisplayName()</li>
+                                                <li><span class="icon las la-wallet"></span> @item.payRate / @item.SalaryType.GetDisplayName()</li>
                                             }
+                                          <li> <span class="icon @item.PremiumPackage.GetShortName() @item.PremiumPackage.GetPrompt()" style="color:@item.PremiumPackage.GetDescription();"></span></li>
 
                                         </ul>
                                         <ul class="post-tags">
@@ -103,8 +104,9 @@
                                                     <li><a>@skill.Title</a></li>
                                                 }
                                             }
+
+                                             <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id" class="theme-btn btn-style-three">Прегледай</a>
                                         </ul>
-                                        <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id" class="theme-btn btn-style-three">Прегледай</a>
                                     </div>
                                 </div>
 

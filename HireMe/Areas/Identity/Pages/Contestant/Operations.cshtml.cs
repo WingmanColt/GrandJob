@@ -5,6 +5,7 @@
     using HireMe.Entities.Enums;
     using HireMe.Entities.Input;
     using HireMe.Entities.Models;
+    using HireMe.Entities.View;
     using HireMe.Services.Interfaces;
     using HireMe.Utility;
     using Microsoft.AspNetCore.Authorization;
@@ -14,6 +15,7 @@
     using Microsoft.Extensions.Configuration;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     [ValidateAntiForgeryToken]
@@ -32,6 +34,7 @@
 
         private readonly string _FilePath;
         private readonly string _ImagePath;
+
         public OperationsModel(
             IConfiguration config,
             IBaseService baseService,
@@ -52,13 +55,13 @@
             _userManager = userManager;
             _notifyService = notifyService;
 
-            _FilePath = config.GetValue<string>("MySettings:ResumeUrl");
+            _FilePath = config.GetValue<string>("MySettings:FilePathHosting");
             _ImagePath = config.GetValue<string>("MySettings:UserPicturePath");
         }
 
-        public string ReturnUrl { get; set; }
+        public string FullName { get; set; }
 
-        [BindProperty]
+         [BindProperty]
         public InputModel Input { get; set; }
 
         public class InputModel : CreateContestantInputModel
@@ -66,12 +69,12 @@
             public string ImagePath { get; set; }
 
             public string resumeFullPath { get; set; }
+
+            public PremiumPackage PremiumPackagePre { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            ReturnUrl = Url.Content("~/");
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -82,11 +85,13 @@
                 return RedirectToPage("/Account/Manage/Pricing", new { Area = "Identity" });
             }
 
-            var contestant = await _contestantService.GetByIdAsync(id);
 
+            FullName = $"{user.FirstName} {user.LastName}";
             LoadData(Input?.WorkType, Input?.LanguagesId, Input?.userSkillsId);
 
-            if (id > 0 && contestant is not null && user.Id == contestant?.PosterID)
+            var contestant = await _contestantService.GetByIdAsync(id);
+
+            if (id > 0 && contestant is not null && (user.Id == contestant?.PosterID || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator)))
             {
                 Input = new InputModel
                 {
@@ -116,11 +121,15 @@
                     LanguagesId = contestant.LanguagesId,
                     Views = contestant.Views,
                     Rating = contestant.Rating,
-                    VotedUsers = contestant.VotedUsers
+                    VotedUsers = contestant.VotedUsers,
+                    Promotion = contestant.Promotion,
+                    PremiumPackage = contestant.PremiumPackage,
+                    PremiumPackagePre = contestant.PremiumPackage
                 };
 
-                Input.resumeFullPath = _FilePath + contestant.ResumeFileId;
+                LoadData(Input?.WorkType, Input?.LanguagesId, Input?.userSkillsId);
 
+                Input.resumeFullPath = _FilePath + contestant.ResumeFileId;
                 User conUser = await _userManager.FindByIdAsync(contestant.PosterID);
                 Input.ImagePath = (conUser.isExternal ? null : _ImagePath) + conUser.PictureName;
             }
@@ -129,17 +138,16 @@
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
-            ReturnUrl = Url.Content("~/");
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
+            FullName = $"{user.FirstName} {user.LastName}";
+            LoadData(Input?.WorkType, Input?.LanguagesId, Input?.userSkillsId);
+
 
             var contestant = await _contestantService.GetByIdAsync(id);
-
-            LoadData(Input?.WorkType, Input?.LanguagesId, Input?.userSkillsId);
 
             Input.Id = id;
 
@@ -149,40 +157,63 @@
             }
 
             if (Input.FormFile != null)
-                Input.ResumeFileId = await _baseService.UploadFileAsync(Input.FormFile, contestant.ResumeFileId, user);
+                Input.ResumeFileId = await _baseService.UploadFileAsync(Input.FormFile, contestant.ResumeFileId, null, FileType.MyFilesCV, user);
 
             OperationResult result;
 
-            if (id > 0 && contestant is not null && user.Id == contestant?.PosterID)
+            if (id > 0 && contestant is not null && (user?.Id == contestant?.PosterID || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator)))
             {
-                Input.FullName = $"{user.FirstName} {user.LastName}";
                 result = await this._contestantService.Update(Input, user);
 
                 if (result.Success)
                 {
-                    _baseService.ToastNotify(ToastMessageState.Success, "Успешна", "операция.", 2000);
                     await _notifyService.CreateForAdmins("Има кандидатура, който е редактирана и е в процес на изчакване за одобрение", $"", DateTime.Now, NotifyType.Warning, "far fa-clock", user.Id).ConfigureAwait(false);
+
+                    if (!Input.PremiumPackagePre.Equals(PremiumPackage.None))
+                        return RedirectToPage("/Checkout/Index", new { package = (int)Input.PremiumPackagePre, productId = result.Id, PostType = (int)PostType.Contestant });
+                    else
+                    {
+                        _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "редактирахте вашата кандидатура.", 2000);
+                        return Redirect("~/Identity/List/Contestants");
+                    }
                 }
             }
 
             if (contestant is null)
             {
+                if (await _contestantService.GetCountByUser(user).ConfigureAwait(true) >= int.Parse(user.AccountType.GetPrompt()))
+                {
+                    _baseService.ToastNotify(ToastMessageState.Warning, "Отказана операция", $"Имате право да добавяте само {user.AccountType.GetPrompt()} обява(и).", 2000);
+                    return Redirect("~/Identity/List/Contestants");
+                }
                 Input.isArchived = false;
+                
                 result = await this._contestantService.Create(Input, user);
 
                 if (result.Success)
                 {
-                    await _userManager.AddToRoleAsync(user, "Contestant");
-                    await _userManager.RemoveFromRoleAsync(user, "User");
-                    user.Role = Roles.Contestant;
-                    await _userManager.UpdateAsync(user);
+
+                    if (user.Role.Equals(Roles.User))
+                    {
+                        await _userManager.AddToRoleAsync(user, "Contestant");
+                        await _userManager.RemoveFromRoleAsync(user, "User");
+                        user.Role = Roles.Contestant;
+                        await _userManager.UpdateAsync(user);
+                    }
 
                     await _notifyService.CreateForAdmins("Има нова кандидатура, който е в процес на изчакване за одобрение", $"", DateTime.Now, NotifyType.Warning, "far fa-clock", user.Id).ConfigureAwait(false);
-                    _baseService.ToastNotify(ToastMessageState.Success, "Успешна", "операция.", 2000);
-                    return Redirect(ReturnUrl);
+
+                    if (!Input.PremiumPackagePre.Equals(PremiumPackage.None))
+                    return RedirectToPage("/Checkout/Index", new { package = (int)Input.PremiumPackagePre, productId = result.Id, PostType = (int)PostType.Contestant });
+                    else
+                    {
+                        _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "добавитхе кандидатура.", 2000);
+                        return Redirect("~/Identity/List/Contestants");
+                    }
                 }
             }
 
+            LoadData(Input?.WorkType, Input?.LanguagesId, Input?.userSkillsId);
             return RedirectToPage();
         }
 
@@ -191,6 +222,7 @@
         public IAsyncEnumerable<Language> Languages { get; set; }
         public IAsyncEnumerable<Skills> Skills { get; set; }
         public string[] Worktypes { get; set; }
+
 
         private void LoadData(string workType, string languages, string skills)
         {

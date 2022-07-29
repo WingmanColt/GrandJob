@@ -24,16 +24,9 @@
                     }
                 }
             });
-        });
+   });
+
 $(".selectLocation").on("change", function () {
-            var catId = $(this).val();
+    var catId = $(this).val();
     $("#selectLocation_Value").val(catId);
-
-
-    var textBoxValueData = $("#selectLocation_Value").val();
-            $.ajax({
-                url: '/Contestants/Index?LocationId=' + textBoxValueData,
-                dataType: 'json',
-                type: 'post',
-            });
-        });
+});

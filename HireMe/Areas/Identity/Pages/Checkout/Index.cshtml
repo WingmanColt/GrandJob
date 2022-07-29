@@ -1,0 +1,179 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Данни за плащане";
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    //int PayPrice = Model.Input.Price + Model.Input.DDS;
+}
+
+
+
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+         <h3>Данни за плащане</h3>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+
+                <div class="widget-content">
+
+
+                    <!--CheckOut Page-->
+    <section class="checkout-page">
+      <div class="auto-container">
+        <div class="row default-form">
+       
+
+          <div class="column col-lg-8 col-md-12 col-sm-12">
+            <!--Checkout Details-->
+            <div class="checkout-form">
+              <h3 class="title">Данни за плащане</h3>
+                <div class="row">
+                  <!--Form Group-->
+                  <div class="form-group col-lg-6 col-md-12 col-sm-12">
+                    <div class="field-label">Име</div>
+                    <input type="text" name="field-name" value="@Model.UserEntity.FirstName" disabled>
+                  </div>
+
+                  <!--Form Group-->
+                  <div class="form-group col-lg-6 col-md-12 col-sm-12">
+                    <div class="field-label">Фамилия</div>
+                    <input type="text" value="@Model.UserEntity.LastName" disabled>
+                  </div>
+
+                  <!--Form Group-->
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                    <div class="field-label">Тип пакет</div>
+                    <input type="text" value="@Model.Input?.PackageName" disabled>
+                  </div>
+
+                  <!--Form Group-->
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                    <div class="field-label">Държава</div>
+                    <input type="text" value="България" disabled>
+
+                  <!--Form Group-->
+                  <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                    <div class="field-label">Имейл адрес</div>
+                    <input type="text" value="@Model.UserEntity.Email" disabled>
+                  </div>
+
+                </div>
+                </div>
+              
+            </div>
+            <!--End Checkout Details-->
+          </div>
+
+          <div class="column col-lg-4 col-md-12 col-sm-12">
+            <!--Order Box-->
+            <div class="order-box">
+              <h3>Твоята поръчка</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th><strong>Продукт</strong></th>
+                    <th><strong>Време</strong></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="cart-item">
+                    <td class="product-name">@Model.Input?.PackageName</td>
+                    <td class="product-total">30 дни</td>
+                  </tr>
+
+                </tbody>
+                <tfoot>
+                  <tr class="cart-subtotal">
+                    <td>Цена</td>
+                    <td><span class="amount">@Model.Input?.Price EUR</span></td>
+                  </tr>
+                  <tr class="cart-subtotal">
+                    <td>ДДС</td>
+                    <td><span class="amount">@Model.Input?.DDS EUR</span></td>
+                  </tr>
+                  <tr class="order-total">
+                    <td>Общо</td>
+                    <td><span class="amount">@Model.Input?.PayPrice EUR</span></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!--End Order Box-->
+
+            <!--Payment Box-->
+            <div class="payment-box">
+              <!--Payment Options-->
+              <div class="payment-options">
+                <ul>
+                  <li>
+                    <div class="radio-option radio-box">
+                      <input type="radio" name="payment-group" id="payment-2" disabled>
+                      <label for="payment-2">Direct Bank Transfer<span class="small-text">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</span></label>
+                    </div>
+                  </li>
+
+                  
+                  <li>
+                    <div class="radio-option radio-box">
+                      <input type="radio" name="payment-group" id="payment-4" checked>
+                      <label for="payment-4"><strong>PayPal</strong>
+                        <img src="images/icons/paypal.png" alt="">
+                      </label>
+                    </div>
+                  </li>
+                </ul>
+
+                <div class="btn-box">
+                  <form method="post">
+                    <input type="hidden" asp-for="@Model.Input.productId" />
+                    <input type="hidden" asp-for="@Model.Input.PremiumPackage" />
+                    <input type="hidden" asp-for="@Model.Input.postType" />
+                    <input type="hidden" asp-for="@Model.Input.Price" />
+                    <input type="hidden" asp-for="@Model.Input.PackageName" />
+
+                  <button type="submit" class="theme-btn btn-style-one">Към плащане</button>
+                  </form>
+                </div>
+              </div>
+
+            </div>
+            <!--End Payment Box-->
+          </div>
+
+        
+        </div>
+      </div>
+    </section>
+    <!--End CheckOut Page-->
+
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+    
+
+
+
+
+
+
+
+
+
+

@@ -44,7 +44,7 @@
                             }
                             else
                             {
-                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="fas fa-user-check"></i></button>
+                                <button type="submit" class="theme-btn btn-style-three"><i class="las la-user-check"></i></button>
                             }
                         </form>
                       </div>
@@ -72,11 +72,11 @@
                            <form asp-page-handler="Pro" method="post">
                             @if (Model.UserEntity?.AccountType != AccountType.Free)
                             {
-                                <button type="submit" class="theme-btn btn-style-three"><b>Започни</b></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><b>Започни</b></button>
                             }
                             else
                             {
-                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="fas fa-user-check"></i></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="las la-user-check"></i></button>
                             }
                         </form>
                       </div>
@@ -102,11 +102,11 @@
                          <form asp-page-handler="Test" method="post">
                             @if (Model.UserEntity?.AccountType != AccountType.Free)
                             {
-                                <button type="submit" class="theme-btn btn-style-three"><b>Започни</b></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><b>Започни</b></button>
                             }
                             else
                             {
-                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="fas fa-user-check"></i></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="las la-user-check"></i></button>
                             }
                         </form>
                       </div>
@@ -117,7 +117,7 @@
             }
 
             <!--Tab-->
-            @if(Model.UserEntity.Role.Equals(Roles.Employer) || Model.UserEntity.Role.Equals(Roles.Recruiter) || Model.UserEntity.Role.Equals(Roles.Admin) || Model.UserEntity.Role.Equals(Roles.Moderator))
+            @if(Model.UserEntity.Role.Equals(Roles.Employer) || Model.UserEntity.Role.Equals(Roles.Recruiter))
               {
               <div class="content">
                 <div class="row">
@@ -145,7 +145,7 @@
                             }
                             else
                             {
-                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="fas fa-user-check"></i></button>
+                                <button type="submit" class="theme-btn btn-style-three"><i class="las la-user-check"></i></button>
                             }
                         </form>
                       </div>
@@ -174,11 +174,11 @@
                            <form asp-page-handler="Pro" method="post">
                             @if (Model.UserEntity?.AccountType != AccountType.Free)
                             {
-                                <button type="submit" class="theme-btn btn-style-three"><b>Започни</b></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><b>Започни</b></button>
                             }
                             else
                             {
-                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="fas fa-user-check"></i></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="las la-user-check"></i></button>
                             }
                         </form>
                       </div>
@@ -205,11 +205,11 @@
                          <form asp-page-handler="Test" method="post">
                             @if (Model.UserEntity?.AccountType != AccountType.Free)
                             {
-                                <button type="submit" class="theme-btn btn-style-three"><b>Започни</b></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><b>Започни</b></button>
                             }
                             else
                             {
-                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="fas fa-user-check"></i></button>
+                                <button type="submit" class="theme-btn btn-style-three" disabled><i class="las la-user-check"></i></button>
                             }
                         </form>
                       </div>

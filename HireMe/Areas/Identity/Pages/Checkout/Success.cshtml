@@ -1,0 +1,108 @@
+﻿@page
+@model SuccessModel
+
+@{
+    ViewData["Title"] = "Успешно заплащане";
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+    Random rd = new Random();
+    int orderNum = rd.Next(500, 10000);
+}
+
+
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <!-- Ls widget -->
+            <div class="ls-widget">
+              <div class="tabs-box">
+
+                <div class="widget-content">
+                        <!-- Order Confirmation -->
+    <section class="order-confirmation">
+      <div class="auto-container">
+        <div class="upper-box">
+          <span class="icon las la-check"></span>
+          <h4>Плащането е успешно!</h4>
+          <div class="text">Благодарим ти. Твоята поръчка е в процес.</div>
+        </div>
+
+        <ul class="order-info">
+          <li>
+            <span>Номер</span>
+            <strong>@orderNum</strong>
+          </li>
+
+          <li>
+            <span>Дата</span>
+            <strong>@DateTime.Now.ToString("dd/MM/yyyy")</strong>
+          </li>
+
+
+          <li>
+            <span>Метод</span>
+            <strong>PayPal</strong>
+          </li>
+        </ul>
+
+        <!--Order Box
+        <div class="order-box">
+          <h3>Order details</h3>
+          <table>
+            <thead>
+              <tr>
+                <th><strong>Product</strong></th>
+                <th><strong>Subtotal</strong></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="cart-item">
+                <td class="product-name">Hoodie x2</td>
+                <td class="product-total">59.00</td>
+              </tr>
+
+              <tr class="cart-item">
+                <td class="product-name">Seo Books x 1</td>
+                <td class="product-total">67.00</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="cart-subtotal">
+                <td>Subtotal</td>
+                <td><span class="amount">$178.00</span></td>
+              </tr>
+              <tr class="cart-subtotal">
+                <td>Shipping</td>
+                <td><span class="amount">$178.00</span></td>
+              </tr>
+              <tr class="order-total">
+                <td>Total</td>
+                <td><span class="amount">$9,218.00</span></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>-->
+        <!--End Order Box-->
+      </div>
+    </section>
+    <!-- End Order Confirmation -->
+            </div>
+          </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+
+
+

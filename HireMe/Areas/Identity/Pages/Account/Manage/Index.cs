@@ -1,9 +1,11 @@
-﻿using HireMe.Entities.Enums;
+﻿using HireMe.Entities;
+using HireMe.Entities.Enums;
 using HireMe.Entities.Input;
 using HireMe.Entities.Models;
 using HireMe.Services.Core;
 using HireMe.Services.Core.Interfaces;
 using HireMe.Services.Interfaces;
+using HireMe.StoredProcedures.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,41 +25,46 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<User> _userManager;
         private readonly IBaseService _baseService;
-        //private readonly IContestantsService _contestantService;
+        private readonly IContestantsService _contestantService;
         private readonly IJobsService _jobsService;
-       // private readonly ICompanyService _companyService;
+        private readonly IspJobService _spJobsService;
+        private readonly ICompanyService _companyService;
         //private readonly IMessageService _messageService;
-        //private readonly IFavoritesService _favouritesService;
+        private readonly IFavoritesService _favouritesService;
         private readonly IResumeService _resumeService;
+        private readonly IFilesService _filesService;
         private readonly ITaskService _taskService;
 
-        private readonly IStatisticsService _statsService;
+       // private readonly IStatisticsService _statsService;
         private readonly INotificationService _notificationService;
         private readonly ICipherService _cipherService;
 
         public IndexModel(UserManager<User> userManager,
             IBaseService baseService,
-            //IContestantsService contestantService,
+            IContestantsService contestantService,
             IJobsService jobsService,
-            //ICompanyService companyService,
+            IspJobService spJobService,
+            ICompanyService companyService,
            // IMessageService messageService,
-           // IFavoritesService favouritesService,
+            IFavoritesService favouritesService,
             IResumeService resumeService,
+            IFilesService filesService,
             ITaskService taskService,
-            IStatisticsService statsService,
+         //   IStatisticsService statsService,
             INotificationService notificationService,
             ICipherService cipherService)
         {
             _userManager = userManager;
             _baseService = baseService;
-            //_contestantService = contestantService;
+            _contestantService = contestantService;
             _jobsService = jobsService;
-            //_companyService = companyService;
-            //_messageService = messageService;
-            // _favouritesService = favouritesService;
+            _spJobsService = spJobService;
 
-            _statsService = statsService;
+            _companyService = companyService;
+             _favouritesService = favouritesService;
+
             _resumeService = resumeService;
+            _filesService = filesService;
             _taskService = taskService;
             _notificationService = notificationService;
             _cipherService = cipherService;
@@ -72,12 +79,15 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
         public int MyJobs { get; set; }
         public int MyCompanies { get; set; }
         public int MyContestant { get; set; }
+
+        public int MyAppliedJobsCount { get; set; }
         public IAsyncEnumerable<Entities.Models.Jobs> MyAppliedJobs { get; set; }
 
         // Messages & Apps
         public User LoggedUser { get; set; }
         public int MyMessages { get; set; }
         public int MyAppsCount { get; set; }
+        public int TasksCount { get; set; }
         public IList<UserLoginInfo> MyApps { get; set; }
         public IAsyncEnumerable<Entities.Models.Resume> ReceivedResumes { get; set; }
         public IAsyncEnumerable<Entities.Models.Jobs> LastJobs { get; set; }
@@ -86,6 +96,10 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
         public IAsyncEnumerable<Notification> Notifications { get; set; }
         public int NotifyCount { get; set; }
         public bool isNotiftEmpty { get; set; }
+
+        //Chart
+        public IAsyncEnumerable<SelectListModel> SelectCompanyChart { get; set; }
+        public IAsyncEnumerable<SelectListModel> SelectJobChart { get; set; }
 
         [BindProperty]
         public TaskInputModel TaskInput { get; set; }
@@ -96,8 +110,7 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
         public class ResumeInput : CreateResumeInputModel 
         {
             public int resumeId { get; set; }
-            public int Rating { get; set; }
-            public int JobId { get; set; }
+            public int Rating { get; set; } = 0;
         }
 
 
@@ -116,35 +129,40 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
 
             LoggedUser = user;
 
-            if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin))
+            switch (user.Role)
             {
-                RInput = new ResumeInput
-                {
-                    Rating = 0
-                };
-
-
-                var jobs = await _jobsService.GetAllAsNoTracking()
-                .Where(x => x.PosterID == user.Id)
-                .AsQueryable()
-                .ToListAsync();
-
-                var list = new List<Entities.Models.Resume>();
-                IAsyncEnumerable<Entities.Models.Resume> resumes;
-
-                foreach (var item in jobs)
-                {
-                    resumes = _resumeService.GetAllReceived(item);
-
-                    await foreach (var res in resumes)
+                case Roles.User:case Roles.Contestant:
+                    TasksCount = await _taskService.GetAllCount(user).ConfigureAwait(false);
+                    MyContestant = await _contestantService.GetCountByUser(user).ConfigureAwait(false);
+                    MyAppliedJobs =  _favouritesService.GetFavouriteBy<Entities.Models.Jobs>(user, PostType.Job);
+                    MyAppliedJobsCount = (int)await _favouritesService.GetFavouriteByCount(user, PostType.Job).ConfigureAwait(false);
+                    break;                       
+                case Roles.Recruiter:case Roles.Employer: case Roles.Admin:
+                    TasksCount = await _taskService.GetAllCount(user).ConfigureAwait(false);
+                    ReceivedResumes = await _jobsService.GetAllReceivedResumes(user, ResumeType.Active);
+                    MyJobs = await _spJobsService.GetAllCountBy(new { PosterId = user.Id}).ConfigureAwait(false);
+                    MyCompanies = await _companyService.GetCountByUser(user).ConfigureAwait(false);
+                    SelectCompanyChart = _companyService.GetAllSelectList(user);
+                    var jobResult = await _spJobsService.GetAll<Entities.Models.Jobs>(new { PosterId = user.Id }, StoredProcedures.Enums.JobGetActionEnum.GetAllBy, false, null);
+                    SelectJobChart = jobResult.Select(x => new SelectListModel
                     {
-                        list.Add(res);
-                    }
+                        Value = x.Id.ToString(),
+                        Text = x.Name.ToString()
+                    });
+                    break;
+                //case Roles.Moderator: case Roles.Admin:
+                  //  break;
 
-                }
+            }
 
-                ReceivedResumes = list.ToAsyncEnumerable();           
-                }
+            MyAppsCount = MyApps is null ? 0 : MyApps.Count();
+            MyMessages = 0;//await _messageService.GetMessagesCountBy_Receiver(user.UserName);
+
+
+            // Notify
+            Notifications = _notificationService.GetAllBy(user);
+            NotifyCount = await _notificationService.GetNotificationsCount(user);
+            isNotiftEmpty = Notifications is null ? false : await Notifications.AnyAsync();
 
             //MyJobs = await _jobsService.GetAllCountByCondition(-1, -1, user.UserName, ApproveType.Success);
             /*
@@ -166,14 +184,10 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             //ViewData["Labels"] = labels;
             //ViewData["Data"] = labels;
 
-            // Notify
-            Notifications = _notificationService.GetAllBy(user);
-            NotifyCount = await _notificationService.GetNotificationsCount(user);
-            isNotiftEmpty = Notifications is null ? false : await Notifications.AnyAsync();
+            //use thiss !
+            //var jobIdsString = await _statsService.GetByIdAsync(user.Id).ConfigureAwait(true);
+            //MyAppliedJobs = jobIdsString is not null ? _jobsService.GetAllByStats(jobIdsString.AppliedJobsId) : null;
 
-            var jobIdsString = await _statsService.GetByIdAsync(user.Id).ConfigureAwait(true);
-            MyAppliedJobs = jobIdsString is not null ? _jobsService.GetAllByStats(jobIdsString.AppliedJobsId) : null;
-            
             return Page();
         }
 
@@ -198,22 +212,22 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
 
             if (result.Success)
             {
-                _baseService.ToastNotifyLogAsync(user, ToastMessageState.Success, "Успешно", "добавихте задачата си", "#", 3000);
+                await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Success, "Успешно", "добавихте задачата си", "#", 3000).ConfigureAwait(false);
                 if (receiverUser is not null)
                 {
-                    await _notificationService.Create($"Успешно създадохте вашата задача с {receiverUser.FirstName} {receiverUser.LastName}.", "identity/tasks/index", DateTime.Now, NotifyType.Success, "flaticon-share-1", user.Id, null).ConfigureAwait(false);
-                    await _notificationService.Create("Вие получихте нова задача току-що.", "identity/tasks/index", DateTime.Now, NotifyType.Information, "flaticon-share-1", receiverUser.Id, user.Id).ConfigureAwait(false);
+                    await _notificationService.Create($"Успешно създадохте вашата задача с {receiverUser.FirstName} {receiverUser.LastName}.", "identity/tasks/index", DateTime.Now, NotifyType.Tasks, null, user.Id, null).ConfigureAwait(false);
+                    await _notificationService.Create("Вие получихте нова задача току-що.", "identity/tasks/index", DateTime.Now, NotifyType.Tasks, null, receiverUser.Id, user.Id).ConfigureAwait(false);
                 }
 
             }
             else
-                _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Грешка", result.FailureMessage, "#", 6000);
+                await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Грешка", result.FailureMessage, "#", 6000).ConfigureAwait(false);
 
 
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostRateAsync()
+        public async Task<IActionResult> OnPostRateAsync([FromServices] ISenderService _senderService)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -224,17 +238,23 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
 
             var resumeEntity = await _resumeService.GetByIdAsync(RInput.resumeId);
 
+            var filesEntity = await _filesService.GetByLastAppliedJob(RInput.LastAppliedJob);
+            if (filesEntity is not null)       
+                await _filesService.AddRating(filesEntity, (double)RInput.Rating);
+            
+
             if (resumeEntity is not null)
             {
                 await _resumeService.AddRating(resumeEntity, (double)RInput.Rating);
+                if(resumeEntity.isGuest)
+                    await _senderService.SendEmailAsync(resumeEntity.UserId, $"{resumeEntity.LastAppliedJob} - Оцени твоето CV с {RInput.Rating} / 5", "https://grandjob.eu/");
+
+                await _resumeService.Archive(resumeEntity);
 
                 var userId = await _userManager.FindByEmailAsync(resumeEntity.UserId);   
 
                 if(userId is not null)
-                await _notificationService.Create($"{user.FirstName} {user.LastName} оцени вашето CV с {RInput.Rating}/5.", "identity/resume/index", DateTime.Now, NotifyType.Warning, "flaticon-star", userId.Id, null).ConfigureAwait(false);
-
-              //  await _resumeService.Delete(resumeEntity);
-
+                await _notificationService.Create($"{resumeEntity.LastAppliedJob} оцени вашето CV с {RInput.Rating}/5.", "identity/resume/index", DateTime.Now, NotifyType.Information, null, userId.Id, null).ConfigureAwait(false);
 
             }
 

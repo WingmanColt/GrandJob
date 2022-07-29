@@ -23,7 +23,11 @@ namespace HireMe.Entities.Enums
             var attr = GetDisplayAttribute(enu);
             return attr != null ? attr.Name : enu.ToString();
         }
-
+        public static string GetPrompt(this Enum enu)
+        {
+            var attr = GetDisplayAttribute(enu);
+            return attr != null ? attr.Prompt : enu.ToString();
+        }
         public static string GetDescription(this Enum enu)
         {
             var attr = GetDisplayAttribute(enu);

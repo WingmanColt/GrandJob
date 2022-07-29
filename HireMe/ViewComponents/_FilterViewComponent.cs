@@ -15,7 +15,7 @@ namespace HireMe.ViewComponents
         {
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             var model = new Filter();
 
@@ -49,7 +49,7 @@ namespace HireMe.ViewComponents
         {
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             var model = new Filter();
 
@@ -74,7 +74,7 @@ namespace HireMe.ViewComponents
         {
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public IViewComponentResult Invoke()
         {
             var model = new Filter();
 

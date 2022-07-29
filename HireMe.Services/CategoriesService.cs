@@ -3,6 +3,7 @@
     using HireMe.Core.Helpers;
     using HireMe.Data.Repository.Interfaces;
     using HireMe.Entities;
+    using HireMe.Entities.Enums;
     using HireMe.Entities.Models;
     using HireMe.Services.Interfaces;
     using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,47 @@
         {
             this.categoriesRepository = categoriesRepository;
         }
+        public async Task<OperationResult> Update(int categoryId, bool isJobOrCandidate, CategoriesEnum categories)
+        {
+            var entity = await GetByIdAsync(categoryId);
 
+            int jCounter = entity.JobsCount, cCounter = entity.CandidatesCount;
+
+
+            if (isJobOrCandidate)
+            {
+                switch(categories)
+                {
+                    case CategoriesEnum.Increment:
+                        jCounter = jCounter + 1;
+                        break;
+                    case CategoriesEnum.Decrement:
+                        if(jCounter > 0)
+                        jCounter = jCounter - 1;
+                        break;
+                }
+            }
+            else
+            {
+                switch (categories)
+                {
+                    case CategoriesEnum.Increment:
+                        cCounter = cCounter + 1;
+                        break;
+                    case CategoriesEnum.Decrement:
+                        if (cCounter > 0)
+                            cCounter = cCounter - 1;
+                        break;
+                }
+            }
+
+            entity.Update(entity.Title_BG, entity.Icon, jCounter, cCounter);
+
+            categoriesRepository.Update(entity);
+
+            var result = await categoriesRepository.SaveChangesAsync();
+            return result;
+        }
         public IAsyncEnumerable<SelectListModel> GetAllSelectList()
         {
             var result = GetAllAsNoTracking()
@@ -37,7 +78,7 @@
         {
             return GetAllAsNoTracking()
                    .Take(entitiesToShow)
-                   .ToAsyncEnumerable();
+                   .AsAsyncEnumerable();
         }
 
         public async Task<string> GetNameById(int categoryId)
@@ -54,7 +95,8 @@
         public async Task<OperationResult> SeedCategories()
         {
             if (await GetAllAsNoTracking().AnyAsync())
-                return OperationResult.FailureResult("Categories already exists.");
+               await DeleteCategories();
+               // return OperationResult.FailureResult("Categories already exists.");
 
             var lines = await File.ReadAllLinesAsync(@"wwwroot/Categories.txt");
 
@@ -64,7 +106,7 @@
 
                 var category = new Category
                 {
-                        Title = vals1[0].ToString(),
+                        //Title = vals1[0].ToString(),
                         Title_BG = vals1[1].ToString(),
                         Icon = vals1[2].ToString()
                 };
@@ -74,7 +116,18 @@
             var result = await categoriesRepository.SaveChangesAsync();
             return result;
         }
+        private async Task<OperationResult> DeleteCategories()
+        {
+            var items = await GetAllAsNoTracking().ToListAsync();
 
+           foreach (var item in items)
+            {
+                categoriesRepository.Delete(item);
+            }
+
+            var result = await categoriesRepository.SaveChangesAsync();
+            return result;
+        }
         public async Task<Category> GetByIdAsync(int id)
         {
             var ent = await categoriesRepository.Set().FirstOrDefaultAsync(j => j.Id == id);

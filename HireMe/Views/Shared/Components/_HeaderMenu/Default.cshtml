@@ -6,15 +6,25 @@
 
       <!-- Main Header-->
     <header class="main-header"> @*header-shaddow*@
+      <div class="container-fluid">
 
       <!-- Main box -->
       <div class="main-box">
         <!--Nav Outer -->
         <div class="nav-outer">
           <div class="logo-box">
-            <div class="logo">
-              <a asp-controller="Home" asp-action"Index"><img src="~/theme_superio/images/logo.png" alt=""></a>
-            </div>          
+                <div class="logo">
+                     @*  <div class="preloader">
+                    <svg height="160" width="200">
+	                    <circle class="circle" fill="Black" cx="100" cy="81" r="30.905" stroke="Black" stroke-width="5" fill-opacity="0"/>
+                    </svg>
+                     </div>
+                     *@
+                <div class="logo-loader">
+                    <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 28" width="35" height="35"><style>.a{fill:#fff}</style><path class="a" d="m22 3.8h-0.2zm-8-0.2l0.1 0.1q0 0.3-0.1 0.3-0.1-0.1-0.1-0.2 0-0.1 0.1-0.2zm7.5 0.7l0.1 0.2q0 0.1-0.3 0.2-0.2 0.1-0.3 0.2v-0.2q0.2 0.1 0.3-0.2 0.1-0.2 0.2-0.2zm-8.8 1.6l0.1 0.6-0.3 0.4q0.2-0.1 0.2-0.3 0-0.2-0.2-0.6l-0.2-0.7v-0.2zm-1.9 2.3q-0.1 0-0.3 0.1v-0.3h0.2q0 0.2 0.1 0.2zm-0.3 1.4l0.1 0.6zm-0.5 1l0.1 0.1-0.2 0.1-0.1 0.1v-0.4zm17.6 2.7q-0.2-0.1-0.4 0.2-0.3 0.2-0.5 0.1l-0.2-0.4-0.8 0.4 0.2 0.3q0.1 0.1 0.1 0.3l-0.1 0.1h-0.5q-0.2 0-0.3 0.1-0.1 0-0.2 0.4-0.2 0.1-0.2 0.4 0 0.2 0.1 0.2l0.1 0.3q0.1 0 0.2 0.4l0.1 0.6-0.1 0.4v0.4q-0.1 0.1-0.1 0l-0.2-0.2 0.1-0.4q0-0.2-0.2-0.2-0.4 0-0.6 0.3 0 0.3 0.3 0.8l0.4 0.5-0.1 0.2h-0.1l0.1-0.2-0.3-0.1q-0.2 0-0.3 0.1-0.1 0.1-0.2 0.3 0 0.1 0.3 0.1 0 0.1-0.4 0.3-0.3 0.2-0.3 0.3 0 0.2 0.1 0.2 0.1 0.1 0.1 0.3 0 0.4-0.3 0.4l0.1-0.3q0.1-0.1 0-0.2l-0.3-0.3-0.5 0.5q-0.2 0.3-0.2 0.7l-0.9 0.4q-0.5 0.2-0.9 0.5v-0.3q0-0.1-0.1-0.2 0 0.2-0.3 0.4-0.4 0.2-0.4 0.5-0.2 0.1-0.4-0.1-0.1-0.1-0.1-0.3-0.2 0-0.4 0.1-0.1 0.1-0.2 0.3v0.2h-0.3l-0.8-0.1h-0.8-0.3q-0.2 0-0.5 0.1-0.3-0.3-1.2-0.4-0.9-0.1-1.2-0.5-1.2-0.5-1.8-0.9-0.6-0.4-0.7-1.3l-0.7-0.8-0.1-0.5q0.1 0 0.2-0.1-0.4-0.3-0.7-0.9-0.3-0.7-0.3-1.3v-0.2l0.1-0.2-0.2-0.5q0.1 0 0.2-0.1l0.3-0.3q0-0.1-0.1-0.1l-0.2-0.2-0.2 0.2v-1.3l0.2 0.1q0.1-0.1 0.2-0.1l0.2-0.2q-0.3 0-0.4-0.3 0-0.2 0-0.2 0-0.1-0.1-0.1 0.2-0.6 0.8-0.7 0.3-0.3 0.5-0.7l0.3-0.8q-0.2-0.4-0.6-0.4v-0.2h0.3l0.2-0.1q0.2 0 0.2 0.3 0.1 0 0.2 0.1 0 0 0.1 0.1 0.1-0.2 0.1-0.3 0-0.2-0.2-0.5l-0.1-0.4v-0.2q0.2 0 0.2 0.2 0.1 0.2 0.3 0.2 0.1-0.2 0.1-0.6l0.2-0.5q0 0.2 0.4 0.6 0.4 0.5 0.4 0.8 0.1 0.1 0.3-0.1l-0.2-0.6q-0.1-0.3-0.2-0.6 0 0 0-0.1 0.2-0.1 0.3-0.3 0.2-0.3 0.4-0.3 0.2 0 0.3 0.2 0.1-0.1 0.1-0.3v-0.2l-0.1-0.2 0.1-0.2q-0.2-0.3-0.7-0.3v-1l0.5 0.2q0-0.1 0-0.1 0.1 0 0.2-0.1-0.1-0.1 0-0.2l0.2-0.1 0.1 0.2q0.1 0.2 0.2 0.1v-0.4q0-0.4 0-0.8-0.1-0.3-0.4-0.5 0.1 0 0.2 0l0.3 0.1q0.1 0 0.2-0.1l0.1 0.3q0 0.1-0.1 0.4l-0.1 0.3q0 0.2 0.2 0.4 0.3-0.1 0.4-0.3 0.2-0.2 0.2-0.5 0-0.3-0.1-0.4v-0.2q-0.4-0.2-0.4-0.7l0.1-0.4 0.2 0.6q0 0.2 0.2 0.4 0.4-0.3 0.4-0.9v-0.3l0.3 0.4q0.2-0.3 0.7-0.3v0.4q0 0.2 0.2 0.3h0.2q0.4 0 0.4-0.3l-0.1-0.2v-0.2-0.4q0.1-0.2 0.3-0.2 0 0 0.1 0.1 0 0 0.1 0.1l0.2 0.3 0.2 0.1 0.4-0.1q0.3-0.2 0.4-0.2 0.2 0 0.4 0.4l-0.1 0.3v0.3q0 0.2 0.1 0.3l0.7-0.3q-0.1-0.1-0.2-0.2l-0.1-0.2q0 0 0-0.1 0.1 0 0.2-0.2 0.2 0 0.5 0.3 0.2 0.4 0.4 0.5 0.2 0 0.4-0.2 0.3 0.1 0.3 0.4 0 0.2-0.3 0.6l-0.3 0.4q-0.4 0-0.6 0.2-0.3 0.1-0.4 0.5l0.1 0.2q0 0.1-0.2 0.3-0.2 0.2-0.1 0.4l-0.2-0.6q0-0.2 0.1-0.3-0.1-0.1-0.3-0.1h-0.3l-0.1 0.8q0.1-0.2 0-0.4l-0.1-0.3q0-0.2 0.1-0.3l0.3-0.1 0.1-0.1q0.2 0 0.3 0.3 0.1 0.1 0.2-0.1-0.2-0.3-0.5-0.4-0.2-0.2-0.5-0.2h-0.2q-0.1 0-0.4 0.6-0.3 0.6-0.6 0.6-0.1 0-0.4-0.2-0.1 0.1-0.1 0.7 0 0.5-0.3 0.7v0.3q0 0.4-0.6 1-0.6 0.6-0.6 1.1l-0.4 0.4q0 0.1 0 0.3-0.4 0-0.6 0.7-0.1 0.7-0.6 0.6l0.4 0.4q0-0.1 0.2-0.1 0 0.2-0.1 0.5l-0.3 0.5-0.2-0.1h-0.2l-0.1 0.1q0.2 0.2 0.3 0.7 0 0.6 0.1 1.4-0.3 0-0.5 0-0.1 0-0.1 0.4 0 0.1-0.2 0.1-0.3 0-0.4 0.2 0.1 0.1 0.3 0.1h0.2l1.1 3.3-0.1 0.4-0.4-0.2q-0.1-0.1-0.1-0.2 0.1-0.2 0.1-0.2 0-0.3-0.2-0.7-0.2-0.5-0.4-0.7-0.2 0.1-0.2 0.2l0.1 0.4q0.2 0.2 0.2 0.3 0.3 0.2 0.3 0.4l-0.1 0.2q-0.1 0-0.1 0.1-0.1 0.2 0.1 0.4 0.2 0.2 0.3 0.4 0.2-0.1 0.4 0.3 0.2 0.3 0.3 0.3 0.1 0 0.3-0.2 0.1 0.4 0.6 0.6 0.5 0.1 0.8 0.3l0.4 0.2h0.6 0.4 0.4 0.4l2.2-1 0.9-1q0.2-0.4 0.2-0.7v-0.4q0.2-0.2 0.2-0.6v-0.5q-0.3-0.1-0.3-0.4-0.1-0.2-0.1-0.7 0-0.6-0.1-0.8-0.2-0.2-0.5-0.3-0.1 0-0.1 0.2v0.2q0.1 0.1 0.2 0.1l-0.4 0.4q-0.1-0.2-0.3-0.2-0.2-0.1-0.5-0.1h-0.4q-0.3 0-0.5-0.2 0 0.2-0.3 0.2h-0.3l-0.2-0.4q-0.2 0.3-0.6 0.4l-0.7 0.1q0-0.1-0.1-0.4 0-0.3-0.1-0.5-0.2 0.2-0.6 0.2h-0.3-0.3l0.3-0.3 0.1-0.3-0.1-0.2q0.1-0.1 0.3 0l0.3 0.1q0.1 0 0.3-0.2-0.1-0.4 0.3-0.6l0.7-0.3q0.2 0.2 0.3 0.2l0.4-0.2q0.3-0.1 0.4-0.1 0.2 0 0.3 0.2 0.3 0 0.6-0.3l-0.1-0.2v-0.2q0.1-0.1 0.3 0.2l0.5 0.5q0.2 0 0.2-0.5 0-0.1 0.2-0.1h0.4q0.1 0.1 0.3 0.3 0.1 0.3 0.3 0.3 0.1 0 0.2-0.1v-0.3q0-0.2 0.3-0.2 0.1 0 0.2 0.1l0.1 0.1-0.3 0.4 0.2 0.1q0.1 0.1 0.3 0.1l0.1-0.2q0-0.1 0-0.3l1.3 0.1q0.2-0.2 0.5-0.2l0.3 0.1h0.2q0.2 0.5 1 0.7 0.9 0.2 0.9 0.7zm-11.2-10.4l0.2 0.1v-0.3-0.2q-0.1 0-0.2-0.1-0.3 0-0.2 0.3 0 0.1 0.2 0.2zm5.1 0.1l0.1-0.1q-0.1-0.2-0.1-0.2zm-3 0h0.1v-0.1h-0.1zm2-0.1l0.1 0.1zm-3.2 1h0.3v-0.4q0 0.2-0.2 0.2-0.2 0-0.1 0.2zm-2.4 3.1l0.1-0.1-0.2-0.1h-0.1zm-3.1 3.2l0.1-0.8q0.2 0 0.2 0.1l-0.2 0.3q-0.1 0.2-0.1 0.4zm1.7 2l0.1-0.3q0-0.2-0.2-0.3-0.1 0-0.2 0.1 0 0 0 0.1 0 0.2 0 0.3 0 0.2 0.3 0.1zm-0.8 0.5v-0.2q0-0.3-0.2-0.3v0.1q0 0.3 0.1 0.5 0.1 0 0.1-0.1zm1.4 0.6v0.2zm-3.2 0.5l0.3-0.1q0-0.3-0.3-0.3-0.3-0.1-0.4-0.2v0.7q0.2 0.1 0.4-0.1zm1.4 1q0.1-0.1 0-0.2-0.2-0.1-0.3 0l0.1 0.2q0.1 0 0.2 0zm10.7 0.2l0.1-0.1-0.1-0.2q0-0.1 0-0.1-0.1 0-0.2 0-0.1 0.2-0.1 0.3 0 0.2 0.2 0.3zm-0.6 0.6h0.1q0-0.1 0-0.2zm-10.3 0v0.2-0.2zm12 0.2l0.4 0.4v-0.1l-0.2-0.2q0-0.1-0.2-0.1zm-10.5 1.7q-0.1 0-0.1 0-0.1-0.1-0.1-0.1v0.2q0.1 0 0.2-0.1z"/></svg>
+                </div>
+
+         </div>      
           </div>
 
           <nav class="nav main-menu">
@@ -24,18 +34,26 @@
             <li><a asp-controller="Contestants" asp-action="Index">Кандидати</a></li>
             <li><a asp-controller="Company" asp-action="Index">Фирми</a></li>
 
-            @if (Model.User is not null && !Model.isDashboard)
+            @if (Model.User is not null)
             {
-              <li class="mobile-only"><a asp-area="Identity" asp-page="/Account/Manage/Index">Контролен Панел</a></li>
+                if(!Model.isDashboard)
+                {
+                <li class="mobile-only"><a asp-area="Identity" asp-page="/Account/Manage/Index">Контролен Панел</a></li>
+                }
+              <li><a asp-controller="Home" asp-action="faq">FAQ</a></li>
+              <li class="mobile-only"><a asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Model.ReturnUrl">
+                   <i class="la la-sign-out" style="color:darkred"></i> Излез
+                  </a>
+                </li>
             }
              <!-- Only for Mobile View -->
                 <li class="mm-add-listing">
                 <br>
               <span class="social-links">
-              <a href="https://www.facebook.com/grandjob.eu/"><i class="fab fa-facebook-f"></i></a>
-              <a href="https://twitter.com/2GG4iId1wp8cO1s/"><i class="fab fa-twitter"></i></a>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+              <a href="https://www.facebook.com/grandjob.eu/"><i class="lab la-facebook-f"></i></a>
+              <a href="https://twitter.com/2GG4iId1wp8cO1s/"><i class="lab la-twitter"></i></a>
+              <a href="#"><i class="lab la-instagram"></i></a>
+              <a href="#"><i class="lab la-linkedin-in"></i></a>
                     </span>
 
                 </li>
@@ -133,12 +151,13 @@
                         }
                         
                     </button>
-
-                        <ul class="dropdown-menu notify">
+                    
+                        <ul class="dropdown-menu notify" id="notifications">
                           <div class="row">
                             <div class="col-sm-10">
                         <h4>Известия</h4>
                         </div>
+                        
                         <div class="col-sm-2">
                        <a asp-controller="Notifications" asp-action="ClearNotifications" asp-route-returnUrl="@Model.ReturnUrl">
                         <i class="notif-danger-text las la-trash-alt"></i>
@@ -146,7 +165,7 @@
                         </div>
                         </div>
                             <br>
-
+                            
                    @if (Model.Notifications is not null && Model.isNotiftEmpty)
                         {
                             @await foreach (var entity in Model.Notifications)
@@ -179,16 +198,16 @@
                                 </li>
                             }
                             <li>
-                                <br>
-                                <a class="theme-btn btn-style-default" href="#" style="padding:7px 3px;">
-                                    <strong>Виж всички</strong>
+                                <hr>
+                                <a href="#" style="padding:7px 3px; color:var(--all-notificiations-color)">
+                                    <strong>Виж всички известия</strong>
                                 </a>
                             </li>
                         }
                     </ul>
               
                 </div>
-
+                
                 @*
                 <button type="button" class="menu-btn toggle-filters">
                     <span class="icon la la-stream"></span>
@@ -202,42 +221,62 @@
                  {
                 <img class="thumb lazyload" data-src="@Model.SiteImageUrl" alt="avatar">
                  } else {
-                    <i class="fa fa-images"></i>
+                    <i class="las la-images"></i>
                  }
 
                 <span class="name">@Model.User?.FirstName</span>
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu notify">
                 <li class="active"><a asp-controller="Home" asp-action="Index"> <i class="la la-home"></i> Начало</a></li>
                 <li><a asp-area="Identity" asp-page="/Account/Manage/Index"><i class="la la-user-alt"></i>Контролен Панел</a></li>
-                        @if (@Model.User.Role.Equals(Roles.User) || @Model.User.Role.Equals(Roles.Contestant) || @Model.User.Role.Equals(Roles.Admin) || @Model.User.Role.Equals(Roles.Moderator))
-                            {
-                                <li><a asp-area="Identity" asp-page="/Contestant/Operations"> <i class="las la-id-badge"></i>Добави Кандидатура</a></li>
-                            }
-                            @if (@Model.User.Role.Equals(Roles.Employer) || @Model.User.Role.Equals(Roles.Admin) || @Model.User.Role.Equals(Roles.Moderator))
-                            {
+                        @switch (@Model.User.Role)
+                        {
+                             case Roles.User: case Roles.Contestant:
+                               <li><a asp-area="Identity" asp-page="/Contestant/Operations"> <i class="las la-id-badge"></i>Добави Кандидатура</a></li>
+                             break;
+                             case Roles.Employer:
                                 <li><a asp-area="Identity" asp-page="/Companies/Operations"><i class="la la-briefcase"></i>Добави Фирма</a></li>
-                            }
-                            @if (@Model.User.Role.Equals(Roles.Recruiter) || @Model.User.Role.Equals(Roles.Admin) || @Model.User.Role.Equals(Roles.Moderator))
-                            {
                                 <li><a asp-area="Identity" asp-page="/Jobs/Operations"><i class="la la-file-invoice"></i>Добави Обява</a></li>
-                            }
-                <li>
+                                break;
+                             case Roles.Recruiter:
+                                <li><a asp-area="Identity" asp-page="/Jobs/Operations"><i class="la la-file-invoice"></i>Добави Обява</a></li>
+                                break;
+                        }
+                        <li>
                   <a asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Model.ReturnUrl">
                    <i class="la la-sign-out" style="color:darkred"></i> Излез
                   </a>
-                </li>
+                  </li>
+
+                  @if (Model.User.Role.Equals(Roles.Admin))
+                      {
+                     <li>
+                         <a asp-area="Identity" asp-page="/Account/Manage/Admin" asp-page-handler="Sync"><i class="la la-database"></i>Актулизирай базата !</a>          
+                     </li>
+                     }
+                      
               </ul>
                 </div>
                 }
 
           </div>
       </div>
+        </div>
 
       <!-- Mobile Header -->
       <div class="mobile-header">
-        <div class="logo"><a asp-controller="Home" asp-action="Index"><img src="~/theme_superio/images/logo.png" alt="" title=""></a></div>
+                <div class="logo">
+                     @*  <div class="preloader">
+                    <svg height="160" width="200">
+	                    <circle class="circle" fill="Black" cx="100" cy="81" r="30.905" stroke="Black" stroke-width="5" fill-opacity="0"/>
+                    </svg>
+                     </div>
+                     *@
+                <div class="logo-loader">
+                    <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 28" width="35" height="35"><style>.a{fill:#fff}</style><path class="a" d="m22 3.8h-0.2zm-8-0.2l0.1 0.1q0 0.3-0.1 0.3-0.1-0.1-0.1-0.2 0-0.1 0.1-0.2zm7.5 0.7l0.1 0.2q0 0.1-0.3 0.2-0.2 0.1-0.3 0.2v-0.2q0.2 0.1 0.3-0.2 0.1-0.2 0.2-0.2zm-8.8 1.6l0.1 0.6-0.3 0.4q0.2-0.1 0.2-0.3 0-0.2-0.2-0.6l-0.2-0.7v-0.2zm-1.9 2.3q-0.1 0-0.3 0.1v-0.3h0.2q0 0.2 0.1 0.2zm-0.3 1.4l0.1 0.6zm-0.5 1l0.1 0.1-0.2 0.1-0.1 0.1v-0.4zm17.6 2.7q-0.2-0.1-0.4 0.2-0.3 0.2-0.5 0.1l-0.2-0.4-0.8 0.4 0.2 0.3q0.1 0.1 0.1 0.3l-0.1 0.1h-0.5q-0.2 0-0.3 0.1-0.1 0-0.2 0.4-0.2 0.1-0.2 0.4 0 0.2 0.1 0.2l0.1 0.3q0.1 0 0.2 0.4l0.1 0.6-0.1 0.4v0.4q-0.1 0.1-0.1 0l-0.2-0.2 0.1-0.4q0-0.2-0.2-0.2-0.4 0-0.6 0.3 0 0.3 0.3 0.8l0.4 0.5-0.1 0.2h-0.1l0.1-0.2-0.3-0.1q-0.2 0-0.3 0.1-0.1 0.1-0.2 0.3 0 0.1 0.3 0.1 0 0.1-0.4 0.3-0.3 0.2-0.3 0.3 0 0.2 0.1 0.2 0.1 0.1 0.1 0.3 0 0.4-0.3 0.4l0.1-0.3q0.1-0.1 0-0.2l-0.3-0.3-0.5 0.5q-0.2 0.3-0.2 0.7l-0.9 0.4q-0.5 0.2-0.9 0.5v-0.3q0-0.1-0.1-0.2 0 0.2-0.3 0.4-0.4 0.2-0.4 0.5-0.2 0.1-0.4-0.1-0.1-0.1-0.1-0.3-0.2 0-0.4 0.1-0.1 0.1-0.2 0.3v0.2h-0.3l-0.8-0.1h-0.8-0.3q-0.2 0-0.5 0.1-0.3-0.3-1.2-0.4-0.9-0.1-1.2-0.5-1.2-0.5-1.8-0.9-0.6-0.4-0.7-1.3l-0.7-0.8-0.1-0.5q0.1 0 0.2-0.1-0.4-0.3-0.7-0.9-0.3-0.7-0.3-1.3v-0.2l0.1-0.2-0.2-0.5q0.1 0 0.2-0.1l0.3-0.3q0-0.1-0.1-0.1l-0.2-0.2-0.2 0.2v-1.3l0.2 0.1q0.1-0.1 0.2-0.1l0.2-0.2q-0.3 0-0.4-0.3 0-0.2 0-0.2 0-0.1-0.1-0.1 0.2-0.6 0.8-0.7 0.3-0.3 0.5-0.7l0.3-0.8q-0.2-0.4-0.6-0.4v-0.2h0.3l0.2-0.1q0.2 0 0.2 0.3 0.1 0 0.2 0.1 0 0 0.1 0.1 0.1-0.2 0.1-0.3 0-0.2-0.2-0.5l-0.1-0.4v-0.2q0.2 0 0.2 0.2 0.1 0.2 0.3 0.2 0.1-0.2 0.1-0.6l0.2-0.5q0 0.2 0.4 0.6 0.4 0.5 0.4 0.8 0.1 0.1 0.3-0.1l-0.2-0.6q-0.1-0.3-0.2-0.6 0 0 0-0.1 0.2-0.1 0.3-0.3 0.2-0.3 0.4-0.3 0.2 0 0.3 0.2 0.1-0.1 0.1-0.3v-0.2l-0.1-0.2 0.1-0.2q-0.2-0.3-0.7-0.3v-1l0.5 0.2q0-0.1 0-0.1 0.1 0 0.2-0.1-0.1-0.1 0-0.2l0.2-0.1 0.1 0.2q0.1 0.2 0.2 0.1v-0.4q0-0.4 0-0.8-0.1-0.3-0.4-0.5 0.1 0 0.2 0l0.3 0.1q0.1 0 0.2-0.1l0.1 0.3q0 0.1-0.1 0.4l-0.1 0.3q0 0.2 0.2 0.4 0.3-0.1 0.4-0.3 0.2-0.2 0.2-0.5 0-0.3-0.1-0.4v-0.2q-0.4-0.2-0.4-0.7l0.1-0.4 0.2 0.6q0 0.2 0.2 0.4 0.4-0.3 0.4-0.9v-0.3l0.3 0.4q0.2-0.3 0.7-0.3v0.4q0 0.2 0.2 0.3h0.2q0.4 0 0.4-0.3l-0.1-0.2v-0.2-0.4q0.1-0.2 0.3-0.2 0 0 0.1 0.1 0 0 0.1 0.1l0.2 0.3 0.2 0.1 0.4-0.1q0.3-0.2 0.4-0.2 0.2 0 0.4 0.4l-0.1 0.3v0.3q0 0.2 0.1 0.3l0.7-0.3q-0.1-0.1-0.2-0.2l-0.1-0.2q0 0 0-0.1 0.1 0 0.2-0.2 0.2 0 0.5 0.3 0.2 0.4 0.4 0.5 0.2 0 0.4-0.2 0.3 0.1 0.3 0.4 0 0.2-0.3 0.6l-0.3 0.4q-0.4 0-0.6 0.2-0.3 0.1-0.4 0.5l0.1 0.2q0 0.1-0.2 0.3-0.2 0.2-0.1 0.4l-0.2-0.6q0-0.2 0.1-0.3-0.1-0.1-0.3-0.1h-0.3l-0.1 0.8q0.1-0.2 0-0.4l-0.1-0.3q0-0.2 0.1-0.3l0.3-0.1 0.1-0.1q0.2 0 0.3 0.3 0.1 0.1 0.2-0.1-0.2-0.3-0.5-0.4-0.2-0.2-0.5-0.2h-0.2q-0.1 0-0.4 0.6-0.3 0.6-0.6 0.6-0.1 0-0.4-0.2-0.1 0.1-0.1 0.7 0 0.5-0.3 0.7v0.3q0 0.4-0.6 1-0.6 0.6-0.6 1.1l-0.4 0.4q0 0.1 0 0.3-0.4 0-0.6 0.7-0.1 0.7-0.6 0.6l0.4 0.4q0-0.1 0.2-0.1 0 0.2-0.1 0.5l-0.3 0.5-0.2-0.1h-0.2l-0.1 0.1q0.2 0.2 0.3 0.7 0 0.6 0.1 1.4-0.3 0-0.5 0-0.1 0-0.1 0.4 0 0.1-0.2 0.1-0.3 0-0.4 0.2 0.1 0.1 0.3 0.1h0.2l1.1 3.3-0.1 0.4-0.4-0.2q-0.1-0.1-0.1-0.2 0.1-0.2 0.1-0.2 0-0.3-0.2-0.7-0.2-0.5-0.4-0.7-0.2 0.1-0.2 0.2l0.1 0.4q0.2 0.2 0.2 0.3 0.3 0.2 0.3 0.4l-0.1 0.2q-0.1 0-0.1 0.1-0.1 0.2 0.1 0.4 0.2 0.2 0.3 0.4 0.2-0.1 0.4 0.3 0.2 0.3 0.3 0.3 0.1 0 0.3-0.2 0.1 0.4 0.6 0.6 0.5 0.1 0.8 0.3l0.4 0.2h0.6 0.4 0.4 0.4l2.2-1 0.9-1q0.2-0.4 0.2-0.7v-0.4q0.2-0.2 0.2-0.6v-0.5q-0.3-0.1-0.3-0.4-0.1-0.2-0.1-0.7 0-0.6-0.1-0.8-0.2-0.2-0.5-0.3-0.1 0-0.1 0.2v0.2q0.1 0.1 0.2 0.1l-0.4 0.4q-0.1-0.2-0.3-0.2-0.2-0.1-0.5-0.1h-0.4q-0.3 0-0.5-0.2 0 0.2-0.3 0.2h-0.3l-0.2-0.4q-0.2 0.3-0.6 0.4l-0.7 0.1q0-0.1-0.1-0.4 0-0.3-0.1-0.5-0.2 0.2-0.6 0.2h-0.3-0.3l0.3-0.3 0.1-0.3-0.1-0.2q0.1-0.1 0.3 0l0.3 0.1q0.1 0 0.3-0.2-0.1-0.4 0.3-0.6l0.7-0.3q0.2 0.2 0.3 0.2l0.4-0.2q0.3-0.1 0.4-0.1 0.2 0 0.3 0.2 0.3 0 0.6-0.3l-0.1-0.2v-0.2q0.1-0.1 0.3 0.2l0.5 0.5q0.2 0 0.2-0.5 0-0.1 0.2-0.1h0.4q0.1 0.1 0.3 0.3 0.1 0.3 0.3 0.3 0.1 0 0.2-0.1v-0.3q0-0.2 0.3-0.2 0.1 0 0.2 0.1l0.1 0.1-0.3 0.4 0.2 0.1q0.1 0.1 0.3 0.1l0.1-0.2q0-0.1 0-0.3l1.3 0.1q0.2-0.2 0.5-0.2l0.3 0.1h0.2q0.2 0.5 1 0.7 0.9 0.2 0.9 0.7zm-11.2-10.4l0.2 0.1v-0.3-0.2q-0.1 0-0.2-0.1-0.3 0-0.2 0.3 0 0.1 0.2 0.2zm5.1 0.1l0.1-0.1q-0.1-0.2-0.1-0.2zm-3 0h0.1v-0.1h-0.1zm2-0.1l0.1 0.1zm-3.2 1h0.3v-0.4q0 0.2-0.2 0.2-0.2 0-0.1 0.2zm-2.4 3.1l0.1-0.1-0.2-0.1h-0.1zm-3.1 3.2l0.1-0.8q0.2 0 0.2 0.1l-0.2 0.3q-0.1 0.2-0.1 0.4zm1.7 2l0.1-0.3q0-0.2-0.2-0.3-0.1 0-0.2 0.1 0 0 0 0.1 0 0.2 0 0.3 0 0.2 0.3 0.1zm-0.8 0.5v-0.2q0-0.3-0.2-0.3v0.1q0 0.3 0.1 0.5 0.1 0 0.1-0.1zm1.4 0.6v0.2zm-3.2 0.5l0.3-0.1q0-0.3-0.3-0.3-0.3-0.1-0.4-0.2v0.7q0.2 0.1 0.4-0.1zm1.4 1q0.1-0.1 0-0.2-0.2-0.1-0.3 0l0.1 0.2q0.1 0 0.2 0zm10.7 0.2l0.1-0.1-0.1-0.2q0-0.1 0-0.1-0.1 0-0.2 0-0.1 0.2-0.1 0.3 0 0.2 0.2 0.3zm-0.6 0.6h0.1q0-0.1 0-0.2zm-10.3 0v0.2-0.2zm12 0.2l0.4 0.4v-0.1l-0.2-0.2q0-0.1-0.2-0.1zm-10.5 1.7q-0.1 0-0.1 0-0.1-0.1-0.1-0.1v0.2q0.1 0 0.2-0.1z"/></svg>
+                </div>
 
+         </div>
         <!--Nav Box-->
         <div class="nav-outer clearfix">
             
@@ -395,11 +434,14 @@
 
              <button id="toggle-user-sidebar"><span class="icon la la-stream"></span></button>
           }*@
-            }
+                    }
 
-            }
-
-            <a href="#nav-mobile" class="mobile-nav-toggler"><span class="flaticon-menu-1"></span></a>
+                } 
+           @if (Model.isDashboard)
+             {
+            <button id="toggle-user-sidebar"><span class="las la-tools" style="font-size:1.5rem;"></span></button>
+             }
+            <a href="#nav-mobile" class="mobile-nav-toggler"><span class="las la-user" style="margin-top: -6px;"></span></a>
           </div>
 
         </div>

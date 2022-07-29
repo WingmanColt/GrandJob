@@ -2,6 +2,7 @@
 using HireMe.Entities.Enums;
 using HireMe.Entities.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HireMe.Services
@@ -12,5 +13,6 @@ namespace HireMe.Services
         Task<OperationResult> Delete(int id);
         Task<OperationResult> DeleteAll();
         IAsyncEnumerable<Logs> GetAll();
+        IQueryable<Logs> GetAllAsNoTracking();
     }
 }

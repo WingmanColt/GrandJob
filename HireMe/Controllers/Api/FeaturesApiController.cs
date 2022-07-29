@@ -1,7 +1,10 @@
 ﻿using HireMe.Core.Helpers;
 using HireMe.Data;
 using HireMe.Entities.Enums;
+using HireMe.Entities.Models;
+using HireMe.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -13,9 +16,15 @@ namespace HireMe.Controllers.Api
     public class FeaturesApiController : BaseController
     {
         private readonly FeaturesDbContext _contextFeatures;
-
-        public FeaturesApiController(FeaturesDbContext contextFeatures)
+        private readonly UserManager<User> _userManager;
+        private readonly ICompanyService _companyService;
+        public FeaturesApiController(
+            FeaturesDbContext contextFeatures,
+            UserManager<User> userManager,
+            ICompanyService companyService)
         {
+            _userManager = userManager;
+            _companyService = companyService;
             _contextFeatures = contextFeatures ?? throw new ArgumentNullException(nameof(contextFeatures));
         }
 
@@ -46,7 +55,7 @@ namespace HireMe.Controllers.Api
                 dbSet = dbSet.Where(x => x.City.ToLower().Contains(term.ToLower()));
             }
 
-            var result = await dbSet.OrderBy(x => x.City).Select(x => new { id = x.Id, text = x.City })
+            var result = await dbSet.OrderBy(x => x.City).Select(x => new { id = x.City, text = x.City })
                 .ToListAsync();
 
             return Json(result);
@@ -89,7 +98,9 @@ namespace HireMe.Controllers.Api
         [Produces("application/json")]
         public async Task<JsonResult> GetCompanies(string term)
         {
-            var dbSet = _contextFeatures.Company.AsNoTracking();
+            var user = await _userManager.GetUserAsync(User);
+
+            var dbSet = _companyService.GetAll(user);
 
             if (!String.IsNullOrEmpty(term))
             {

@@ -6,47 +6,51 @@
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Jobs : BaseModel
+    public class Jobs 
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string LocationId { get; set; }
         public string WorkType { get; set; }
-        public ExprienceLevels ExprienceLevels { get; set; }
-        public JobTypeEnum JobType { get; set; }
         public string Adress { get; set; }
         public string Description { get; set; }
 
-        public uint MinSalary { get; set; }
-        public uint MaxSalary { get; set; }
+        public int? MinSalary { get; set; }
+        public int? MaxSalary { get; set; }
+
+        public ExprienceLevels ExprienceLevels { get; set; }
+        public JobTypeEnum JobType { get; set; }
         public SalaryType SalaryType { get; set; }
+        public PackageType Promotion { get; set; }
+        public PremiumPackage PremiumPackage { get; set; }
+        public ApproveType isApproved { get; set; }
 
-        public PromotionEnum Promotion { get; set; }
-
-        public double Rating { get; set; }
-        public int RatingVotes { get; set; }
-        public int VotedUsers { get; set; }
-        public uint Views { get; set; }
-        public uint ApplyCount { get; set; }
-
-        public string resumeFilesId { get; set; } = null;
-       // public string guestResumeFiles { get; set; } = null;
+        public double Rating { get; set; } = 0.0;
+        public int Views { get; set; } = 0;
+        public int RatingVotes { get; set; } = 0;
+        public int VotedUsers { get; set; } = 0;
+        public int ApplyCount { get; set; } = 0;
 
         public int CategoryId { get; set; }
         public int CompanyId { get; set; }
-        public string CompanyLogo { get; set; }
 
+        public string CompanyLogo { get; set; }
         public string LanguageId { get; set; }
         public string TagsId { get; set; }
-
         public string PosterID { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime ExpiredOn { get; set; }
-        public ApproveType isApproved { get; set; }
 
         public bool isArchived { get; set; }
 
         [NotMapped]
         public bool isInFavourites { get; set; }
+
+
+        [NotMapped]
+        public string StatementType { get; set; }
+
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public DateTime ExpiredOn { get; set; } = DateTime.Now.AddMonths(1);
+
 
         public void Update(CreateJobInputModel viewModel, ApproveType approved, User user)
         {
@@ -64,11 +68,15 @@
             Guard.Against.NullOrEmpty(viewModel.WorkType, nameof(viewModel.WorkType));
             WorkType = viewModel.WorkType;
 
+
             ExprienceLevels = viewModel.ExprienceLevels;
             LocationId = viewModel.LocationId;
 
+            if(viewModel.MinSalary > 0)
             MinSalary = viewModel.MinSalary;
+            if (viewModel.MaxSalary > 0)
             MaxSalary = viewModel.MaxSalary;
+
             SalaryType = viewModel.SalaryType;
 
             Guard.Against.Negative(viewModel.CompanyId, nameof(viewModel.CompanyId));
@@ -80,12 +88,12 @@
 
             CompanyLogo = viewModel.CompanyLogo;
 
-            PosterID = user.Id;
+            PosterID = user?.Id;
             isApproved = approved;
             isArchived = viewModel.isArchived;
 
-            CreatedOn = DateTime.Now;
-            ExpiredOn = CreatedOn.AddMonths(1);
+            Promotion = viewModel.Promotion;
+            PremiumPackage = viewModel.PremiumPackage;
         }
     }
    

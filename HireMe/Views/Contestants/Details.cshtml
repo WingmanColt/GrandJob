@@ -21,20 +21,27 @@
           <!-- Candidate block Six -->
           <div class="candidate-block-six">
             <div class="inner-box">
-              <figure class="image"><img class="lazyload" data-src="@Model.imageFullPath" alt=""></figure>
+              <figure class="image" style="border: 1px solid @Model.PremiumPackage.GetDescription()"><img class="lazyload" data-src="@Model.imageFullPath" alt=""></figure>
               <h4 class="name"><a href="#">@Model.FullName</a></h4>
               <span class="designation">@Model.Speciality</span>
               <span>@Model.About</span>
               <div class="content">
 
                  <ul class="candidate-info">
-                  <li><span class="icon flaticon-map-locator"></span> @Model.LocationId</li>
-                  <li><span class="icon flaticon-clock"></span> @Model.CreatedOn.ToString("MM MMMM")</li>
-                </ul>
+                  <li><span class="icon las la-map-marked"></span> @Model.LocationId</li>
+                  <li><span class="icon las la-clock"></span> @Model.CreatedOn.ToString("dd MMMM")</li>
+                            @if (!Model.PremiumPackage.Equals(PremiumPackage.None))
+                            {
+                                <li><span class="icon @Model.PremiumPackage.GetShortName() @Model.PremiumPackage.GetPrompt()" style="color:@Model.PremiumPackage.GetDescription();"></span> @Model.PremiumPackage.GetDisplayName() обява</li>
+                            }
+                        </ul>
 
                 <div class="btn-box">
+                @if(!String.IsNullOrEmpty(Model.ResumeFileId))
+                {
                 <a asp-controller="Resume" asp-action="GetResume" asp-route-id="@Model.ResumeFileId" class="theme-btn btn-style-one">Прегледай CV</a>
-                  <button class="bookmark-btn"><i class="flaticon-heart"></i></button>
+                }
+                <button class="bookmark-btn"><i class="las la-heart" style="line-height:unset;"></i></button>
                 </div>
               </div>
             </div>
@@ -106,7 +113,7 @@
                                                 <span>@item.Work_Place</span>
                                             </div>
                                             <div class="edit-box">
-                                                <span class="year">@item.Work_StartDate.ToString("MM MMMM") - @item.Work_EndDate.ToString("MM MMMM")</span>
+                                                <span class="year">@item.Work_StartDate.ToString("dd MMMM yyyy") - @item.Work_EndDate.ToString("dd MMMM yyyy")</span>
                                             </div>
                                         </div>
                                     </div>
@@ -200,26 +207,26 @@
                       @if (Model.Experience > 0)
                        {
                       <li>
-                        <i class="icon icon-case icon-custom-color"></i>
+                        <i class="icon las la-business-time"></i>
                         <h5>Опит:</h5>
                         <span>@Model.Experience г.</span>
                       </li>
                        }
 
                       <li>
-                        <i class="icon icon-one-finger-click icon-custom-color"></i>
+                        <i class="icon las la-eye"></i>
                         <h5>Преглеждания:</h5>
                         <span>@Model.Views</span>
                       </li>
 
                      <li>
-                        <i class="icon icon-user-2"></i>
+                        <i class="icon las la-industry"></i>
                         <h5>Категория:</h5>
                         <span>@Model.CategoryName</span>
                       </li>
 
                       <li>
-                        <i class="icon icon-salary"></i>
+                        <i class="icon las la-wallet"></i>
                         <h5>Очаквана заплата:</h5>
                         @if (Model.payRate > 0)
                             {
@@ -232,7 +239,7 @@
                       </li>
 
                       <li>
-                        <i class="icon icon-rate"></i>
+                        <i class="icon las la-hand-holding-usd"></i>
                         <h5>Заплащане:</h5>
                         <span>на @Model.SalaryType.GetDisplayName()</span>
                       </li>
@@ -241,7 +248,7 @@
                      @if (Model.WorkType != null)
                       {
                       <li>
-                        <i class="icon icon-rate"></i>
+                        <i class="icon las la-handshake"></i>
                         <h5>Тип:</h5>
                         <span>@Model.WorkType.Replace(",", "; ")</span>
                       </li>
@@ -291,23 +298,23 @@
                    @{
                       if (Model.Facebook is not null)
                       {
-                      <a href="http://facebook.com/@Model.Facebook"><i class="fab fa-facebook-f"></i></a>
+                      <a href="http://facebook.com/@Model.Facebook"><i class="lab la-facebook-f"></i></a>
                       }
                       if (Model.Twitter is not null)
                       {
-                      <a href="http://twitter.com/@Model.Twitter"><i class="fab fa-twitter"></i></a>
+                      <a href="http://twitter.com/@Model.Twitter"><i class="lab la-twitter"></i></a>
                       }
                       if (Model.Github is not null)
                       {
-                      <a href="http://github.com/@Model.Github"><i class="fab fa-github"></i></a>
+                      <a href="http://github.com/@Model.Github"><i class="lab la-github"></i></a>
                       }
                       if (Model.Linkdin is not null)
                       {
-                      <a href="http://linkedin.com/in/@Model.Linkdin"><i class="fab fa-linkedin-in"></i></a>
+                      <a href="http://linkedin.com/in/@Model.Linkdin"><i class="lab la-linkedin-in"></i></a>
                       }
                       if (Model.Dribbble is not null)
                       {
-                      <a href="http://dribbble.com/@Model.Dribbble"><i class="fab fa-dribbble"></i></a>
+                      <a href="http://dribbble.com/@Model.Dribbble"><i class="lab la-dribbble"></i></a>
                       }
                     }
                     </div>

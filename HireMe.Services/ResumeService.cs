@@ -1,13 +1,12 @@
 ﻿using HireMe.Core.Helpers;
 using HireMe.Data.Repository.Interfaces;
+using HireMe.Entities.Enums;
 using HireMe.Entities.Models;
 using HireMe.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,26 +15,18 @@ namespace HireMe.Services
     public class ResumeService : IResumeService
     {
         private readonly IRepository<Resume> _resumeRepository;
-        private readonly int _resumeSizeLimit;
 
-        public ResumeService(IConfiguration config, IRepository<Resume> resumeRepository)
+        public ResumeService(IRepository<Resume> resumeRepository)
         {
             _resumeRepository = resumeRepository;
-            _resumeSizeLimit = config.GetValue<int>("MySettings:ResumeUploadLimit");
         }
 
-        public async Task<OperationResult> Create(string title, string fileid, int jobId, User user)
+        public async Task<OperationResult> Create(string title, string jobTitle, string fileid, int jobId, User user)
         {
-            if (await IsResumeExists(user.Email, title))
+           /* if (await IsResumeExists(user.Email, jobTitle, title))
             {
                 return OperationResult.FailureResult("Вече съществува такъв файл !");
-            }
-
-            if (await GetFilesByUserCount(user.Email) >= _resumeSizeLimit)
-            {
-                return OperationResult.FailureResult($"Достигнахте лимита за качване на файлове. Ограничението е: {_resumeSizeLimit}");
-            }
-
+            }*/
 
             var resume = new Resume
             {
@@ -43,26 +34,22 @@ namespace HireMe.Services
                 FileId = fileid,
                 Date = DateTime.Now,
                 UserId = user.Email,
+                LastAppliedJob = jobTitle,
                 JobId = jobId,  
+                ResumeType = Entities.Enums.ResumeType.Active,
                 isGuest = false
             };
 
             await _resumeRepository.AddAsync(resume);
-           var result = await _resumeRepository.SaveChangesAsync();
+            var result = await _resumeRepository.SaveChangesAsync();
             return result;
         }
         public async Task<int> CreateFast(string title, string fileid, int jobId, string lastAppliedJob, User user)
         {
-            if (await IsResumeExists(user.Email, title))
+            if (await IsResumeExists(user.Email, jobId, title))
             {
                 return -2;
             }
-
-            if (await GetFilesByUserCount(user.Email) >= _resumeSizeLimit)
-            {
-                return -1;
-            }
-
 
             var resume = new Resume
             {
@@ -72,6 +59,7 @@ namespace HireMe.Services
                 UserId = user.Email,
                 LastAppliedJob = lastAppliedJob,
                 JobId = jobId,
+                ResumeType = Entities.Enums.ResumeType.Active,
                 isGuest = false
             };
 
@@ -94,6 +82,7 @@ namespace HireMe.Services
                 Date = DateTime.Now,
                 UserId = email/*StringHelper.Filter(email)*/,
                 JobId = jobId,
+                ResumeType = Entities.Enums.ResumeType.Active,
                 isGuest = true
             };
 
@@ -114,9 +103,20 @@ namespace HireMe.Services
             var result = await _resumeRepository.SaveChangesAsync();
             return result;
         }
-        public async Task<OperationResult> Delete(Resume entity)
+        public async Task<OperationResult> Delete(int id)
         {
-            _resumeRepository.Delete(entity);
+            Resume existEntity = await _resumeRepository.GetByIdAsync(id);
+
+            _resumeRepository.Delete(existEntity);
+
+            var result = await _resumeRepository.SaveChangesAsync();
+            return result;
+        }
+        public async Task<OperationResult> Archive(Resume entity)
+        {
+            //_resumeRepository.Delete(entity);
+
+            entity.ResumeType = Entities.Enums.ResumeType.Archived;
 
             var result = await _resumeRepository.SaveChangesAsync();
             return result;
@@ -155,18 +155,26 @@ namespace HireMe.Services
 
             return entity;
         }
-        public IAsyncEnumerable<Resume> GetAllReceived(Jobs job)
+
+        public async Task<int> GetAllCount(User user)
         {
-            if (job is null)
-                return null;
+            return await GetAllAsNoTracking()
+                .Where(x => x.UserId == user.Email)
+                .CountAsync();
+        }
+        public IAsyncEnumerable<Resume> GetAllReceived(int jobId, ResumeType type)
+        {
+            //if (job is null)
+             //   return null;
 
-                string[] items = job.resumeFilesId?.Split(',');
+                //string[] items = job.resumeFilesId?.Split(',');
 
-                if (items == null)
-                    return null;
+              //  if (items == null)
+               //     return null;
 
                 var entity = GetAllAsNoTracking()
-                    .Where(x => ((IList)items).Contains(x.Id.ToString()))                  
+                    .Where(x => x.JobId == jobId && x.ResumeType.Equals(type))
+                    //.Where(x => ((IList)items).Contains(x.Id.ToString()))                  
                     .OrderByDescending(x => x.Id)                  
                     .AsAsyncEnumerable();
 
@@ -188,7 +196,7 @@ namespace HireMe.Services
             if (entity.Rating < (double)maxRating)
             {
                 entity.Rating += ((entity.Rating * entity.RatingVotes) + rating) / (entity.RatingVotes + 1);
-
+                entity.VotedUsers += 1;
                 await _resumeRepository.SaveChangesAsync();
                 return true;
             }
@@ -210,21 +218,15 @@ namespace HireMe.Services
 
         private async Task<bool> IsFileExists(string email)
         {
-            string checkFileId = StringHelper.Filter(email.GetUntilOrEmpty("@"));
+            string checkFileId = StringHelper.Filter(email);
             var result = await _resumeRepository.Set().AsNoTracking().AnyAsync(x => x.UserId.Contains(email) && x.FileId.Contains(checkFileId));
             return result;
             
         }
-        private async Task<bool> IsResumeExists(string userId, string title)
+        public async Task<bool> IsResumeExists(string Email, int jobId, string title)
         {
-            var result = await _resumeRepository.Set().AsNoTracking().AnyAsync(x => (x.UserId == userId) && (x.Title == title));
-            return result;
-        }
-
-        public async Task<int> GetFilesByUserCount(string userId)
-        {
-            var result = await _resumeRepository.Set().AsNoTracking().AsQueryable().Where(x => x.UserId == userId).CountAsync().ConfigureAwait(false);
-            return result;
+            return await _resumeRepository.Set().AsNoTracking()
+                .AnyAsync(x => x.UserId.Contains(Email) && x.JobId == jobId && x.Title == title);
         }
 
     }

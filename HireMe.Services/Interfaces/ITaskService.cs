@@ -19,5 +19,6 @@
         Task<Tasks> GetByLinkAsync(string link);
         Task<Tasks> GetByIdAsync(int id);
         IAsyncEnumerable<Tasks> GetAll(User user, bool isReceived);
+        Task<int> GetAllCount(User user);
     }
 }

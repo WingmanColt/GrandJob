@@ -37,14 +37,14 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
         }
 
 
-        public async Task<IActionResult> OnPostSyncAsync(string returnUrl = "")
+        public async Task<IActionResult> OnGetSyncAsync()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user is null)
             {
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
-            if (user.Role != Roles.Admin)
+            if (!user.Role.Equals(Roles.Admin))
             {
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
@@ -82,9 +82,7 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             else
                 await _notifyService.Create($"{skillsResult.FailureMessage}", $"categories/index", DateTime.Now, NotifyType.Danger, "flaticon-database", user.Id, null).ConfigureAwait(false);
 
-            if (!String.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-            else
+
                 return RedirectToPage("/Account/Manage/Index", new { Area = "Identity" });
         }
        

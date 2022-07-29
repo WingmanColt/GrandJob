@@ -12,6 +12,7 @@ namespace HireMe.Entities.Models
         public string UserId { get; set; }
         public double Rating { get; set; }
         public int RatingVotes { get; set; }
+        public int VotedUsers { get; set; }
         public string LastAppliedJob { get; set; }
 
         public void Update(FilesInputModel viewModel)

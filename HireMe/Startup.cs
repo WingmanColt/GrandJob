@@ -6,22 +6,25 @@ using HireMe.Entities.Models;
 using HireMe.Firewall.Checker.Core;
 using HireMe.Firewall.Checker.Core.Interface;
 using HireMe.Mapping.Utility;
+using HireMe.Payments;
 using HireMe.Services;
 using HireMe.Services.Benchmark;
 using HireMe.Services.Core;
 using HireMe.Services.Core.Interfaces;
 using HireMe.Services.Interfaces;
+using HireMe.StoredProcedures.Interfaces;
+using HireMe.StoredProcedures.Services;
 using HireMe.Utility;
 using HireMe.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,20 +33,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using NToastNotify;
 using sib_api_v3_sdk.Api;
-using sib_api_v3_sdk.Model;
 using System;
 using System.Globalization;
-using System.IO.Compression;
 using System.Reflection;
 
 namespace HireMe
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration config, IWebHostEnvironment env)
+        public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -70,6 +70,11 @@ namespace HireMe
             // Services
             LoadServices(services);
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
 
             // Configure
             services.AddMvc().AddNToastNotifyToastr(new ToastrOptions()
@@ -78,9 +83,9 @@ namespace HireMe
                 CloseButton = true,
                 PreventDuplicates = true,
                 PositionClass = ToastPositions.BottomRight,
-                ShowDuration = 300,
+                ShowDuration = 500,
                 HideDuration = 1000,
-                TimeOut = 3000,
+                TimeOut = 4000,
 
                 ShowMethod = "fadeIn",
                 HideMethod = "fadeOut",
@@ -108,13 +113,10 @@ namespace HireMe
             // Cache 2
             services.AddResponseCaching();
 
-            // Compression
-            services.AddResponseCompression();
-            services.Configure<GzipCompressionProviderOptions>(options =>
+            services.AddResponseCompression(options =>
             {
-                options.Level = CompressionLevel.Fastest;
+                options.EnableForHttps = true;
             });
-            
 
             // .NET 3.1 with cache profiles
             services.AddControllersWithViews(options =>
@@ -190,6 +192,7 @@ namespace HireMe
             }
 
 
+            app.UseForwardedHeaders();
 
             var supportedCultures = new[]
             {
@@ -202,7 +205,7 @@ namespace HireMe
                 SupportedCultures = supportedCultures,
                 SupportedUICultures = supportedCultures
             });
-                              
+
 
             app.UseResponseCompression();
             app.UseHttpsRedirection();
@@ -231,31 +234,41 @@ namespace HireMe
             // Cache
           app.UseResponseCaching();
 
+            /* app.UseStaticFiles(new StaticFileOptions
+             {
+                 OnPrepareResponse = (context) =>
+                 {
+                     var headers = context.Context.Response.GetTypedHeaders();
+                     headers.CacheControl = new CacheControlHeaderValue
+                     {
+                         Public = true,
+                         MaxAge = TimeSpan.FromDays(365)
+                     };
+                 }
+             });*/
             app.UseStaticFiles(new StaticFileOptions
             {
-                OnPrepareResponse = (context) =>
+                ServeUnknownFileTypes = false,
+                OnPrepareResponse = ctx =>
                 {
-                    var headers = context.Context.Response.GetTypedHeaders();
-                    headers.CacheControl = new CacheControlHeaderValue
-                    {
-                        Public = true,
-                        MaxAge = TimeSpan.FromDays(365)
-                    };
+                    const int durationInSeconds = 60 * 60 * 24;
+                    ctx.Context.Response.Headers[HeaderNames.CacheControl] = "public,max-age=" + durationInSeconds;
+                    ctx.Context.Response.Headers[HeaderNames.Expires] = new[] { DateTime.UtcNow.AddYears(1).ToString("R") }; // Format RFC1123
                 }
             });
 
-           /* app.Use(async (context, next) =>
-            {
-                context.Response.GetTypedHeaders().CacheControl =
-                    new CacheControlHeaderValue()
-                    {
-                        Public = true,
-                        MaxAge = TimeSpan.FromDays(10)
-                    };
-                context.Request.Scheme = "https";
-                context.Response.Headers[HeaderNames.Vary] = new string[] { "Accept-Encoding" };
-                await next();
-            });*/
+            /* app.Use(async (context, next) =>
+             {
+                 context.Response.GetTypedHeaders().CacheControl =
+                     new CacheControlHeaderValue()
+                     {
+                         Public = true,
+                         MaxAge = TimeSpan.FromDays(10)
+                     };
+                 context.Request.Scheme = "https";
+                 context.Response.Headers[HeaderNames.Vary] = new string[] { "Accept-Encoding" };
+                 await next();
+             });*/
 
 
         }
@@ -329,6 +342,9 @@ namespace HireMe
             services.AddTransient<ITaskService, TaskService>();
 
             services.AddTransient<IStatisticsService, StatisticsService>();
+            services.AddTransient<IJobStatisticsService, JobStatisticsService>();
+
+
             services.AddTransient<ICategoriesService, CategoriesService>();
             services.AddTransient<ICompanyService, CompanyService>();
             services.AddTransient<IJobsService, JobsService>();
@@ -351,6 +367,17 @@ namespace HireMe
 
             IHtmlSanitizer sanitizer = new HtmlSanitizer();
             services.AddSingleton<IHtmlSanitizer>(sanitizer);
+
+            // Stored Procedure Services
+            services.AddSingleton<IspJobService, spJobService>();
+
+
+            // Payments
+            //  services.AddScoped<IPaypalClient, PaypalClient>();
+            services.AddHttpClient<PaypalClient>("Paypal", conf =>
+            {
+                conf.BaseAddress = new Uri(Configuration["PayPal-Sandbox:Url"]);
+            });
 
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -424,7 +451,7 @@ namespace HireMe
                 options.Cookie.Name = "GrandCookie";
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(30);
-                options.LoginPath = "/Home/Index";
+                options.LoginPath = "/Identity/Account/Login";
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
             });

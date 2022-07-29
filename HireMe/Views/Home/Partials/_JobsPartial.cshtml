@@ -1,9 +1,5 @@
-﻿@inject IConfiguration config
-@model IndexViewModel
+﻿@model IndexViewModel
 
-@{
-    string SiteImageUrl = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
-}
 <!-- Job Section -->
     <section class="layout-pt-120 layout-pb-120">
       <div class="auto-container">
@@ -16,13 +12,13 @@
           <!--Tabs Box-->
           <div class="tab-buttons-wrap">
             <ul class="tab-buttons -pills-condensed -blue">
-                @if (Model.JobsLast is not null && await Model.JobsLast.AnyAsync())
+                @if (Model.JobsTop is not null && await Model.JobsTop.AnyAsync())
                 {
-              <li class="tab-btn active-btn" data-tab="#tab1">последни добавени</li>
+              <li class="tab-btn active-btn" data-tab="#tab1">с висок рейтинг</li>
                 }
-              @if (Model.JobsTop is not null && await Model.JobsTop.AnyAsync())
+              @if (Model.JobsLast is not null && await Model.JobsLast.AnyAsync())
                 {
-              <li class="tab-btn" data-tab="#tab2">с висок рейтинг</li>
+              <li class="tab-btn" data-tab="#tab2">последни добавени</li>
                 }
               @*if (await Model.JobsByCompany.AnyAsync())
                 {
@@ -33,39 +29,42 @@
 
 
           <div class="tabs-content pt-50 wow fadeInUp">
-          @if (await Model.JobsLast.AnyAsync())
+          @if (Model.JobsTop is not null)
                 {
                     <!--Last jobs-->
                     <div class="tab active-tab" id="tab1">
                         <div class="row">
 
-                   @await foreach (var item in Model.JobsLast)
+                   @await foreach (var item in Model.JobsTop)
                     {
                      <!-- Job Block -->
                      <div class="job-block col-lg-4 col-md-6 col-sm-12">
-                     <div class="inner-box">
+                     <div class="inner-box" style="border: 1px solid @item.PremiumPackage.GetDescription()">
                     <div class="content">
-                      <span class="company-logo"><img class="rounded-full lazyload" data-src="@Model.PictureUrl@item.CompanyLogo" alt=""></span>
+                      <span class="company-logo">
+                          <img class="rounded-full lazyload" data-src="@Model.PictureUrl@item.CompanyLogo" alt="">
+                          </span>
                       <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
                       <ul class="job-info">
-                        <li><span class="icon flaticon-briefcase"></span>@item.LocationId</li>                       
+                        <li><span class="icon las la-map-marked"></span>@item.LocationId</li>                       
                         @if (item.MaxSalary > 0)
                          {
-                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                          <li><span class="icon las la-money-bill-wave"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
                          }
 
                          else
                          {
-                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                          <li><span class="icon las la-money-bill-wave"></span>Не е посочено</li>
                         }
-                        
+                        <li> <span class="icon @item.PremiumPackage.GetShortName()" style="color:@item.PremiumPackage.GetDescription();"></span></li>
+
                       </ul>
                       <ul class="job-other-info">
                         <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
-                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                        <li class="required">@item.CreatedOn.ToString("dd MMMM")</li>
                       </ul>
                        @{string iconType = @item.isInFavourites ? "las" : "lar";}
-                       <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                       <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn">
                           <span class="@iconType la-heart" id="@item.Id-heartIcon"></span>
                        </button>
                     </div>
@@ -79,38 +78,39 @@
             </div>
             }
 
-            @if (await Model.JobsTop.AnyAsync())
+            @if (Model.JobsLast is not null)
                 {
                  <!--Jobs Top-->
                    <div class="tab" id="tab2">
                   <div class="row">
-                  @await foreach (var item in Model.JobsTop)
+                  @await foreach (var item in Model.JobsLast)
                     {
                      <!-- Job Block -->
                      <div class="job-block col-lg-4 col-md-6 col-sm-12">
-                     <div class="inner-box">
+                     <div class="inner-box" style="border: 1px solid @item.PremiumPackage.GetDescription()">
                     <div class="content">
                        <span class="company-logo"><img class="rounded-full lazyload" data-src="@Model.PictureUrl@item.CompanyLogo" alt=""></span>
                       <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
                       <ul class="job-info">
-                        <li><span class="icon flaticon-briefcase"></span>@item.LocationId</li>                       
+                        <li><span class="icon las la-map-marked"></span>@item.LocationId</li>                       
                         @if (item.MaxSalary > 0)
                          {
-                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                          <li><span class="icon las la-money-bill-wave"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
                          }
 
                          else
                          {
-                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                          <li><span class="icon las la-money-bill-wave"></span>Не е посочено</li>
                         }
-                        
+                        <li> <span class="icon @item.PremiumPackage.GetShortName()" style="color:@item.PremiumPackage.GetDescription();"></span></li>
+
                       </ul>
                       <ul class="job-other-info">
                         <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
-                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                        <li class="required">@item.CreatedOn.ToString("dd MMMM")</li>
                       </ul>
                        @{string iconType = @item.isInFavourites ? "las" : "lar";}
-                       <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn" data-toggle="tooltip" data-placement="bottom" title="Добави в любими">
+                       <button type="button" value='Submit' onclick="CheckAvailability(@item.Id)" class="bookmark-btn">
                           <span class="@iconType la-heart" id="@item.Id-heartIcon"></span>
                        </button>
                     </div>
@@ -135,15 +135,15 @@
                       <span class="company-logo"><img class="rounded-full lazyload" data-src="@Model.PictureUrl@item.CompanyLogo" alt=""></span>
                       <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
                       <ul class="job-info">
-                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                        <li><span class="icon las la-map-locator"></span>@item.LocationId</li>                       
                         @if (item.MaxSalary > 0)
                          {
-                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                          <li><span class="icon las la-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
                          }
 
                          else
                          {
-                          <li><span class="icon flaticon-money-bag"></span>Íå å ïîñî÷åíî</li>
+                          <li><span class="icon las la-money-bag"></span>Íå å ïîñî÷åíî</li>
                          }
                         
                       </ul>

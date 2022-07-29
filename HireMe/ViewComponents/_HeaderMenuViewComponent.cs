@@ -50,7 +50,7 @@ namespace HireMe.ViewComponents
                 model.CompanyImageUrl = _config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
 
                 // Notify
-                model.Notifications = _notifyService.GetAllBy(user).Take(10);
+                model.Notifications = _notifyService.GetAllBy(user).Take(5);
                 model.NotifyCount = model.Notifications is null ? 0 : await _notifyService.GetNotificationsCount(user).ConfigureAwait(false);
                 model.isNotiftEmpty = model.Notifications is null ? false : await model.Notifications.AnyAsync();
 

@@ -9,7 +9,7 @@ namespace HireMe.Services.Interfaces
     public interface IFilesService
     {
         Task<bool> AddRating(Files entity, double rating);
-        Task<OperationResult> Create(string title, string fileid, User user);
+        Task<OperationResult> Create(string title, string LastAppliedJob, string fileid, User user);
         Task<OperationResult> Delete(Files entity);
         Task<OperationResult> DeleteAllBy(User user);
         IQueryable<Files> GetAllAsNoTracking();
@@ -17,5 +17,6 @@ namespace HireMe.Services.Interfaces
         Task<Files> GetByIdAsync(int id);
         Task<int> GetFilesByUserCount(string userId);
         Task<OperationResult> Update(int id, string lastAppliedJob);
+        Task<Files> GetByLastAppliedJob(string LastAppliedJob);
     }
 }

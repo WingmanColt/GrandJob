@@ -2,16 +2,28 @@
 
 namespace HireMe.Entities.Enums
 {
-    public enum PromotionEnum : int
+    public enum PackageType : int
     {
-    [Display(Name = "Няма")]
-    Default = 0,
-    [Display(Name = "Stage 1")]
-    Level_1 = 1,
-    [Display(Name = "Stage 2")]
-    Level_2 = 2,
-    [Display(Name = "PRO-Акаунт")]
-    AccountUpgrade = 3
+        [Display(Description = "#ECEDF2")]
+        None = 0,
+        [Display(Name = "Bronze", Description = "#7A4105", ShortName = "las la-rocket")]
+        Bronze = 1,
+        [Display(Name = "Silver", Description = "#9D9D9D", ShortName = "lab la-hotjar")]
+        Silver = 2,
+        [Display(Name = "Gold", Description = "#F1CC06", ShortName = "las la-crown", Prompt = "flash")]
+        Gold = 3,
+        [Display(Name = "Diamond", Description = "#0DB0FC", ShortName = "las la-gem")]
+        Diamond = 4
     }
-
+    public enum PremiumPackage : int
+    {
+        [Display(Description = "#ECEDF2")]
+        None = 0,
+        [Display(Name = "Bronze", Description = "#7A4105", ShortName = "lab la-hotjar")]
+        Bronze = 1,
+        [Display(Name = "Silver", Description = "#9D9D9D", ShortName = "las la-rocket")]
+        Silver = 2,
+        [Display(Name = "Gold", Description = "#F1CC06", ShortName = "las la-crown", Prompt = "flash")]
+        Gold = 3
+    }
 }

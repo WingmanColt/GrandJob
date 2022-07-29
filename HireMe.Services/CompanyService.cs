@@ -13,6 +13,7 @@
     using HireMe.Entities.Enums;
     using HireMe.ViewModels.Company;
     using HireMe.Mapping.Utility;
+    using HireMe.Entities;
 
     public class CompanyService : ICompanyService
     {
@@ -147,6 +148,25 @@
 
             return entity;
         }
+
+        public IAsyncEnumerable<SelectListModel> GetAllSelectList(User user)
+        {
+            if (user is null)
+                return null;
+
+            var userId = user.Id;
+
+            var entity = GetAllAsNoTracking()
+                .Where(x => x.PosterId == userId || x.Admin1_Id == userId || x.Admin2_Id == userId || x.Admin3_Id == userId)
+                .Select(x => new SelectListModel
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Title.ToString()
+                })
+                .AsAsyncEnumerable();
+
+            return entity;
+        }
         public async Task<CompanyViewModel> GetByIdAsyncMapped(int id)
         {
             var ent = await companyRepository.Set()
@@ -191,12 +211,19 @@
             if (entity.Rating < (double)maxRating)
             {
                 entity.Rating += ((entity.Rating * entity.RatingVotes) + rating) / (entity.RatingVotes + 1);
+                entity.VotedUsers += 1;
 
                 await companyRepository.SaveChangesAsync();
                 return true;
             }
 
             return false;
-        }     
+        }
+        public async Task<int> GetCountByUser(User user)
+        {
+            var res = await GetAllAsNoTracking().CountAsync(x => x.PosterId == user.Id);
+
+            return res;
+        }
     }
 }

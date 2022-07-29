@@ -36,8 +36,11 @@ using HireMe.Entities.Models.Chart;
         public DbSet<Resume> Resume { get; set; }
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Logs> Logs { get; set; }
+
         public DbSet<JobStats> JobStats { get; set; }
-        public DbSet<Stats> Stats { get; set; }
+        public DbSet<CompanyStats> CompanyStats { get; set; }
+        public DbSet<Stats> ContestantStats { get; set; }
+
         public DbSet<Tasks> Tasks { get; set; }
         public DbSet<Files> Files { get; set; }
 

@@ -29,6 +29,7 @@
         public double Rating { get; set; }
         public int RatingVotes { get; set; }
         public int VotedUsers { get; set; }
+        public int Views { get; set; }
         public int CategoryId { get; set; }
 
         public string PosterId { get; set; }
@@ -39,7 +40,7 @@
 
         public ApproveType isApproved { get; set; }
         public DateTime Date { get; set; }
-        public PromotionEnum Promotion { get; set; }
+        public PackageType Promotion { get; set; }
 
 
         [NotMapped]

@@ -50,10 +50,23 @@
                         <!-- ls Switcher -->
                         <div class="ls-switcher">
                             <div class="showing-result">
-                                <div class="text">Показани са <strong>@Model.Pager.PageSize</strong> от <strong>@Model.Pager.TotalItems</strong> обяви</div>
+                                <div class="text">Показани са <strong>@Model.Pager.TotalItems</strong> обяви</div>
                             </div>
+                        <div class="sort-by">
+                        <!--Tabs Box-->
+                        @*<form method="post" asp-controller="Jobs" asp-action="Index" id="SortForm">
+                           <select class="form-select form-select-sm" asp-for="Filter.Sort" onchange="this.form.submit()">  
+                                 <option selected value="0" disabled>Сортирай по</option>    
+                                        @foreach (var item in Model.Filter?.SortBy)
+                                        {
+                                            <option value="@item?.Key">@item?.Value</option>
+                                        }                   
+                            </select>
+                        </form>*@
+                          </div>
 
                         </div>
+
 
                         @await foreach (var item in Model.Result)
                         {
@@ -62,16 +75,18 @@
                             <!-- Job Block -->
                             <div class="job-block">
                                 <div class="inner-box">
-                                    <div class="content">
-                                        <span class="company-logo"><img class="lazyload" data-src="@SiteImageUrl@item.CompanyLogo" width="54" height="54" alt=""></span>
+                                    <div class="content-2">
+                                        <span class="company-logo-2"><img class="lazyload" data-src="@SiteImageUrl@item.CompanyLogo" width="130" height="130" alt=""></span>
                                         <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
                                         <ul class="job-info">
-                                            <li><span class="icon flaticon-map-locator"></span> @item.LocationId</li>
-                                            <li><span class="icon flaticon-clock-3"></span> @item.CreatedOn.ToString("MM MMMM")</li>
+                                            <li><span class="icon las la-map-marked"></span> @item.LocationId</li>
+                                            <li><span class="icon las la-clock"></span> @item.CreatedOn.ToString("dd MMMM")</li>
                                             @if (item.MinSalary > 0)
                                             {
-                                                <li><span class="icon flaticon-money"></span> @item.MinSalary лв.</li>
+                                                <li><span class="icon las la-money-bill-wave"></span> @item.MinSalary лв.</li>
                                             }
+                                            <li> <span class="icon @item.PremiumPackage.GetShortName() @item.PremiumPackage.GetPrompt()" style="color:@item.PremiumPackage.GetDescription();"></span></li>
+
                                         </ul>
                                         <ul class="job-other-info">
                                             @if (item.ExprienceLevels > 0)

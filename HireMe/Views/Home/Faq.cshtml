@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewData["Title"] = "FAQ    ";
+    ViewData["Description"] = "Намерете следващата си работа или кариера. От непълно работно време до работа на пълно работно време, потърсете нашите обяви за работа по категория, заглавие, фирма, местоположение или разгледайте популярни работни места.";
+    ViewData["Keywords"] = "contacts, контаткти, връзка";
+
+    Layout = "~/Views/Home/_PageLayout.cshtml";
+}
+
+
+    <!-- Faqs Section -->
+    <section class="faqs-section">
+      <div class="auto-container">
+        <div class="sec-title text-center">
+          <h2>Често задавани въпроси</h2>
+          <div class="text">Начало / Въпроси</div>
+        </div>
+
+        <h3>Основни въпроси</h3>
+        <!--Accordian Box-->
+        <ul class="accordion-box">
+          <!--Block-->
+          <li class="accordion block active-block">
+            <div class="acc-btn active">Как да използвам платформата ? <span class="icon flaticon-add"></span></div>
+            <div class="acc-content current">
+              <div class="content">
+               <p>Ползването на платформата е напълно безплатно за кандидати. Бизнесите също могат да се възползват от основните ни функции безплатно.</p>
+
+               <p>За да се възползваш от възможностите, които платформата ни предоставя, можеш да си създадеш профил на <strong>кандидат</strong> или <strong>работадател</strong>. </p>
+               <p>После просто следвай стъпките и не забравяй да се вслушваш в поп-ъп съветите по време на попълване - те са там за да те улеснят с използването на платформата.</p>
+              </div>
+            </div>
+          </li>
+
+          <!--Block-->
+          <li class="accordion block">
+            <div class="acc-btn"> Как повече работодатели да разберат за мен ? <span class="icon flaticon-add"></span></div>
+            <div class="acc-content">
+              <div class="content">
+               I. Завърши регистрацията и потвърди емайл адреса си <a asp-area="Identity" asp-page="/Account/Manage/EditProfile" title="редактирай профил">от тук.</a> 
+               <br>II. Създай си профил на кандидат <a asp-area="Identity" asp-page="/Contestant/Operations" title="Създай профил">от тук.</a>
+               <br>III. Качи своето CV, докато създаваш профила си.
+               <br>IV. Пусни си кандидатурата, в която индустрия желаеш да работиш.
+             @*  <br>5. Направи всичко възможно обявата ти да достигне до повече хора.  <a id="alert_demo_8" href="#" title="Създай профил">Научи как ?</a>*@
+              </div>
+            </div>
+          </li>
+
+          <!--Block-->
+          <li class="accordion block">
+            <div class="acc-btn"> Как да пусна фирма или обява за работа ? <span class="icon flaticon-add"></span></div>
+            <div class="acc-content">
+              <div class="content">
+                I. Направи си регистрация и отбележи тикчето 'Аз съм работодател'. 
+                <br>II. Добави профил на фирмата <a asp-area="Identity" asp-page="/Companies/Operations" title="Създай профил">от тук.</a>
+                <br>III. Добави своя екип, ако имат регистрация в платформата ни.
+                <br>IV. Изчакай да се прегледа и одобри от администратор.
+                <br>V. Вече можете да пускате обяви за работа <a asp-area="Identity" asp-page="/Jobs/Operations" title="Създай профил">от тук.</a>
+              </div>
+            </div>
+          </li>
+
+          <!--Block-->
+          <li class="accordion block">
+            <div class="acc-btn">Как да имам висок рейтинг в платформата ?<span class="icon flaticon-add"></span></div>
+            <div class="acc-content">
+              <div class="content">
+              <p>Рейтингът ви помага да сте на първи позиции сред другите обяви/хора.</p>
+              <p>Можете да опитате платените услуги на платформата ни, след като си изберете пакет <a asp-area="Identity" asp-page="/Account/Manage/Pricing" title="избери пакет">от тук.</a></p>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+       @* <h3>Suggestions</h3>
+        <!--Accordian Box-->
+        <ul class="accordion-box">
+          <!--Block-->
+          <li class="accordion block active-block">
+            <div class="acc-btn active">Why won't my payment go through? <span class="icon flaticon-add"></span></div>
+            <div class="acc-content current">
+              <div class="content">
+                <p>Pharetra nulla ullamcorper sit lectus. Fermentum mauris pellentesque nec nibh sed et, vel diam, massa. Placerat quis vel fames interdum urna lobortis sagittis sed pretium. Aliquam eget posuere sit enim elementum nulla vulputate magna. Morbi sed arcu proin quis tortor non risus.</p>
+                <p>Elementum lectus a porta commodo suspendisse arcu, aliquam lectus faucibus.</p>
+              </div>
+            </div>
+          </li>
+
+          <!--Block-->
+          <li class="accordion block">
+            <div class="acc-btn"> How do I get a refund? <span class="icon flaticon-add"></span></div>
+            <div class="acc-content">
+              <div class="content">
+                <p>Pharetra nulla ullamcorper sit lectus. Fermentum mauris pellentesque nec nibh sed et, vel diam, massa. Placerat quis vel fames interdum urna lobortis sagittis sed pretium. Aliquam eget posuere sit enim elementum nulla vulputate magna. Morbi sed arcu proin quis tortor non risus.</p>
+                <p>Elementum lectus a porta commodo suspendisse arcu, aliquam lectus faucibus.</p>
+              </div>
+            </div>
+          </li>
+
+          <!--Block-->
+          <li class="accordion block">
+            <div class="acc-btn">How do I redeem a coupon? <span class="icon flaticon-add"></span></div>
+            <div class="acc-content">
+              <div class="content">
+                <p>Pharetra nulla ullamcorper sit lectus. Fermentum mauris pellentesque nec nibh sed et, vel diam, massa. Placerat quis vel fames interdum urna lobortis sagittis sed pretium. Aliquam eget posuere sit enim elementum nulla vulputate magna. Morbi sed arcu proin quis tortor non risus.</p>
+                <p>Elementum lectus a porta commodo suspendisse arcu, aliquam lectus faucibus.</p>
+              </div>
+            </div>
+          </li>
+
+          <!--Block-->
+          <li class="accordion block">
+            <div class="acc-btn">Changing account name <span class="icon flaticon-add"></span></div>
+            <div class="acc-content">
+              <div class="content">
+                <p>Pharetra nulla ullamcorper sit lectus. Fermentum mauris pellentesque nec nibh sed et, vel diam, massa. Placerat quis vel fames interdum urna lobortis sagittis sed pretium. Aliquam eget posuere sit enim elementum nulla vulputate magna. Morbi sed arcu proin quis tortor non risus.</p>
+                <p>Elementum lectus a porta commodo suspendisse arcu, aliquam lectus faucibus.</p>
+              </div>
+            </div>
+          </li>
+        </ul>*@
+      </div>
+    </section>
+    <!-- End Faqs Section -->

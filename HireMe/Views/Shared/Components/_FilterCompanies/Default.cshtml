@@ -13,6 +13,22 @@
     </style>
 }
 
+    <style>
+        span.select2-container {
+            z-index: 10050;
+        }
+
+        .select2-container--bootstrap .select2-selection--single .select2-selection__rendered {
+        margin-top: -11px;
+        margin-left: 20px;
+        }
+
+        .select2-container--bootstrap .select2-selection--single {
+        line-height: unset;
+        padding: 2rem 0rem;
+        }
+    </style>
+
         <!-- Job Search Form -->
         <div class="job-search-form">
                 <form asp-controller="Company" asp-action="Index" method="post" id="filterForm" asp-route-currentPage="@Model.currentPage">
@@ -20,7 +36,7 @@
               <!-- Form Group -->
               <div class="form-group col-lg-4 col-md-12 col-sm-12">
                 <span class="icon flaticon-search-1"></span>
-                 <input asp-for="SearchString" type="text" placeholder="Име на фирма">
+                 <input asp-for="Name" type="text" placeholder="Име на фирма">
               </div>
 
               <!-- Form Group -->

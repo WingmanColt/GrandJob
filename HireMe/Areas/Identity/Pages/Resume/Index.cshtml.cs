@@ -15,11 +15,11 @@
     using System.Threading.Tasks;
 
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = "Admin, Moderator, Contestant, User")]
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<User> _userManager;
         private readonly IResumeService _resumeService;
+        private readonly IJobsService _jobsService;
         private readonly IBaseService _baseService;
         private readonly string _FilePath;
 
@@ -30,11 +30,13 @@
             IConfiguration config,
             UserManager<User> userManager,
             IResumeService resumeService,
+            IJobsService jobsService,
             IBaseService baseService)
         {
             _userManager = userManager;
             _resumeService = resumeService;
             _baseService = baseService;
+            _jobsService = jobsService;
 
             _SiteUrl = config.GetValue<string>("MySettings:ResumeUrl"); 
             _resumeUploadLimit = config.GetValue<string>("ResumeUploadLimit");
@@ -46,6 +48,7 @@
 
         public class InputModel : CreateResumeInputModel { }
         public IAsyncEnumerable<Resume> Result { get; set; }
+        public IAsyncEnumerable<Resume> ResultArchive { get; set; }
         public int Count { get; set; }
 
         public User UserEntity { get; set; }
@@ -62,46 +65,25 @@
                 return RedirectToPage("/Account/Manage/Pricing", new { Area = "Identity" });
             }
 
+
             UserEntity = user;
-            Result = _resumeService.GetAllBy(user);
-            Count = await _resumeService.GetFilesByUserCount(user.Id);   
+
+            if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
+            {
+                Result = _resumeService.GetAllBy(user);
+                Count = await _resumeService.GetAllCount(user).ConfigureAwait(false);
+            }
+
+            if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
+            {
+                Result = await _jobsService.GetAllReceivedResumes(user, ResumeType.Active);
+                ResultArchive = await _jobsService.GetAllReceivedResumes(user, ResumeType.Archived);
+
+                //Count = ;
+            }
+
             return Page();
         }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
-            }
-
-            UserEntity = user;
-
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            /*if (Input.FormFile != null)
-            {
-                Input.FileId = await _baseService.UploadFileAsync(Input.FormFile, null, user);
-
-                if (Input.FileId is not null)
-                {
-                    var lenght = Input.FormFile.FileName.Length > 40 ? Input.FormFile.FileName.Length - 30 : Input.FormFile.FileName.Length;
-                    OperationResult result = await _resumeService.Create(Input.FormFile.FileName.Substring(0, lenght), Input.FileId, user);
-
-                    if (result.Success)
-                        _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "качване.", 2000);
-                    else _baseService.ToastNotify(ToastMessageState.Error, "Грешка", result.FailureMessage, 6000);
-                }
-
-            }*/
-
-            return RedirectToPage();
-        }
-
 
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
@@ -113,24 +95,24 @@
 
             UserEntity = user;
 
-            var entity = await _resumeService.GetByIdAsync(id);
+            /*var entity = await _resumeService.GetByIdAsync(id);
             if (entity == null)
             {
                 return RedirectToPage("/Account/Errors/NoEntity", new { Area = "Identity" });
-            }
+            }*/
 
-            if (user.Email != entity.UserId)
+            /*if (user.Email != entity.UserId)
             {
                 return RedirectToPage("/Account/Errors/AccessDeniedContent", new { Area = "Identity" });
-            }
+            }*/
 
-            string entId = entity.FileId;
-            OperationResult result = await _resumeService.Delete(entity);
+           // string entId = entity.FileId;
+            OperationResult result = await _resumeService.Delete(id);
 
-             string folderClearedName = Path.Combine(_FilePath, StringHelper.Filter(user?.Email));
-             bool systemDeleted =  _baseService.Delete($"{folderClearedName}\\{entId}");
+          //   string folderClearedName = Path.Combine(_FilePath, StringHelper.Filter(user?.Email));
+           //  bool systemDeleted =  _baseService.Delete($"{folderClearedName}\\{entId}");
 
-            if (result.Success && systemDeleted)
+            if (result.Success /*&& systemDeleted*/)
                     _baseService.ToastNotify(ToastMessageState.Info, "", "файлът е премахнат.", 2000);
                 else
                     await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "", "файлът не се изтри.","Resume/Index", 5000);

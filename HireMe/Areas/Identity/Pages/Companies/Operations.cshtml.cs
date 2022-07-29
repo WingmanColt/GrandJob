@@ -58,6 +58,9 @@
         public string ReturnUrl { get; set; }
         public List<IFormFile> files { get; set; }
 
+        public IAsyncEnumerable<SelectListModel> AllLocations { get; set; }
+        public IAsyncEnumerable<SelectListModel> AllCategories { get; set; }
+        public IAsyncEnumerable<string> MyGalleryImages { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -66,78 +69,76 @@
         {
             public string PictureFullPath { get; set; }
             public string GalleryFullPath { get; set; }
-            public IAsyncEnumerable<string> MyGalleryImages { get; set; }
-
         }
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            ReturnUrl = Url.Content("~/");
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
-            }
-            if (user.AccountType == 0)
-            {
-                return RedirectToPage("/Account/Manage/Pricing", new { Area = "Identity" });
-            }
+                        var user = await _userManager.GetUserAsync(User);
+                        if (user == null)
+                        {
+                            return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
+                        }
+                        if (user.AccountType == 0)
+                        {
+                            return RedirectToPage("/Account/Manage/Pricing", new { Area = "Identity" });
+                        }
 
-            LoadData();
+                        AllLocations = _locationService.GetAllSelectList();
+                        AllCategories = _categoriesService.GetAllSelectList();
 
-            var company = await _companyService.GetByIdAsync(id);
+                        var company = await _companyService.GetByIdAsync(id);
 
-            if (id > 0 && company is not null && user.Id == company?.PosterId)
-            {
-                Input = new InputModel
-                {
-                    Id = company.Id,
-                    Email = company.Email,
-                    PhoneNumber = company.PhoneNumber,
-                    Title = company.Title,
-                    About = company.About,
-                    Private = company.Private,
-                    Logo = company.Logo,
-                    LocationId = company.LocationId,
-                    Adress = company.Adress,
-                    Website = company.Website,
-                    Facebook = company.Facebook,
-                    Linkdin = company.Linkdin,
-                    Twitter = company.Twitter,
-                    isAuthentic_EIK = company.isAuthentic_EIK,
-                    Admin1_Id = company.Admin1_Id,
-                    Admin2_Id = company.Admin2_Id,
-                    Admin3_Id = company.Admin3_Id,
-                    isApproved = company.isApproved,
-                    Promotion = company.Promotion,
-                    MyGalleryImages = company.GalleryImages?.Split(',').ToAsyncEnumerable(),
-                    Rating = company.Rating
+                        if (id > 0 && company is not null && (user.Id == company?.PosterId || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator)))
+                        {
+                            Input = new InputModel
+                            {
+                                Id = company.Id,
+                                Email = company.Email,
+                                PhoneNumber = company.PhoneNumber,
+                                Title = company.Title,
+                                About = company.About,
+                                Private = company.Private,
+                                Logo = company.Logo,
+                                LocationId = company.LocationId,
+                                Adress = company.Adress,
+                                Website = company.Website,
+                                Facebook = company.Facebook,
+                                Linkdin = company.Linkdin,
+                                Twitter = company.Twitter,
+                                isAuthentic_EIK = company.isAuthentic_EIK,
+                                Admin1_Id = company.Admin1_Id,
+                                Admin2_Id = company.Admin2_Id,
+                                Admin3_Id = company.Admin3_Id,
+                                isApproved = company.isApproved,
+                                Promotion = company.Promotion,
+                              //  MyGalleryImages = company.GalleryImages?.Split(',').ToAsyncEnumerable(),
+                                Rating = company.Rating
 
-                };
+                            };
 
-                Input.PictureFullPath = _ImagePathShow + (company.Logo is not null? company.Logo : Input.Logo);
-                Input.GalleryFullPath = Path.Combine(_GalleryPathShow, StringHelper.Filter(company.Email));
-            }
+                            MyGalleryImages = company.GalleryImages?.Split(',').ToAsyncEnumerable();
+                            Input.PictureFullPath = _ImagePathShow + (company.Logo is not null? company.Logo : Input.Logo);
+                            Input.GalleryFullPath = Path.Combine(_GalleryPathShow, StringHelper.Filter(company.Email));
+                        }
 
-            return Page();
+                        return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int id, string returnUrl)
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            ReturnUrl = Url.Content("~/");
-
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return RedirectToPage("/Account/Errors/AccessDenied", new { Area = "Identity" });
             }
+
+            AllLocations = _locationService.GetAllSelectList();
+            AllCategories = _categoriesService.GetAllSelectList();
 
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
-            LoadData();
 
             var company = await _companyService.GetByIdAsync(id);
 
@@ -174,7 +175,7 @@
             }
 
             OperationResult result;
-            if (id > 0 && company is not null && user.Id == company?.PosterId)
+            if (id > 0 && company is not null && (user.Id == company?.PosterId || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator)))
             {
                 Input.Id = id;
                 result = await this._companyService.Update(Input, true, user);
@@ -184,26 +185,24 @@
             }
             if (company is null)
             {
+                int count = await _companyService.GetCountByUser(user).ConfigureAwait(true);
+                if (count >= int.Parse(user.AccountType.GetDescription()))
+                {
+                    _baseService.ToastNotify(ToastMessageState.Warning, "Отказана операция", $"Имате право да добавяте само {user.AccountType.GetDescription()} фирмa(и).", 2000);
+                    return Redirect("~/Identity/List/Companies");
+                }
                 result = await this._companyService.Create(Input, true, user);
 
                 if (result.Success)
                 {
                     await _notifyService.CreateForAdmins("Има фирма в процес на изчакване за одобрение", $"", DateTime.Now, NotifyType.Warning, "far fa-clock", user.Id).ConfigureAwait(false);
                     _baseService.ToastNotify(ToastMessageState.Success, "Успешна", "операция.", 2000);
-                    return Redirect(ReturnUrl);
+
+                    return Redirect("~/Identity/List/Companies");
                 }
             }
 
             return RedirectToPage();
-        }
-
-        public IAsyncEnumerable<SelectListModel> AllLocations { get; set; }
-        public IAsyncEnumerable<SelectListModel> AllCategories { get; set; }
-        private void LoadData()
-        {
-            AllLocations = _locationService.GetAllSelectList();
-            AllCategories = _categoriesService.GetAllSelectList();
-
         }
 
     }

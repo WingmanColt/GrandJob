@@ -9,8 +9,8 @@ namespace HireMe.Entities.View
         public int Key { get; set; }
         public string Value { get; set; }
         public uint intValue { get; set; }
-        public bool IsChecked { get; set; } = false;
-        public bool IsDisabled { get; set; } = false;
+        public bool IsChecked { get; set; } 
+        public bool IsDisabled { get; set; } 
     }
 
 }

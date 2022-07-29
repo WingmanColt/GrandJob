@@ -41,7 +41,7 @@
 
         [Required(ErrorMessage = "Моля въведете телефонен номер за връзка.")]
         [Display(Name = "Телефонен номер:")]
-        [Phone]
+        [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
 
         [Display(Name = "Уеб сайт:")]
@@ -70,7 +70,7 @@
         [Display(Name = "Персонал:")]
         public string Admin3_Id { get; set; }
 
-        public PromotionEnum Promotion { get; set; }
+        public PackageType Promotion { get; set; }
 
         public DateTime Date { get; set; }
 

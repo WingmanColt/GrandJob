@@ -107,12 +107,13 @@ using System;
             //   string res = String.Concat(str?.Trim(DefaultDelimeters)?.Split(' ', StringSplitOptions.RemoveEmptyEntries));/*.Split(DefaultDelimeters))*/;//Regex.Replace(firstWordOnly ? getFirstWord(str) : str, String.Concat(charsToRemove), String.Empty);
             // return res;
         }
-        public static string Filter2(this string str)
+        public static string FilterTrimSplit(this string str)
         {
             // for using str = str.GetUntilOrEmpty("@") 
             string res = String.Concat(str?.Trim(DefaultDelimeters)?.Split(' ', StringSplitOptions.RemoveEmptyEntries));/*.Split(DefaultDelimeters))*/;//Regex.Replace(firstWordOnly ? getFirstWord(str) : str, String.Concat(charsToRemove), String.Empty);
-             return res;
+            return res;
         }
+         
         //    public static string RemoveSpecialCharacters(string value)
         //  {
         //   return new String(value.ex(DefaultDelimeters).ToArray());

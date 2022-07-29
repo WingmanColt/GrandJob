@@ -4,7 +4,9 @@
     using HireMe.Core.Helpers;
     using HireMe.Data.Repository.Interfaces;
     using HireMe.Entities.Enums;
+    using HireMe.Entities.Input;
     using HireMe.Entities.Models;
+    using HireMe.Entities.Models.Chart;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using System;
@@ -15,6 +17,9 @@
     public class DelayedTask : IDelayedTask
     {
         private readonly ILogService logger;
+        private readonly IRepository<Company> _companyRepository;
+        private readonly IRepository<CompanyStats> _companyStatsRepository;
+        private readonly IRepository<JobStats> _jobStatsRepository;
         private readonly IRepository<Jobs> _jobsRepository;
         private readonly IRepository<Contestant> _contestantRepository;
         private readonly IRepository<Tasks> _tasksRepository;
@@ -22,12 +27,18 @@
 
         public DelayedTask(
             IConfiguration config,
-            ILogService logger, 
+            ILogService logger,
+            IRepository<CompanyStats> companyStatsRepository,
+            IRepository<JobStats> jobStatsRepository,
+            IRepository<Company> companyRepository,
             IRepository<Jobs> jobsRepository,
             IRepository<Contestant> contestantRepository,
             IRepository<Tasks> tasksRepository)
         {
             this.logger = logger;
+            _companyStatsRepository = companyStatsRepository;
+            _jobStatsRepository = jobStatsRepository;
+            _companyRepository = companyRepository;
             _jobsRepository = jobsRepository;
             _contestantRepository = contestantRepository;
             _tasksRepository = tasksRepository;
@@ -37,26 +48,169 @@
 
         public async Task DoWork(CancellationToken token)
         {
-
-            // while (true)
-            // {
-            //  await ExecuteTaskForJobs();
-            // await ExecuteTaskForContestants();
+         //    while (true)
+         //    {
+           /// await ExecuteTaskForTasksStart();
+            // await ExecuteUserTasks();
             // await Task.Delay(TimeSpan.FromHours(24));
             // }
+        }
 
 
+        public async Task DoWorkMonthly(CancellationToken token)
+        {
+            while (true)
+            {
+                //await ExecuteCompanyStatistics(token);
+                await ExecuteJobStatistics(token);
+                await Task.Delay(TimeSpan.FromHours(24));
+               // await Task.Delay(TimeSpan.FromDays(30));
+            }
 
 
+        }
 
-             while (true)
-             {
-             await ExecuteTaskForTasksStart();
-             await ExecuteUserTasks();
-             await Task.Delay(TimeSpan.FromHours(24));
-             }
+        // Companies
+        public async Task ExecuteCompanyStatistics(CancellationToken stoppingToken)
+        {
+            var entityList = _companyRepository.Set().AsQueryable()
+                .Where(x => x.isApproved == ApproveType.Success);
+               // .AsAsyncEnumerable();
 
 
+            if (await entityList.AnyAsync())
+            {
+                foreach (var entity in entityList)
+                {          
+                   await UpdateCompanyData(entity, entity.Views);
+                }  
+            }
+        }
+
+
+        public async Task UpdateCompanyData(Company entity, int Views)
+        {
+            try
+            {
+                CompanyStats IsExists = await GetByIdAsync(entity.Id);
+
+                var companyEntity = new CompanyStatsInputModel();
+
+                switch (DateTime.Now.Month)
+                {
+                    case 1: companyEntity.January = Views; break;
+                    case 2: companyEntity.February = Views; break;
+                    case 3: companyEntity.March = Views; break;
+                    case 4: companyEntity.April = Views; break;
+                    case 5: companyEntity.May = Views; break;
+                    case 6: companyEntity.June = Views; break;
+                    case 7: companyEntity.July = Views; break;
+                    case 8: companyEntity.August = Views; break;
+                    case 9: companyEntity.September = Views; break;
+                    case 10: companyEntity.October = Views; break;
+                    case 11: companyEntity.November = Views; break;
+                    case 12: companyEntity.December = Views; break;
+                }
+
+                companyEntity.EntityId = entity.Id;
+               // companyEntity.PosterId = entity.PosterId;
+                companyEntity.January = 20;
+                companyEntity.December = 50;
+
+                if (IsExists is null)
+                {
+                    CompanyStats newEntity = new CompanyStats();
+
+                    newEntity.PosterId = entity.PosterId;
+                    newEntity.Update(companyEntity);
+
+                    await _companyStatsRepository.AddAsync(newEntity);
+                }
+                else
+                {
+                    if (companyEntity is not null)
+                    {
+                        IsExists.Update(companyEntity);
+                        _companyStatsRepository.Update(IsExists);
+                    }
+                }
+
+                 await _companyStatsRepository.SaveChangesAsync();
+                //return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+    }
+
+
+        // Jobs
+        public async Task ExecuteJobStatistics(CancellationToken stoppingToken)
+        {
+            var entityList = _jobsRepository.Set().AsQueryable()
+                .Where(x => x.isApproved == ApproveType.Success);
+
+            if (await entityList.AnyAsync())
+            {
+                foreach (var entity in entityList)
+                {
+                    await UpdateJobData(entity, entity.Views);
+                }
+            }
+        }
+
+        public async Task UpdateJobData(Jobs entity, int Views)
+        {
+            try
+            {
+                var IsExists = await GetByIdJobAsync(entity.Id);
+
+                var jobEntity = new JobStatsInputModel();
+                jobEntity.EntityId = entity.Id;
+
+               // if(Views > 0)
+               // jobEntity.ViewsPerDay =  IsExists.ViewsPerDay.EndsWith(',') ? Views.ToString() : ',' + Views.ToString();
+
+                jobEntity.ViewsPerDay = "10,20,50";
+                jobEntity.PosterId = entity.PosterID;
+                if (IsExists is null)
+                {
+                    JobStats newEntity = new JobStats();
+
+                    newEntity.PosterId = entity.PosterID;
+                    newEntity.Update(jobEntity);
+
+                    await _jobStatsRepository.AddAsync(newEntity);
+                }
+                else
+                {
+                    if (jobEntity is not null)
+                    {
+                        IsExists.Update(jobEntity);
+                        _jobStatsRepository.Update(IsExists);
+                    }
+                }
+
+                await _jobStatsRepository.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private async Task<CompanyStats> GetByIdAsync(int id)
+        {
+            var ent = await _companyStatsRepository.Set().Where(p => p.EntityId == id).FirstOrDefaultAsync();
+            return ent;
+        }
+        private async Task<JobStats> GetByIdJobAsync(int id)
+        {
+            var ent = await _jobStatsRepository.Set().Where(p => p.EntityId == id).FirstOrDefaultAsync();
+            return ent;
         }
         public async Task ExecuteUserTasks()
         {
@@ -219,6 +373,7 @@
     public interface IDelayedTask
     {
         Task DoWork(CancellationToken stoppingToken);
+        Task DoWorkMonthly(CancellationToken stoppingToken);
     }
 }
 

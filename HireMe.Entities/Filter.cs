@@ -1,4 +1,5 @@
-﻿using HireMe.Entities.View;
+﻿using Dapper.Contrib.Extensions;
+using HireMe.Entities.View;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,10 +15,11 @@ namespace HireMe.Entities
         }
 
         [FromQuery]
+        [NotMapped]
         public int currentPage { get; set; }
 
         // [FromQuery]
-        public string SearchString { get; set; }
+        public string Name { get; set; }
        // [FromQuery]
         public int CategoryId { get; set; }
        // [FromQuery]
@@ -37,11 +39,13 @@ namespace HireMe.Entities
         // [FromQuery]
         public int MaxSalary { get; set; } = 100000;
 
-
+        [NotMapped]
         public List<CheckBoxListItem> Equipments { get; set; }
 
+        [NotMapped]
         public List<CheckBoxListItem> Exprience { get; set; }
 
+        [NotMapped]
         public List<CheckBoxListItem> SortBy { get; set; } = new List<CheckBoxListItem>()
         {
             new CheckBoxListItem { Value = "Рейтинг", Key = 1 },
@@ -50,6 +54,7 @@ namespace HireMe.Entities
             new CheckBoxListItem { Value = "Заплата", Key = 4 },
         };
 
+        [NotMapped]
         public List<CheckBoxListItem> Salaries { get; set; } = new List<CheckBoxListItem>()
         {
             new CheckBoxListItem { intValue = 500, Value = "500-1000", Key = 1 },

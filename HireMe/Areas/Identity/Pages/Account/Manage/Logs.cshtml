@@ -1,0 +1,73 @@
+﻿@page
+@model LogsModel
+
+@{
+    ViewData["Title"] = "Системни грешки";
+    Layout = "/Areas/Identity/Pages/_Layout.cshtml";
+}
+
+
+
+    <!-- Dashboard -->
+    <section class="user-dashboard">
+      <div class="dashboard-outer">
+        <div class="upper-title-box">
+          <h3>Системни грешки</h3>
+
+        </div>
+
+        <div class="row">
+         <form class="default-form" method="post">
+
+          <div class="col-lg-12">
+            <!-- applicants Widget -->
+            <div class="applicants-widget ls-widget">
+             @if (Model.List is not null && await Model.List.AnyAsync())
+                    {
+                        <div class="widget-title">
+                            <p>Страница: @Model.Pager?.CurrentPage от @Model.Pager?.TotalPages</p>
+                           <div class="desktop-only">
+                            <button type="submit" class="theme-btn btn-style-danger" data-toggle="tooltip" data-placement="bottom" title="Изтрий всички"><i class="la la-trash" aria-hidden="true"></i></button>
+                           </div>
+                        </div>
+
+                        <div class="widget-content">
+                     <div class="table-outer">
+                    <table class="default-table manage-job-table">
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Code</th>
+                          <th>Date</th>
+                          <th>User</th>
+                          <th>Error Page</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                          @await foreach (var item in Model.List)
+                            {
+                        <tr>
+                          <td>@item.Title</td>
+                          <td>@item.Code</td>
+                          <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                          <td>@item.SenderId</td>
+                          <td>@item.ErrorPage</td>
+                        </tr>
+                            }
+                      </tbody>
+                    </table>
+                  </div>
+
+                            <!-- Pagination -->
+                            @await Html.PartialAsync("../Partials/_PaginationPartial", Model.Pager)
+                        </div>
+                    }
+                </div>
+          </div>
+          </form>
+        </div>
+      </div>
+    </section>
+    <!-- End Dashboard -->
+

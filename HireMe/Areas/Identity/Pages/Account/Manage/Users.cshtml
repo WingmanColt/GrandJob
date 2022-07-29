@@ -73,36 +73,36 @@
 
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Admin" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Admin" class="dropdown-item">
                                                         <span style="color:@Roles.Admin.GetDescription()">Admin</span>
                                                     </a>
                                                     </li>
 
                                                     <li>
-                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Moderator" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Moderator" class="dropdown-item">
                                                         <span style="color:@Roles.Moderator.GetDescription()">Moderator</span>
                                                     </a>
                                                     </li>
                                                                                                         <li>
-                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Employer" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Employer" class="dropdown-item">
                                                         <span style="color:@Roles.Employer.GetDescription()">Employer</span>
                                                     </a>
                                                     </li>
 
                                                                                                         <li>
-                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Contestant" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Contestant" class="dropdown-item">
                                                         <span style="color:@Roles.Contestant.GetDescription()">Contestant</span>
                                                     </a>
                                                     </li>
 
                                                                                                         <li>
-                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Recruiter" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.Recruiter" class="dropdown-item">
                                                         <span style="color:@Roles.Recruiter.GetDescription()">Recruiter</span>
                                                     </a>
                                                     </li>
 
                                                                                                         <li>
-                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.User" asp-route-returnUrl="@Model.ReturnUrl" class="dropdown-item">
+                                                    <a asp-controller="Account" asp-action="ExchangeRole" asp-route-id="@item.Id" asp-route-T="@Roles.User"  class="dropdown-item">
                                                         <span style="color:@Roles.User.GetDescription()">User</span>
                                                     </a>
                                                     </li>
@@ -111,7 +111,7 @@
                                             </div>
                                             @if(item.Role != Roles.Admin)
                                             {
-                                             <a asp-controller="Account" asp-action="DeleteUser" asp-route-id="@item.Id" asp-route-returnUrl="@Model.ReturnUrl" class="delete-btn" data-text="Изтриване">
+                                             <a asp-controller="Account" asp-action="DeleteUser" asp-route-id="@item.Id"  class="delete-btn" data-text="Изтриване">
                                                  <span class="text-danger la la-trash"></span>
                                                  </a>
                                             }

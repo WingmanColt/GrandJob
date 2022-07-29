@@ -1,10 +1,13 @@
 ﻿@page "{handler}"
+
+@inject IPromotionService _promotionService
 @model ListModel
 
 @{
-    ViewData["Title"] = "Лист";
+    ViewData["Title"] = "Списък";
     Layout = "/Areas/Identity/Pages/_Layout.cshtml";
     var action = ViewContext.RouteData.Values["handler"];
+    Promotion promotion;
 }
 
 <!-- Dashboard -->
@@ -13,23 +16,23 @@
         <div class="upper-title-box">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>Лист</h3>
+                  <h3>Списък</h3>   
 
-                    @if (@Model.UserEntity is not null)
+                    @if (Model.UserEntity is not null)
                     {
                         <!-- Dashboard Option -->
                         <div class="dropdown dashboard-option">
-                            <button class="dropdown-toggle theme-btn btn-style-danger mid-right" role="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i> Добави</button>
-                            <ul class="dropdown-menu">
-                                @if (@Model.UserEntity.Role.Equals(Roles.User) || @Model.UserEntity.Role.Equals(Roles.Contestant) || @Model.UserEntity.Role.Equals(Roles.Admin) || @Model.UserEntity.Role.Equals(Roles.Moderator))
+                            <button class="dropdown-toggle theme-btn btn-style-danger mid-right" role="button" data-toggle="dropdown" aria-expanded="false"><i class="las la-plus"></i> Добави</button>
+                            <ul class="dropdown-menu notify">
+                                @if (Model.UserEntity.Role.Equals(Roles.User) || Model.UserEntity.Role.Equals(Roles.Contestant) || Model.UserEntity.Role.Equals(Roles.Admin) || Model.UserEntity.Role.Equals(Roles.Moderator))
                                 {
                                     <li><a asp-area="Identity" asp-page="/Contestant/Operations"> <i class="las la-id-badge"></i> Кандидатура</a></li>
                                 }
-                                @if (@Model.UserEntity.Role.Equals(Roles.Employer) || @Model.UserEntity.Role.Equals(Roles.Admin) || @Model.UserEntity.Role.Equals(Roles.Moderator))
+                                @if (Model.UserEntity.Role.Equals(Roles.Employer) || Model.UserEntity.Role.Equals(Roles.Admin) || Model.UserEntity.Role.Equals(Roles.Moderator))
                                 {
                                     <li><a asp-area="Identity" asp-page="/Companies/Operations"><i class="la la-briefcase"></i> Фирма</a></li>
                                 }
-                                @if (@Model.UserEntity.Role.Equals(Roles.Recruiter) || @Model.UserEntity.Role.Equals(Roles.Admin) || @Model.UserEntity.Role.Equals(Roles.Moderator))
+                                @if (Model.UserEntity.Role.Equals(Roles.Employer) || Model.UserEntity.Role.Equals(Roles.Recruiter) || Model.UserEntity.Role.Equals(Roles.Admin) || Model.UserEntity.Role.Equals(Roles.Moderator))
                                 {
                                     <li><a asp-area="Identity" asp-page="/Jobs/Operations"><i class="la la-file-invoice"></i> Обява за работа</a></li>
                                 }
@@ -69,12 +72,12 @@
                             {
                                 <!-- Candidate block three -->
                                 <div class="candidate-block-three">
-                                    <div class="inner-box">
+                                    <div class="inner-box" style="border: 1px solid @item.PremiumPackage.GetDescription()">
                                         <div class="content">
                                             <figure class="image"><img class="lazyload" data-src="@item.CompanyLogo" alt=""></figure>
                                             <h4 class="name"><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
                                             <ul class="candidate-info">
-                                                <li><span class="icon fas fa-clock"></span> @item.CreatedOn.ToString("MM MMMM") - @item.ExpiredOn.ToString("MM MMMM")</li>
+                                                <li><span class="icon las la-clock"></span> @item.CreatedOn.ToString("dd MMMM") - @item.ExpiredOn.ToString("dd MMMM")</li>
                                             </ul>
                                             <ul class="post-tags">
                                              @if (!item.isArchived)
@@ -95,26 +98,36 @@
                                                 } 
                                             </ul>
                                         </div>
-                                        <div class="option-box top-right">
+                                        <div class="option-box top-right2">
+                                            <span class="icon @item.PremiumPackage.GetShortName()" style="color:@item.PremiumPackage.GetDescription(); font-size: 2rem"></span>
                                             <!-- Dashboard Option -->
                                         <div class="dropdown dashboard-option menu-btn">
-                                                <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
+                                                <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false"><i class="las la-cog" style="font-size:2rem;" ></i></button>
 
-                                                <ul class="dropdown-menu">
+                                                <ul class="dropdown-menu chosen">
                                                     <li>
                                                         <a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">
-                                                            <span class="fa fa-eye"></span> Преглед
+                                                            <span class="las la-eye"></span> Преглед
                                                         </a>
                                                     </li>
+                                                    @if(!item.PremiumPackage.Equals(PremiumPackage.None) && !item.PremiumPackage.Equals(PremiumPackage.Bronze))
+                                                       {
+                                                       @* promotion = await _promotionService.GetPromotionCounter(PostType.Job, item.Id);*@
+                                                        <li>
+                                                            <a asp-controller="Jobs" asp-action="RefreshPost" asp-route-id="@item.Id" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
+                                                                <span class="las la-sync"></span> Актулизирай обявата @*(@promotion?.RefreshCount)*@
+                                                            </a>
+                                                        </li>
+                                                    }
                                                     <li>
                                                         <a asp-area="Identity" asp-page="/Jobs/Operations" asp-route-id="@item.Id" class="dropdown-item">
-                                                            <span class="fa fa-book"></span> Редактирай
+                                                            <span class="las la-book"></span> Редактирай
                                                         </a>
                                                     </li>
 
                                                     <li>
-                                                        <a asp-area="Identity" asp-page="/Jobs/Delete" asp-route-id="@item.Id" class="dropdown-item">
-                                                            <span class="fa fa-trash"></span> Изтрий
+                                                        <a class="dropdown-item call-modal delete-modal-load" data-modal="#delete-post-modal" data-id="@item.Id" data-handler="DeleteJob">
+                                                            <span class="las la-trash"></span> Изтрий
                                                         </a>
                                                     </li>
 
@@ -122,22 +135,22 @@
                                                     {
                                                         <li>
                                                             <a asp-controller="Jobs" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Success" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                                <span class="fas fa-check-circle"></span> Одобряване
+                                                                <span class="las la-check-circle"></span> Одобряване
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a asp-controller="Jobs" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Rejected" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                                <span class="fas fa-ban"></span> Отхвърли
+                                                                <span class="las la-ban"></span> Отхвърли
                                                             </a>
                                                         </li>
                                                         <li>
                                                             <a asp-controller="Jobs" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Waiting" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                                <span class="fas fa-balance-scale"></span> Удължи одобрението
+                                                                <span class="las la-balance-scale"></span> Удължи одобрението
                                                             </a>
                                                         </li>
                                                         <li>
                                                         <a asp-controller="Jobs" asp-action="ExchangeUser" asp-route-id="@item.Id" asp-route-T="@ApproveType.Waiting" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                            <span class="fas fa-exchange"></span> Прехвърлянe на собственост
+                                                            <span class="las la-sync"></span> Прехвърлянe на собственост
                                                         </a>
                                                     </li>
                                                     }
@@ -167,7 +180,7 @@
                                             <figure class="image"><img class="lazyload" data-src="@item.Logo" alt=""></figure>
                                             <h4 class="name"><a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id">@item.Title</a></h4>
                                             <ul class="candidate-info">
-                                                <li><span class="icon fas fa-clock"></span> @item.Date.ToString("yyyy")</li>
+                                                <li><span class="icon las la-clock"></span> @item.Date.ToString("yyyy")</li>
                                             </ul>
                                             <ul class="post-tags">
                                                     @switch (item.isApproved)
@@ -181,44 +194,43 @@
                                                     }
                                             </ul>
                                         </div>
-                                        <div class="option-box top-right">
+                                        <div class="option-box top-right2">
                                             <!-- Dashboard Option -->
-                                                                               <div class="dropdown dashboard-option menu-btn">
-                                                <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
+                                                  <div class="dropdown dashboard-option menu-btn">
+                                                <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">  <i class="las la-cog" style="font-size:2rem;" ></i></button>
 
-                                                <ul class="dropdown-menu">
+                                                <ul class="dropdown-menu chosen">
                                                     <li>
                                                         <a asp-controller="Company" asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">
-                                                            <span class="fa fa-eye"></span> Преглед
+                                                            <span class="las la-eye"></span> Преглед
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a asp-area="Identity" asp-page="/Companies/Operations" asp-route-id="@item.Id" class="dropdown-item">
-                                                            <span class="fa fa-book"></span> Редактирай
+                                                            <span class="las la-book"></span> Редактирай
                                                         </a>
                                                     </li>
 
                                                     <li>
-                                                        <a asp-area="Identity" asp-page="/Companies/Delete" asp-route-id="@item.Id" class="dropdown-item">
-                                                            @{ ViewBag.ID = @item.Id; }
-                                                            <span class="fa fa-trash"></span> Изтрий
+                                                        <a class="dropdown-item call-modal delete-modal-load" data-modal="#delete-post-modal" data-id="@item.Id" data-handler="DeleteCompany">
+                                                            <span class="las la-trash"></span> Изтрий
                                                         </a>
                                                     </li>
                                                     @if (Model.UserEntity.Role.Equals(Roles.Admin) || Model.UserEntity.Role.Equals(Roles.Moderator))
                                                     {
                                                          <li>
                                                         <a asp-controller="Company" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Success" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                            <span class="fas fa-check-circle"></span> Одобряване
+                                                            <span class="las la-check-circle"></span> Одобряване
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a asp-controller="Company" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Rejected" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                            <span class="fas fa-ban"></span> Отхвърли
+                                                            <span class="las la-ban"></span> Отхвърли
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a asp-controller="Company" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Waiting" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                            <span class="fas fa-balance-scale"></span> Удължи одобрението
+                                                            <span class="las la-balance-scale"></span> Удължи одобрението
                                                         </a>
                                                     </li>
                                                     }
@@ -235,7 +247,7 @@
                         </div>
                     }
 
-                    @if (Model.ContestantsList is not null)
+                    @if (Model.ContestantsList is not null && await Model.ContestantsList.AnyAsync())
                     {
                         <div class="widget-content">
 
@@ -243,12 +255,12 @@
                             {
                                 <!-- Candidate block three -->
                                 <div class="candidate-block-three">
-                                    <div class="inner-box">
+                                    <div class="inner-box" style="border: 1px solid @item.PremiumPackage.GetDescription()">
                                         <div class="content">
                                             <figure class="image"><img class="lazyload" data-src="@item.Logo" alt=""></figure>
                                             <h4 class="name"><a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id">@item.FullName</a></h4>
                                             <ul class="candidate-info">
-                                                <li><span class="icon fas fa-clock"></span> @item.CreatedOn.ToString("MM MMMM") - @item.ExpiredOn.ToString("MM MMMM")</li>
+                                                <li><span class="icon las la-clock"></span> @item.CreatedOn.ToString("dd MMMM") - @item.ExpiredOn.ToString("dd MMMM")</li>
                                             </ul>
                                             <ul class="post-tags">
                                              @if (!item.isArchived)
@@ -269,45 +281,55 @@
                                                 } 
                                             </ul>
                                         </div>
-                                        <div class="option-box top-right">
+                                        <div class="option-box top-right2">
+
+                                          <i class="@item.PremiumPackage.GetShortName()" style="color:@item.PremiumPackage.GetDescription(); font-size: 2rem"></i>
+  
                                             <!-- Dashboard Option -->
                                         <div class="dropdown dashboard-option menu-btn">
-                                                <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-h"></i></button>
+                                                <button class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="false">  <i class="las la-cog" style="font-size:2rem;" ></i></button>
 
-                                                <ul class="dropdown-menu">
+                                                <ul class="dropdown-menu chosen">
                                                     <li>
                                                         <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id" class="dropdown-item">
-                                                            <span class="fa fa-eye"></span> Преглед
+                                                            <span class="las la-eye"></span> Преглед
                                                         </a>
                                                     </li>
+                                                     @if(!item.PremiumPackage.Equals(PremiumPackage.None) && !item.PremiumPackage.Equals(PremiumPackage.Bronze))
+                                                       {
+                                                       @* promotion = await _promotionService.GetPromotionCounter(PostType.Job, item.Id);*@
+                                                        <li>
+                                                            <a asp-controller="Contestants" asp-action="RefreshPost" asp-route-id="@item.Id" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
+                                                                <span class="las la-sync"></span> Актулизирай обявата @*(@promotion?.RefreshCount)*@
+                                                            </a>
+                                                        </li>
+                                                    }
                                                     <li>
                                                         <a asp-area="Identity" asp-page="/Contestant/Operations" asp-route-id="@item.Id" class="dropdown-item">
-                                                            <span class="fa fa-book"></span> Редактирай
+                                                            <span class="las la-book"></span> Редактирай
                                                         </a>
                                                     </li>
 
                                                     <li>
-                                                        <a class="dropdown-item call-modal" data-modal="#apply-modal" data-id="@item.Id">
-                                                        @{ ViewBag.ID = @item.Id; }
-
-                                                            <span class="fa fa-trash"></span> Изтрий
+                                                        <a class="dropdown-item call-modal delete-modal-load" data-modal="#delete-post-modal" data-id="@item.Id" data-handler="DeleteContestant">
+                                                            <span class="las la-trash"></span> Изтрий
                                                         </a>
                                                     </li>
                                                     @if (Model.UserEntity.Role.Equals(Roles.Admin) || Model.UserEntity.Role.Equals(Roles.Moderator))
                                                     {
                                                     <li>
                                                         <a asp-controller="Contestants" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Success" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                            <span class="fas fa-check-circle"></span> Одобряване
+                                                            <span class="las la-check-circle"></span> Одобряване
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a asp-controller="Contestants" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Rejected" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                            <span class="fas fa-ban"></span> Отхвърли
+                                                            <span class="las la-ban"></span> Отхвърли
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <a asp-controller="Contestants" asp-action="Approve" asp-route-id="@item.Id" asp-route-T="@ApproveType.Waiting" asp-route-returnUrl="@TempData["ReturnUrl"]" class="dropdown-item">
-                                                            <span class="fas fa-balance-scale"></span> Удължи одобрението
+                                                            <span class="las la-balance-scale"></span> Удължи одобрението
                                                         </a>
                                                     </li>
                                                     }
@@ -317,7 +339,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            }
+                            } 
 
                             <!-- Pagination -->
                             @await Html.PartialAsync("../Partials/_PaginationPartial", Model.Pager)
@@ -330,11 +352,75 @@
       </div>
     </section>
     <!-- End Dashboard -->
-
+          <div id="PartialViewDiv"></div>
+    @*
 
 @if(Model.JobsList is not null || Model.CompaniesList is not null || Model.ContestantsList is not null)
 {
  @await Html.PartialAsync("../Partials/_DeletePartial", new DeleteViewModel(){Sort = Model.Sort, CurrentPage = @Model.Pager.CurrentPage, Handler = $"Delete{@action}"})
  //<partial name="../Partials/_DeletePartial" model='new DeleteViewModel(){Sort = Model.Sort, CurrentPage = @Model.Pager.CurrentPage, Handler = $"Delete{@action}"}' />
-}
+}*@
 
+      @section scripts{
+    <script>
+
+//$('#delete-job, #delete-company, #delete-contestant').click(function(e) { doClick(e) });
+
+        var buttons = document.querySelectorAll(".delete-modal-load");
+        buttons.forEach(button => {
+         button.addEventListener('click', function(event) {
+            var handler = button.dataset.handler;
+             fetch('/identity/list/' + handler)
+                .then((response) => {
+                    console.log(response)
+                    return response.text();
+                })
+                .then((result) => {
+                    console.log(result);
+                    document.getElementById('PartialViewDiv').innerHTML = result;
+                });
+            });
+          });
+        //button.addEventListener('click', () => SendDeleteRequest(button.dataset.handler));
+        
+
+    /*function SendDeleteRequest(handler) {
+        fetch('/identity/list/'+handler')
+                .then((response) => {
+                    return response.text();
+                })
+                .then((result) => {
+                    document.getElementById('PartialViewDiv').innerHTML = result;
+                });*/
+
+	/*$.ajax({
+		url: '/identity/list/'+handler,
+		type: "POST",
+		dataType: "json",
+		//data: { id: valId },
+		success: function (response) {
+               document.getElementById('PartialViewDiv').innerHTML = response;
+
+		},
+		error: function (e) {
+            alert("Не можахме да заредим тази страница.")
+		}
+
+	});*/
+    
+
+            /*
+            base.addEventListener('click', function(event) {
+            console.log(event);
+            var handler = el.target.getAttribute('data-handler');
+            fetch('/identity/list/'+handler')
+                .then((response) => {
+                    return response.text();
+                })
+                .then((result) => {
+                    document.getElementById('PartialViewDiv').innerHTML = result;
+                });
+            });
+        */
+    </script>
+}

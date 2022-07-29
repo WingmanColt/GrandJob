@@ -40,13 +40,16 @@ namespace HireMe.Controllers
             _favouriteService = favouriteService;
         }
 
-        //[ResponseCache(CacheProfileName = "Weekly")]
-        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        [ResponseCache(CacheProfileName = "Hourly")]
+        //[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index(IndexViewModel viewModel, [FromServices] ISkillsService _skillsService, [FromServices] ILocationService _locationService)
         {
             var user = await _userManager.GetUserAsync(User);
 
             viewModel.PictureUrl = _config.GetSection("MySettings").GetSection("CompanyImageUrl").Value;
+            viewModel.UserPicturePath = _config.GetSection("MySettings").GetSection("UserPicturePath").Value;
+            viewModel.SiteUrl = _config.GetSection("MySettings").GetSection("SiteUrl").Value;
+
 
             viewModel.User = await _userManager.GetUserAsync(User);
             viewModel.ReturnUrl = Url.PageLink();
@@ -92,6 +95,7 @@ namespace HireMe.Controllers
             return View("Errors/404");
         }
         
+
         [AllowAnonymous]
         public IActionResult Privacy()
         {
@@ -99,6 +103,16 @@ namespace HireMe.Controllers
         }
 
 
+        [AllowAnonymous]
+        public IActionResult Contacts()
+        {
+            return View();
+        }
+        [AllowAnonymous]
+        public IActionResult faq()
+        {
+            return View();
+        }
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

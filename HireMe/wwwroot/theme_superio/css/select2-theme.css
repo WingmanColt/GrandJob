@@ -57,7 +57,7 @@
         .select2-container .select2-search--inline .select2-search__field {
             box-sizing: border-box;
             border: none;
-            font-size: 100%;
+            font-size: 1.5rem;
             margin-top: 5px;
             padding: 0;
         }
@@ -159,9 +159,9 @@
 
 .select2-container--bootstrap {
     display: block;
-    background-color: #ffffff;
+    background-color: #f0f5f7;
     border-radius: 7px;
-    height: 6vh;
+    /* height: 6vh; */
 }
 
     .select2-container--bootstrap .select2-selection {
@@ -377,7 +377,7 @@
     }
 
         .select2-container--bootstrap .select2-selection--multiple .select2-selection__rendered {
-            -webkit-box-sizing: border-box;
+            /* -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
             display: block;
@@ -389,7 +389,16 @@
             width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;
-            max-height:170px; /*custom added*/
+            max-height: 170px; 
+           */
+
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            display: block;
+            line-height: 1.42857143;
+            list-style: none;
+            margin: 0;
+            white-space: nowrap;
         }
 
         .select2-container--bootstrap .select2-selection--multiple .select2-selection__placeholder {
@@ -411,6 +420,11 @@
             font-size: .9rem;
             padding: 3px 23px 3px 10px;
             position: relative;
+
+            width: fit-content;
+            block-size: fit-content;
+            white-space: nowrap;
+            display: list-item;
         }
 
         .select2-container--bootstrap .select2-selection--multiple .select2-search--inline .select2-search__field {
@@ -419,6 +433,8 @@
             margin-top: 0;
             min-width: 50em;
             color: var(--theme-color);
+            background:unset;
+            text-align: left;
             /*
             height: 32px;
             padding: 0 42px;

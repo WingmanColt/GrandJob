@@ -4,8 +4,6 @@
     using HireMe.Services.Interfaces;
     using Microsoft.AspNetCore.Identity;
     using HireMe.Entities.Models;
-    using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using HireMe.Entities.Enums;
@@ -128,7 +126,17 @@
 
             return ent;
         }
+        public async Task<bool> CheckUserRole(string userName, Roles[] role)
+        {
+            var Result1 = await GetAllAsNoTracking()
+                .AnyAsync(e => e.UserName == userName && e.Role.Equals(role));
 
+            return Result1;
+        }
+        public bool CheckUserRole(User user, Roles[] role)
+        {
+            return user.Role.Equals(role);
+        }
         public IQueryable<User> GetAllAsNoTracking()
         {
             return userManager.Users.AsQueryable().AsNoTracking();

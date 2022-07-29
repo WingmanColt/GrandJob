@@ -57,8 +57,7 @@ namespace HireMe.Areas.Identity.Pages.Account
 
             public string LastName { get; set; }
 
-            [Display(Name = "Аз съм работодател")]
-            public bool IsEmployer { get; set; }
+            public bool IsEmployer { get; set; } = false;
 
             [EmailAddress]
             public string EmailFromSocial { get; set; }
@@ -171,9 +170,8 @@ namespace HireMe.Areas.Identity.Pages.Account
 
                         if (Input.Email != Input.EmailFromSocial)
                         {
-                            await _senderService.SendEmailAsync(Input.Email,
-                                "Потвърди емайл адрес",
-                                $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> <img src='https://i.imgur.com/MOYSeFJ.jpg'> </a> <br>Изпратено с <3 от GrandJob.eu <br>София, Младост 4.");
+                            await _senderService.SendEmailAsync(Input.Email, "Потвърди емайл адрес", callbackUrl);
+
                         }
                         else
                         {
@@ -217,9 +215,9 @@ namespace HireMe.Areas.Identity.Pages.Account
                         await _userManager.UpdateAsync(user);
                         await _signInManager.RefreshSignInAsync(user);
                         await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                        
 
-                        return LocalRedirect(returnUrl);
+
+                       return RedirectToPage("./Manage/Index"); //LocalRedirect(returnUrl);
                     }
                 }
                 foreach (var error in result.Errors)

@@ -54,8 +54,8 @@
         public string Github { get; set; }
         public string Dribbble { get; set; }
         public string Logo { get; set; }
-        public PromotionEnum Promotion { get; set; }
-
+        public PackageType Promotion { get; set; }
+        public PremiumPackage PremiumPackage { get; set; }
         public IFormFile FormFile { get; set; }
 
         // Links

@@ -20,7 +20,7 @@ using System;
         public string About { get; set; }
         public string Description { get; set; }
         public int Experience { get; set; }
-        public int payRate { get; set; }
+        public int? payRate { get; set; }
         public SalaryType SalaryType { get; set; }
         public int profileVisiblity { get; set; }
         public string WorkType { get; set; }
@@ -36,7 +36,7 @@ using System;
         public string Github { get; set; }
         public string Dribbble { get; set; }
 
-        public PromotionEnum Promotion { get; set; }
+        public PackageType Promotion { get; set; }
         public double Rating { get; set; }
         public int RatingVotes { get; set; }
         public int VotedUsers { get; set; }

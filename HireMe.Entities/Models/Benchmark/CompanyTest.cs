@@ -47,7 +47,7 @@
 
         public DateTime Date { get; set; }
 
-        public PromotionEnum Promotion { get; set; }
+        public PackageType Promotion { get; set; }
 
         public virtual ICollection<Jobs> Jobs { get; set; }
 

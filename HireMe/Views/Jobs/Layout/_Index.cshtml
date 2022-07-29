@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Home/_PageLayout.cshtml";
 
-   <link rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/theme_ios/plugins/select2-theme.min.css" />
+   <link defer rel="preload" as="style" type="text/css" onload="this.onload=null;this.rel='stylesheet'" href="~/theme_ios/plugins/select2-theme.min.css" />
 }
 
 
@@ -9,14 +9,15 @@
 
 
 @section Scripts {
-    <script defer src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
-    <script defer src="~/customJS/jobs/filter/categorySelect.min.js"></script>
-    <script defer src="~/customJS/jobs/filter/companySelect.min.js"></script>
-    <script defer src="~/customJS/jobs/filter/langSelect.min.js"></script>
-    <script defer src="~/customJS/jobs/filter/locationSelect.min.js"></script>
-    <script defer src="~/customJS/jobs/filter/tagsSelect.min.js"></script>
-    <script defer src="~/customJS/jobs/filter/worktypeSelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/categorySelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/companySelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/langSelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/locationSelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/tagsSelect.min.js"></script>
+    <script src="~/customJS/jobs/filter/worktypeSelect.min.js"></script>
 }
 
 

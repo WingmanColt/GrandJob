@@ -12,8 +12,9 @@
 
     <!-- Header Area -->
     @await Component.InvokeAsync("_HeaderMenu", new {isDashboard = true})
-    <partial name="/Areas/Identity/Pages/Dashboard/Partials/_MainSidebar.cshtml" />
 
+    <partial name="/Areas/Identity/Pages/Dashboard/Partials/_MainSidebar.cshtml" />
+    
         @RenderBody()
 
     <!-- Footer Area -->

@@ -42,8 +42,8 @@ namespace HireMe.Controllers
             {
                 if (receiverUser is not null)
                 {
-                    await _notificationService.Create($"Задачата е премахната с потребител {receiverUser.FirstName} {receiverUser.LastName}.", "tasks/index", DateTime.Now, NotifyType.Information, "fas fa-tasks", user.Id, null);
-                    await _notificationService.Create("Задачата е премахната от админ.", "tasks/index", DateTime.Now, NotifyType.Information, "fas fa-tasks", receiverUser.Id, user.Id);
+                    await _notificationService.Create($"Задачата е премахната с потребител {receiverUser.FirstName} {receiverUser.LastName}.", "identity/tasks/index", DateTime.Now, NotifyType.Tasks, null, user.Id, null);
+                    await _notificationService.Create("Задачата е премахната от админ.", "identity/tasks/index", DateTime.Now, NotifyType.Tasks, null, receiverUser.Id, user.Id);
                 }
             }
 
@@ -72,10 +72,10 @@ namespace HireMe.Controllers
                     switch (T)
                     {
                         case TasksStatus.Approved:
-                            await _notificationService.Create($"Вашата задача е одобрена от {user.FirstName} {user.LastName}.", "identity/tasks/index", DateTime.Now, NotifyType.Information, "fas fa-info", entity.SenderId, user.Id).ConfigureAwait(false);
+                            await _notificationService.Create($"Вашата задача е одобрена от {user.FirstName} {user.LastName}.", "identity/tasks/index", DateTime.Now, NotifyType.Information, null, entity.SenderId, user.Id).ConfigureAwait(false);
                             break;
                         case TasksStatus.Rejected:
-                            await _notificationService.Create($"Вашата задача е отхвърлена от {user.FirstName} {user.LastName}.", "identity/tasks/index", DateTime.Now, NotifyType.Information, "fas fa-info", entity.SenderId, user.Id).ConfigureAwait(false);
+                            await _notificationService.Create($"Вашата задача е отхвърлена от {user.FirstName} {user.LastName}.", "identity/tasks/index", DateTime.Now, NotifyType.Information, null, entity.SenderId, user.Id).ConfigureAwait(false);
                             break;
                     } 
             }

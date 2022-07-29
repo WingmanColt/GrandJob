@@ -1,21 +1,25 @@
 ﻿@page
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Завършване на регистрацията";
-    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+    ViewData["Title"] = "Завърши регистрацията";
+    Layout = "/Areas/Identity/Pages/_LayoutLogin.cshtml";
 }
 
+    <!-- Info Section -->
+    <div class="login-section">
+      <div class="image-layer" style="background-image: url(/theme_superio/images/background/12.webp);"></div>
+      <div class="outer-box">
+        <!-- Login Form -->
+        <div class="login-form default-form">
+          <div class="form-inner">
+           <h3>@ViewData["Title"]</h3>
 
-    <div id="remote-control-form">
-        <p class="title">Влез в системата</p>
-
-        <div class="row setup-content" id="step-1">
             @{
                 if (@Model.DisplayConfirmAccountLink)
                 {
                     <p>
 
-                        Това ще бъде изпратено по имейл: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Натисни за да потвърдиш</a>
+                        Това ще бъде изпратено по имейл: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Натисни за да потвърждение</a>
                     </p>
                 }
                 else
@@ -25,9 +29,12 @@
                     </p>
                 }
             }
-        </div>
-    </div>
 
-    <footer>
-        <a href="#">GrandJob</a>
-    </footer>
+
+          </div>
+        </div>
+        <!--End Login Form -->
+      </div>
+    </div>
+    <!-- End Info Section -->
+

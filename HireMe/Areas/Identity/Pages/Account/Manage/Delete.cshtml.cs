@@ -1,6 +1,8 @@
 ﻿using HireMe.Entities.Enums;
 using HireMe.Entities.Models;
 using HireMe.Services.Interfaces;
+using HireMe.StoredProcedures.Enums;
+using HireMe.StoredProcedures.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +19,7 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<User> _signInManager;
 
         private readonly IBaseService _baseService;
-        private readonly IJobsService _jobsService;
+        private readonly IJobsService _JobService;
         private readonly ICompanyService _companyService;
         private readonly IContestantsService _contestantService;
         private readonly IResumeService _resumeService;
@@ -26,7 +28,7 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IBaseService baseService,
-            IJobsService jobsService,
+            IJobsService JobService,
             ICompanyService companyService,
             IContestantsService contestantService,
             IResumeService resumeService)
@@ -34,7 +36,7 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
             _baseService = baseService;
-            _jobsService = jobsService;
+            _JobService = JobService;
             _companyService = companyService;
             _contestantService = contestantService;
             _resumeService = resumeService;
@@ -99,7 +101,9 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             
             _baseService.DeleteUserResources(user, true);
 
-            await _jobsService.DeleteAllBy(0, user);
+           // var jobsDeleted = await _spJobService.CRUD(new { PosterId = user.Id }, JobCrudActionEnum.DeleteAllBy, false, null, null);
+
+            await _JobService.DeleteAllBy(0, user);
             await _companyService.DeleteAllBy(user);
             await _contestantService.DeleteAllBy(user);
             await _resumeService.DeleteAllBy(user);

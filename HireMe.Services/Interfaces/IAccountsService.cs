@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using HireMe.Entities.Enums;
     using HireMe.Entities.Models;
 
     public interface IAccountsService
@@ -21,7 +22,9 @@
         void DemoteUser(string userId);
 
         Task<User> GetByIdAsync(string id);
-
+        Task<bool> CheckUserRole(string userName, Roles[] role);
+        bool CheckUserRole(User user, Roles[] role);
+        
         IQueryable<User> GetAllAdmins();
         IQueryable<User> GetAllAsNoTracking();
 

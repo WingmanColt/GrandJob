@@ -32,16 +32,21 @@
 
         <div class="row">
           <div class="col-lg-12">
+           <form class="default-form" id="profile" method="post" enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl">
 
             <!-- Ls widget -->
             <div class="ls-widget">
               <div class="tabs-box">
                 <div class="widget-title">
                   <h4>Профилна снимка</h4>
+
+                    <div class="desktop-only">
+                       <a href="" class="theme-btn btn-style-default" data-toggle="tooltip" data-placement="bottom" title="Отказ"><i class="las la-times" aria-hidden="true"></i></a>
+                       <button type="submit" class="theme-btn btn-style-four" data-toggle="tooltip" data-placement="bottom" title="Запис"><i class="las la-check"></i></button> 
+                    </div>
                 </div>
 
                 <div class="widget-content">
-                  <form class="default-form" id="profile" method="post" enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl">
                      <div asp-validation-summary="All" class="text-danger"></div>
 
                   <div class="uploading-outer">
@@ -85,18 +90,22 @@
                       <!-- Input -->
                       <div class="form-group col-lg-3 col-md-12">
                         <label asp-for="Input.Gender"></label>
-                          <select asp-for="Input.Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="chosen-select" value="@Model.UserEntity?.Gender"></select>
-                      </div>
-
-                      <!-- Input -->
-                      <div class="form-group">
-                        <button type="submit" class="theme-btn btn-style-four">Актулизирай</button>
+                        <select asp-for="Input.Gender" asp-items="Html.GetEnumSelectList<Gender>()" class="chosen-select" value="@Model.UserEntity?.Gender"></select>
                       </div>
                     </div>
-                  </form>
+                 
+                    <div class="mobile-only">
+                        <br>
+                        <div class="form-group col-lg-6 col-md-12">
+                       <button type="submit" class="theme-btn btn-style-four"><i class="las la-check"></i> Запази</button> 
+                       </div>
+                   </div>
+
                 </div>
               </div>
             </div>
+             </form>
+
 
             <!-- Ls widget -->
             <div class="ls-widget">
@@ -123,7 +132,7 @@
 
                                                             <button type="submit" class="theme-btn btn-style-two @login.ProviderDisplayName.ToLower()" name="provider" title="премахни @login.LoginProvider от твоя акаунт">
 
-                                                                <i class="fab fa-@login.ProviderDisplayName.ToLower() fa-lg"></i>
+                                                                <i class="lab la-@login.ProviderDisplayName.ToLower()"></i>
 
                                                                 Премахни  @login.LoginProvider
                                                             </button>
@@ -145,7 +154,7 @@
                                         @foreach (var provider in Model.OtherLogins)
                                         {
                                             <button type="submit" class="theme-btn btn-style-four @provider.DisplayName.ToLower()" name="provider">
-                                                <i class="fab fa-@provider.DisplayName.ToLower() fa-lg"></i>
+                                                <i class="lab la-@provider.DisplayName.ToLower()"></i>
                                             </button>
                                         }
                                     </p>
@@ -178,10 +187,10 @@
                        <form asp-page="DownloadPersonalData" method="post" class="default-form">
                         <div class="form-group col-lg-12 col-md-12">
 
-                            <button class="theme-btn btn-style-three" type="submit"><i class="fas fa-download"></i>  Изтегли</button>
+                            <button class="theme-btn btn-style-three" type="submit"><i class="las la-download"></i>  Изтегли</button>
 
                             <a asp-area="Identity" asp-page="/Account/Manage/Delete" class="theme-btn btn-style-danger">
-                                    <i class="fas fa-trash-alt"></i>  Изтрий
+                                    <i class="las la-trash-alt"></i>  Изтрий
                             </a>
                         </div>
 

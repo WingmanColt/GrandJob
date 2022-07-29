@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewData["Title"] = "Контакти";
+    ViewData["Description"] = "Намерете следващата си работа или кариера. От непълно работно време до работа на пълно работно време, потърсете нашите обяви за работа по категория, заглавие, фирма, местоположение или разгледайте популярни работни места.";
+    ViewData["Keywords"] = "contacts, контаткти, връзка";
+
+    Layout = "~/Views/Home/_PageLayout.cshtml";
+}
+
+
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+      <div class="auto-container">
+        <div class="upper-box">
+          <div class="row">
+            <div class="contact-block col-lg-4 col-md-6 col-sm-12">
+              <div class="inner-box">
+                <span class="icon"><img src="~/theme-superio/images/icons/placeholder.svg" alt=""></span>
+                <h4>Адрес</h4>
+                <p>Дружба 2<br> София.</p>
+              </div>
+            </div>
+            <div class="contact-block col-lg-4 col-md-6 col-sm-12">
+              <div class="inner-box">
+                <span class="icon"><img src="~/theme-superio/images/icons/smartphone.svg" alt=""></span>
+                <h4>Обади се</h4>
+                <p><a href="#" class="phone">087 998 5838</a></p>
+              </div>
+            </div>
+            <div class="contact-block col-lg-4 col-md-6 col-sm-12">
+              <div class="inner-box">
+                <span class="icon"><img src="~/theme-superio/images/icons/letter.svg" alt=""></span>
+                <h4>Емайл</h4>
+                <p><a href="#">supp.grandjob@gmail.com</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Contact Form -->
+        <div class="contact-form default-form">
+          <h3>Leave A Message</h3>
+          <!--Contact Form-->
+          <form method="post" action="#" id="email-form">
+            <div class="row">
+              <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                <div class="response"></div>
+              </div>
+
+              <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                <label>Your Name</label>
+                <input type="text" name="username" class="username" placeholder="Your Name*" required>
+              </div>
+
+              <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                <label>Your Email</label>
+                <input type="email" name="email" class="email" placeholder="Your Email*" required>
+              </div>
+
+              <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <label>Subject</label>
+                <input type="text" name="subject" class="subject" placeholder="Subject *" required>
+              </div>
+
+              <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <label>Your Message</label>
+                <textarea name="message" placeholder="Write your message..." required=""></textarea>
+              </div>
+
+              <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                <button class="theme-btn btn-style-one" type="button" id="submit" name="submit-form">Send Massage</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!--End Contact Form -->
+      </div>
+    </section>
+    <!-- Contact Section -->
+
+        <!-- Call To Action -->
+    <section class="call-to-action style-two">
+      <div class="auto-container">
+        <div class="outer-box">
+          <div class="content-column">
+            <div class="sec-title">
+              <h2>Recruiting?</h2>
+              <div class="text">Advertise your jobs to millions of monthly users and search 15.8 million<br> CVs in our database.</div>
+              <a href="#" class="theme-btn btn-style-one bg-blue"><span class="btn-title">Start Recruiting Now</span></a>
+            </div>
+          </div>
+
+          <div class="image-column" style="background-image: url(images/resource/image-1.png);">
+            <figure class="image"><img src="images/resource/image-1.png" alt=""></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Call To Action -->
+

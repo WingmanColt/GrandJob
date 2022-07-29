@@ -12,7 +12,11 @@ namespace HireMe.Entities.Enums
         Danger = 2,
         [Display(Name = "Успешно")]
         Success = 3,
-        Image = 4
+        Image = 4,
+        [Display(Name = "Задачи")]
+        Tasks = 5,
+        [Display(Name = "Активно")]
+        Activated = 6
     }
 
 }

@@ -1,11 +1,10 @@
 ﻿using HireMe.Core.Helpers;
 using HireMe.Entities;
 using HireMe.Entities.Enums;
-using HireMe.Entities.Input;
 using HireMe.Entities.Models;
-using HireMe.Entities.View;
-using HireMe.Mapping.Utility;
 using HireMe.Services.Interfaces;
+using HireMe.StoredProcedures.Enums;
+using HireMe.StoredProcedures.Interfaces;
 using HireMe.ViewModels.Favorites;
 using HireMe.ViewModels.Jobs;
 using HireMe.ViewModels.Language;
@@ -18,8 +17,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,36 +32,59 @@ namespace HireMe.Controllers
 
         private readonly ICompanyService _companyService;
         private readonly IJobsService _jobsService;
+        private readonly IspJobService _spJobService;
+
+        private readonly IPromotionService _promotionService;
 
         private readonly ISkillsService _skillsService;
         private readonly ILanguageService _langService;
 
         private readonly IStatisticsService _statsService;
         private readonly IFavoritesService _favoriteService;
-        private readonly string _GalleryPath;
+        private readonly IFilesService _filesService;
 
+        private readonly IBaseService _baseService;
+        private readonly IResumeService _resumeService;
+        private readonly INotificationService _notifyService;
+
+        private readonly string _GalleryPath;
 
         public JobsController(
             IConfiguration config,
             UserManager<User> userManager,
+            IBaseService baseService,
             IJobsService jobsService,
+            IspJobService spJobService,
             ICompanyService companyService,
+            IPromotionService promotionService,
             ICategoriesService categoriesService,
             ILocationService locationService,
             ISkillsService skillsService,
             ILanguageService langService,
             IStatisticsService statsService,
+            IFilesService filesService,
+            IResumeService resumeService,
+            INotificationService notifyService,
             IFavoritesService favoriteService)
         {
             _userManager = userManager;
+            _baseService = baseService;
+
             _jobsService = jobsService;
+            _spJobService = spJobService;
             _companyService = companyService;
+            _promotionService = promotionService;
+
             _locationService = locationService;
             _skillsService = skillsService;
             _langService = langService;
+
             _categoriesService = categoriesService;
             _statsService = statsService;
             _favoriteService = favoriteService;
+            _filesService = filesService;
+            _resumeService = resumeService;
+            _notifyService = notifyService;
 
             _GalleryPath = config.GetValue<string>("StoredGalleryPath");
         }
@@ -73,8 +93,6 @@ namespace HireMe.Controllers
         [Route("jobs/all")]
         public async Task<IActionResult> Index(int currentPage = 1, string SearchString = null, string LocationId = null)
         {
-            var user = await _userManager.GetUserAsync(User);
-
             // var filter = new Filter();
             var viewModel = new JobsViewModel
             {
@@ -84,54 +102,16 @@ namespace HireMe.Controllers
 
             viewModel.Skills = _skillsService.GetAll<Skills>(viewModel.TagsId, false);
 
-
-            var entity = _jobsService.GetAllAsNoTracking()
-                .Where(x => (x.isApproved == ApproveType.Success) && !x.isArchived)
-                .Select(x => new Jobs
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    WorkType = x.WorkType,
-                    LocationId = x.LocationId,
-                    CreatedOn = x.CreatedOn,
-                    PosterID = x.PosterID,
-                    RatingVotes = x.RatingVotes,
-                    Promotion = x.Promotion,
-                    Adress = x.Adress,
-                    JobType = x.JobType,
-                    MinSalary = x.MinSalary,
-                    MaxSalary = x.MaxSalary,
-                    SalaryType = x.SalaryType,
-                    CompanyId = x.CompanyId,
-                    CategoryId = x.CategoryId,
-                    TagsId = x.TagsId,
-                    CompanyLogo = x.CompanyLogo,
-                    isInFavourites = _favoriteService.isInFavourite(user, PostType.Job, x.Id.ToString())
-        });
-            if (!String.IsNullOrEmpty(SearchString))
-            {
-                entity = entity.Where(x => x.Name.Contains(SearchString));
-            }
-            if (!String.IsNullOrEmpty(LocationId))
-            {
-                entity = entity.Where(s => s.LocationId.Equals(LocationId));
-            }
+            var entity = await _spJobService.GetAll<JobsViewModel>(new { Name = SearchString, LocationId = LocationId }, JobGetActionEnum.GetAllFiltering, false, null);
+            
             if (await entity.AnyAsync()) // prevent 'SqlException: The offset specified in a OFFSET clause may not be negative.'
             {
-                int count = await entity.AsQueryable().AsNoTracking().CountAsync().ConfigureAwait(false);
+                int count = await entity.CountAsync().ConfigureAwait(false);
                 viewModel.Pager = new Pager(count, currentPage);
 
-                var result = entity
+                viewModel.Result = entity
                 .Skip((viewModel.Pager.CurrentPage - 1) * viewModel.Pager.PageSize)
                 .Take(viewModel.Pager.PageSize);
-
-                // filter.currentPage = currentPage;
-
-                viewModel.Result = result
-                    .To<JobsViewModel>()                  
-                    .AsAsyncEnumerable();
-
-
             }
             else viewModel.Result = null;
 
@@ -142,8 +122,6 @@ namespace HireMe.Controllers
         [Route("jobs/all")]
         public async Task<IActionResult> Index(Filter filter, int currentPage, int categoryid)
         {
-            var user = await _userManager.GetUserAsync(User);
-
             if (currentPage <= 0)
                 currentPage = 1;
 
@@ -154,11 +132,16 @@ namespace HireMe.Controllers
             };
             viewModel.Skills = _skillsService.GetAll<Skills>(viewModel.TagsId, false);
 
-           // if(filter.Equipments.Capacity > 0)
-             //filter.Equipments = Equipments;
+            // if(filter.Equipments.Capacity > 0)
+            //filter.Equipments = Equipments;
 
-            var entity = _jobsService.GetAllAsNoTracking()
+
+            var entity = await _spJobService.GetAll<JobsViewModel>(filter, JobGetActionEnum.GetAllFiltering, true, "NotMapped");
+
+            /*var entity = _jobsService.GetAllAsNoTracking()
                 .Where(x => (x.isApproved == ApproveType.Success) && !x.isArchived)
+                .OrderByDescending(x => x.PremiumPackage)
+                .OrderByDescending(x => x.Rating)
                 .Select(x => new Jobs
                 {
                     Id = x.Id,
@@ -169,6 +152,7 @@ namespace HireMe.Controllers
                     PosterID = x.PosterID,
                     RatingVotes = x.RatingVotes,
                     Promotion = x.Promotion,
+                    PremiumPackage = x.PremiumPackage,
                     Adress = x.Adress,
                     JobType = x.JobType,
                     MinSalary = x.MinSalary,
@@ -226,43 +210,43 @@ namespace HireMe.Controllers
             if (categoryid > 0)
                 entity = entity.Where(x => x.CategoryId == categoryid);
 
-            if (filter.SortBy?.Capacity > 0)
-            {
-                foreach (var item in filter.SortBy)
-                {
-                    if (item.IsChecked)
-                    {
-                        switch (item.Key)
-                        {
-                            case 1:
-                                entity = entity.OrderByDescending(x => x.RatingVotes);
-                                break;
-                            case 2:
-                                entity = entity.OrderBy(x => x.CreatedOn);
-                                break;
-                            case 3:
-                                entity = entity.OrderByDescending(x => x.CreatedOn);
-                                break;
-                            case 4:
-                                entity = entity.OrderBy(x => x.MaxSalary);
-                                break;
-                        }
-                    }
-                }
-            }
-
-
+            */
 
             if (await entity.AnyAsync()) // prevent 'SqlException: The offset specified in a OFFSET clause may not be negative.'
             {
-                int count = await entity.AsQueryable().AsNoTracking().CountAsync().ConfigureAwait(false);
+                int count = await entity.CountAsync().ConfigureAwait(false);
                 viewModel.Pager = new Pager(count, currentPage);
 
-                var result = entity
+                viewModel.Result = entity
                 .Skip((viewModel.Pager.CurrentPage - 1) * viewModel.Pager.PageSize)
                 .Take(viewModel.Pager.PageSize);
 
-                viewModel.Result = result.To<JobsViewModel>().AsAsyncEnumerable();
+
+                if (filter.SortBy?.Capacity > 0)
+                {
+                    foreach (var item in filter.SortBy)
+                    {
+                        if (item.IsChecked)
+                        {
+                            switch (item.Key)
+                            {
+                                case 1:
+                                    viewModel.Result = viewModel.Result.OrderByDescending(x => x.RatingVotes);
+                                    break;
+                                case 2:
+                                    viewModel.Result = viewModel.Result.OrderBy(x => x.CreatedOn);
+                                    break;
+                                case 3:
+                                    viewModel.Result = viewModel.Result.OrderByDescending(x => x.CreatedOn);
+                                    break;
+                                case 4:
+                                    viewModel.Result = viewModel.Result.OrderBy(x => x.MaxSalary);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                //viewModel.Result = result.To<JobsViewModel>().AsAsyncEnumerable();
             }
             else viewModel.Result = null;
 
@@ -270,76 +254,13 @@ namespace HireMe.Controllers
         }
 
 
-      /*  [Route("jobs/new")]
-        public async Task<IActionResult> Create([FromServices] IBaseService _baseService)
-        {   
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
-            }
-            if (user.AccountType == 0)
-            {
-                return Redirect("/Identity/Account/Manage/Pricing");
-            }
-            if (!user.profileConfirmed)
-            {
-                _baseService.ToastNotify(ToastMessageState.Error, "Грешка", "Моля попълнете личните си данни преди да продължите.", 7000);
-                return Redirect($"/Identity/Account/Manage/EditProfile");
-            }
-
-            CreateJobInputModel viewModel = new CreateJobInputModel();
-            viewModel.AllLocations = _locationService.GetAllSelectList();
-            viewModel.AllCategories = _categoriesService.GetAllSelectList();
-
-            return this.View(viewModel);
-        }
-
-        [HttpPost]
-        [Route("jobs/new")]
-        [Authorize(Roles = "Admin, Moderator, Employer, Recruiter")]
-        public async Task<IActionResult> Create(CreateJobInputModel input, [FromServices] IBaseService _baseService, [FromServices] INotificationService _notifyService)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
-            }
-
-            input.AllLocations = _locationService.GetAllSelectList();
-            input.AllCategories = _categoriesService.GetAllSelectList();
-
-            if (!ModelState.IsValid)
-            {
-                input.AllTags = _skillsService.GetAllById<Skills>(input.TagsId, false);
-                input.AllLanguages = _langService.GetAll<Language>(input.LanguageId, false);
-                input.AllCompanies = _companyService.GetByIdAsync(input.CompanyId).ToAsyncEnumerable();
-                input.Worktypes = input.WorkType?.Split(',');
-
-                return View(input);
-            }
-
-            input.isArchived = false;
-            var result = await _jobsService.Create(input, user);
-
-            if (result.Success)
-            {
-                _baseService.ToastNotify(ToastMessageState.Warning, "Внимание", "Моля изчакайте заявката ви да се прегледа от администратор.", 7000);
-                _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Обявата ви е добавена.", 5000);
-                await _notifyService.CreateForAdmins("Обява за работа е в процес на изчакване за преглед", $"", DateTime.Now, NotifyType.Warning, "far fa-clock", user.Id).ConfigureAwait(false);
-
-                return Redirect($"/identity/Jobs/Index");
-            }
-
-            return this.View(input);
-        }*/
         [AllowAnonymous]
         [Route("jobs/info/{id}")]
-        public async Task<IActionResult> Details(int id, [FromServices] IResumeService _resumeService, [FromServices] IFavoritesService _favoritesService)
+        public async Task<IActionResult> Details(int id)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var job = await _jobsService.GetByIdAsyncMapped(id);
+            var job = await _spJobService.GetByIdAsync<JobsViewModel>(id);
             if (job is null)
             {
                 return RedirectToAction("NotFound", "Home");
@@ -351,32 +272,22 @@ namespace HireMe.Controllers
                 return RedirectToAction("NotFound", "Home");
             }
 
-            job.JobsByCompany = _jobsService.GetAllByEntity(1, true, 6, _favoriteService, user);
+            job.JobsByCompany = await _spJobService.GetAll<JobsViewModel>(new { CompanyId = company?.Id }, JobGetActionEnum.GetAllBy, false, null);
             job.CategoryName = await _categoriesService.GetNameById(job.CategoryId);
             job.SkillsMapped = _skillsService.GetAll<SkillsViewModel>(job.TagsId, true);
             job.LanguagesMapped = _langService.GetAll<LanguageViewModel>(job.LanguageId, true);
             job.GalleryImages = company.GalleryImages?.Split(',').ToAsyncEnumerable();
             job.company = company;
             job.GalleryPath = Path.Combine(_GalleryPath, StringHelper.Filter(company.Email));
-            job.isInFavourites = user != null ? _favoriteService.isInFavourite(user, PostType.Job, job.Id.ToString()) : false;
+           // job.isInFavourites = user != null ? _favoriteService.isInFavourite(user, PostType.Job, job.Id.ToString()) : false;
             job.ReturnUrl = Url.PageLink();
+            job.Views++;
 
             if (user is not null)
             {
-                string[] items;
-                items = job.resumeFilesId?.Split(',');
-
-                var resumes = _resumeService.GetAllAsNoTracking()
-
-                    .Where(x => x.UserId == user.Email)
-                    //  .Where(x => !(((IList)items).Contains(x.Id.ToString())))
-                    .Select(x => new SelectListItem
-                    {
-                        Value = x.Id.ToString(),
-                        Text = x.Title,
-                    });
-                ViewData["resumeFiles"] = resumes is null ? null : resumes;
-            }
+                var files = GetFilesByEmail(user.Email);
+                ViewData["myFiles"] = files is null ? null : files;
+            } 
 
             ///await _jobsService.AddRatingToJobs(job, 1).ConfigureAwait(false);
             return this.View(job);
@@ -384,7 +295,7 @@ namespace HireMe.Controllers
 
 
         [Authorize(Roles = "Admin, Moderator")]
-        public async Task<ActionResult> Approve(int id, ApproveType T, string returnUrl, [FromServices] INotificationService _notifyService, [FromServices] IBaseService _baseService)
+        public async Task<ActionResult> Approve(int id, ApproveType T, string returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -392,7 +303,7 @@ namespace HireMe.Controllers
                 return Redirect("/Identity/Account/Errors/AccessDenied");
             }
 
-            var entity = await _jobsService.GetByIdAsync(id);
+            var entity = await _spJobService.GetByIdAsync<Jobs>(id);
             if (entity == null)
             {
                 return RedirectToAction("NotFound", "Home");
@@ -402,17 +313,17 @@ namespace HireMe.Controllers
 
             if (result.Success)
             {
-
                     switch (T)
                     {
                         case ApproveType.Waiting:
-                            await _notifyService.Create("Моля редактирайте вашата обява отново с коректни данни.", "identity/contestant/index", DateTime.Now, NotifyType.Warning, "fas fa-sync-alt", entity.PosterID, null).ConfigureAwait(false);
+                            await _notifyService.Create("Моля редактирайте вашата обява отново с коректни данни.", "identity/list/jobs", DateTime.Now, NotifyType.Warning, null, entity.PosterID, null).ConfigureAwait(false);
                         break;
                         case ApproveType.Rejected:
-                            await _notifyService.Create("Последно добавената ви обява е отхвърлена.", "identity/contestant/index", DateTime.Now, NotifyType.Danger, "fas fa-ban", entity.PosterID, null).ConfigureAwait(false);
+                            await _notifyService.Create("Последно добавената ви обява е отхвърлена.", "identity/list/jobs", DateTime.Now, NotifyType.Danger, null, entity.PosterID, null).ConfigureAwait(false);
                         break;
                         case ApproveType.Success:
-                            await _notifyService.Create("Последно добавената ви обява е одобрена.", "identity/contestant/index", DateTime.Now, NotifyType.Information, "fas fa-check", entity.PosterID, null).ConfigureAwait(false);
+                        await _categoriesService.Update(entity.CategoryId, true, CategoriesEnum.Increment).ConfigureAwait(false);
+                        await _notifyService.Create("Последно добавената ви обява е одобрена.", "identity/list/jobs", DateTime.Now, NotifyType.Information, null, entity.PosterID, null).ConfigureAwait(false);
                         break;
                     }
                 if (!String.IsNullOrEmpty(returnUrl))
@@ -425,7 +336,7 @@ namespace HireMe.Controllers
         }
 
         [Authorize(Roles = "Admin, Moderator")]
-        public async Task<ActionResult> ExchangeUser(int id, ApproveType T, string returnUrl, [FromServices] INotificationService _notifyService, [FromServices] IBaseService _baseService)
+        public async Task<ActionResult> ExchangeUser(int id, ApproveType T, string returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -433,13 +344,13 @@ namespace HireMe.Controllers
                 return Redirect("/Identity/Account/Errors/AccessDenied");
             }
 
-            var entity = await _jobsService.GetByIdAsync(id);
+            var entity = await _spJobService.GetByIdAsync<Jobs>(id);
             if (entity == null)
             {
                 return RedirectToAction("NotFound", "Home");
             }
 
-             var result = await _jobsService.UpdateUser(entity, user);
+             var result = await _spJobService.CRUD(new { Id = entity.Id, PosterId = user.Id }, JobCrudActionEnum.UpdateUser, false, null, null);
             if (result.Success)
             {
                 _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Прехвърляне на собственост.", 3000);
@@ -452,7 +363,40 @@ namespace HireMe.Controllers
 
             return View();
         }
+        public async Task<ActionResult> RefreshPost(int id, string returnUrl)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Redirect("/Identity/Account/Errors/AccessDenied");
+            }
 
+            var entity = await _spJobService.GetByIdAsync<Jobs>(id);
+            if (entity == null)
+            {
+                return RedirectToAction("NotFound", "Home");
+            }
+
+            Promotion existEntity = await _promotionService.GetPromotion(PostType.Job, entity.Id);
+            var result = await _spJobService.CRUD(entity, JobCrudActionEnum.RefreshDate, false, null, null);
+            if (result.Success)
+            {
+                if (existEntity is not null)
+                {
+                    existEntity.RefreshCount -= 1;
+                    await _promotionService.Update(existEntity, user);
+
+                    _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Обновихте обявата си.", 3000);
+                }
+                else _baseService.ToastNotify(ToastMessageState.Error, "Несупешна операция", "Трябва да сте промотирали обявата си първо.", 6000);
+            }
+            else _baseService.ToastNotify(ToastMessageState.Error, "Несупешна операция", "Нямате в наличност обновления за тази обява.", 6000);
+
+            if (!String.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("Index", "Home");
+        }
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<FavoritesViewModel>> UpdateFavourite(int id)
@@ -463,7 +407,7 @@ namespace HireMe.Controllers
                 return Redirect("/Identity/Account/Errors/AccessDenied");
             }
 
-            var entity = await _jobsService.GetByIdAsync(id);
+            var entity = await _spJobService.GetByIdAsync<Jobs>(id);
             if (entity == null)
             {
                 return RedirectToAction("NotFound", "Home");
@@ -484,7 +428,7 @@ namespace HireMe.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> ApplyWithResume(int jobId, JobsViewModel viewModel, string returnUrl, [FromServices] INotificationService _notifyService, [FromServices] IBaseService _baseService, [FromServices] IResumeService _resumeService)
+        public async Task<ActionResult> ApplyWithMyFiles(int jobId, JobsViewModel viewModel, string returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user is null)
@@ -492,34 +436,50 @@ namespace HireMe.Controllers
                 return Redirect("/Identity/Account/Errors/AccessDenied");
             }
 
-            Jobs entity = await _jobsService.GetByIdAsync(jobId);
+            Jobs entity = await _spJobService.GetByIdAsync<Jobs>(jobId);
             if (entity is null)
             {
                 return Redirect("/Identity/Account/Errors/NoEntity");
             }
 
-            var result = await _jobsService.AddResumeFile(entity, viewModel.resumeFilesId);
-            if (result.Success)
+
+            var fileEntity = await _filesService.GetByIdAsync(int.Parse(viewModel.resumeFilesId));
+            if (fileEntity is null)
             {
-                await _resumeService.Update(int.Parse(viewModel.resumeFilesId), entity.Name);
-                await _favoriteService.UpdateFavourite(user, PostType.Job, jobId.ToString()).ConfigureAwait(false);
-
-               string jobIdComplate = ',' + jobId.ToString();
-               await _statsService.Update(new StatsInputModel { AppliedJobsId = jobIdComplate }).ConfigureAwait(false);
-
-                _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Кандидатствахте по тази обява.", 3000);
+                return Redirect("/Identity/Account/Errors/NoEntity");
             }
+
+
+            //var result = await _jobsService.AddResumeFile(entity, viewModel.resumeFilesId);
+            //if (result.Success)
+            //{
+                var resumeIsExists = await _resumeService.IsResumeExists(user.Email, entity.Id, fileEntity.Title).ConfigureAwait(true);
+                if (!resumeIsExists)
+                {
+                    await _resumeService.Create(fileEntity.Title, entity.Name, fileEntity.FileId, jobId, user);
+                    await _favoriteService.UpdateFavourite(user, PostType.Job, jobId.ToString()).ConfigureAwait(false);
+
+                 //   string jobIdComplate = ',' + jobId.ToString();
+                  //  await _statsService.Update(new StatsInputModel { AppliedJobsId = jobIdComplate }).ConfigureAwait(false);
+
+                    _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Кандидатствахте по тази обява.", 3000);
+                    await _notifyService.Create($"Имате нов кандидат за вашата обява - {entity.Name}.", "identity/account/manage", DateTime.Now, NotifyType.Information, null, entity.PosterID, null).ConfigureAwait(false);
+
+                    await _baseService.CloneFileAsync(fileEntity.FileId, StringHelper.FilterTrimSplit(entity.Name), user).ConfigureAwait(false);
+                }
+                else _baseService.ToastNotify(ToastMessageState.Warning, "Забележка", "Вече сте кандидатствали по тази обява.", 3000);
+            /*}
             else
             {
-                await _notifyService.Create(result.FailureMessage, $"jobs/details/{jobId}", DateTime.Now, NotifyType.Danger, "fas fa-minus-circle", user.Id, null).ConfigureAwait(false);
-            }
+                await _notifyService.Create(result.FailureMessage, $"jobs/info/{jobId}", DateTime.Now, NotifyType.Danger, "fas fa-minus-circle", user.Id, null).ConfigureAwait(false);
+            }*/
 
             if (!String.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
             else
                 return RedirectToAction("Index", "Home");
         }
-        public async Task<IActionResult> UploadAndApplyResume(int jobId, JobsViewModel entity, string returnUrl, [FromServices] IBaseService _baseService, [FromServices] IResumeService _resumeService)
+        public async Task<IActionResult> UploadAndApplyMyFile(int jobId, JobsViewModel entity, string returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user is null)
@@ -527,7 +487,7 @@ namespace HireMe.Controllers
                 return Redirect("/Identity/Account/Errors/AccessDenied");
             }
 
-            Jobs job = await _jobsService.GetByIdAsync(jobId);
+            Jobs job = await _spJobService.GetByIdAsync<Jobs>(jobId);
             if (job is null)
             {
                 return Redirect("/Identity/Account/Errors/NoEntity");
@@ -535,33 +495,37 @@ namespace HireMe.Controllers
 
             if (entity.File is not null)
             {
-                var FileId = await _baseService.UploadFileAsync(entity.File, null, user);
+                var FileId = await _baseService.UploadFileAsync(entity.File, null, job.Name, FileType.AppliedCV, user);
 
                 var lenght = entity.File.FileName.Length > 40 ? entity.File.FileName.Length - 30 : entity.File.FileName.Length;
-                int result = await _resumeService.CreateFast(entity.File.FileName.Substring(0, lenght), FileId, job.Id, job.Name, user);
+                int createFastResume = await _resumeService.CreateFast(entity.File.FileName.Substring(0, lenght), FileId, job.Id, job.Name, user);
 
-                if (result != -1 && result != -2)
+                if (createFastResume != -1 && createFastResume != -2)
                 {
+                       // var createResumeResult = await _jobsService.AddResumeFile(job, createFastResume.ToString());
+                        //if (createResumeResult.Success)
+                        //{ 
 
-                        var result2 = await _jobsService.AddResumeFile(job, result.ToString());
-                        if (result2.Success)
-                        {
-                            await _favoriteService.UpdateFavourite(user, PostType.Job, jobId.ToString()).ConfigureAwait(false);
+                        await _filesService.Create(entity.File.FileName.Substring(0, lenght), job.Name, FileId, user);
 
-                            string jobIdComplate = ',' + jobId.ToString();
-                            await _statsService.Update(new StatsInputModel { AppliedJobsId = jobIdComplate }).ConfigureAwait(false);
+                        await _favoriteService.UpdateFavourite(user, PostType.Job, jobId.ToString()).ConfigureAwait(false);
+
+                        string jobIdComplate = ',' + jobId.ToString();
+                        //await _statsService.Update(new StatsInputModel { AppliedJobsId = jobIdComplate }).ConfigureAwait(false);
 
                         _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Кандидатствахте по тази обява.", 3000);
-                    }
-                    
+                        await _notifyService.Create($"Имате нов кандидат за вашата обява - {entity.Name}.", "identity/account/manage", DateTime.Now, NotifyType.Information, null, entity.PosterID, null).ConfigureAwait(false);
+
+                    //}
+
                 }
                 
                 else
                 {
-                    if(result != -1)
-                        _baseService.ToastNotify(ToastMessageState.Error, "Грешка", "Вече имате качен файл с това име или сте кандидатствали по тази обява.", 6000);
-                    if (result != -2)
-                        _baseService.ToastNotify(ToastMessageState.Error, "Грешка", "Лимитът ви за качване на файлове е достигнат, моля прегледайте си ги или изтрийте някой файл.", 6000);
+                    if(createFastResume != -1)
+                        _baseService.ToastNotify(ToastMessageState.Error, "Несупешна операция", "Вече имате качен файл с това име или сте кандидатствали по тази обява.", 6000);
+                    if (createFastResume != -2)
+                        _baseService.ToastNotify(ToastMessageState.Error, "Несупешна операция", "Лимитът ви за качване на файлове е достигнат, моля прегледайте си ги или изтрийте някой файл.", 6000);
                 }
             }
 
@@ -570,38 +534,51 @@ namespace HireMe.Controllers
             else
                 return RedirectToAction("Index", "Home");
         }
+
+
+
         [HttpPost]
-        public async Task<ActionResult> ApplyAsGuest(int jobId, ApplyRaportViewModel viewModel, string returnUrl, [FromServices] IBaseService _baseService, [FromServices] IResumeService _resumeService)
+        public async Task<ActionResult> ApplyAsGuest(int jobId, ApplyRaportViewModel viewModel, string returnUrl)
         {
-            Jobs entity = await _jobsService.GetByIdAsync(jobId);
+            Jobs entity = await _spJobService.GetByIdAsync<Jobs>(jobId);
             if (entity is null)
             {
                 return Redirect("/Identity/Account/Errors/NoEntity");
             }
 
 
-            string fileName = await _baseService.UploadFileAsGuestAsync(viewModel.File, entity.Name, viewModel.Email); //await _jobsService.AddResumeFile(entity, viewModel.Guest.File.FileName);
+            string fileName = await _baseService.UploadFileAsync(viewModel.File, FileType.GuestsCV, entity.Name, viewModel.Email); 
 
             var lenght = viewModel.File.FileName.Length > 40 ? viewModel.File.FileName.Length - 30 : viewModel.File.FileName.Length;
             int uploadFileId = await _resumeService.CreateAsGuest(viewModel.File.FileName.Substring(0, lenght), fileName, viewModel.Email, entity.Id, entity.Name);
 
             if (uploadFileId == -1)
             {
-                _baseService.ToastNotify(ToastMessageState.Error, "Неуспешно", "Вече сте кандидатствали по тази обява!", 5000);
+                _baseService.ToastNotify(ToastMessageState.Error, "Несупешна операция", "Вече сте кандидатствали по тази обява!", 5000);
             }
             else
             {
 
-                var result = await _jobsService.AddResumeFile(entity, uploadFileId.ToString());
-                if (result.Success)
+               // var result = await _jobsService.AddResumeFile(entity, uploadFileId.ToString());
+                //if (result.Success)
+                //{
                     _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "Кандидатствахте по тази обява.", 3000);
-                else
-                    _baseService.ToastNotify(ToastMessageState.Error, "Грешка", "вие не успяхте да кандидатсвате. Моля направете си регистрация и опитайте отново!", 5000);
+                    await _notifyService.Create($"Имате нов кандидат за вашата обява - {entity.Name}.", "identity/account/manage", DateTime.Now, NotifyType.Information, null, entity.PosterID, null).ConfigureAwait(false);
+
+               // }
+              //  else
+               //     _baseService.ToastNotify(ToastMessageState.Error, "Грешка", "вие не успяхте да кандидатсвате. Моля направете си регистрация и опитайте отново!", 5000);
             }
             if (!String.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
             else
                 return RedirectToAction("Index", "Home");
+        }
+
+        public IQueryable<SelectListItem> GetFilesByEmail(string Email)
+        {
+            return _filesService.GetAllAsNoTracking().Where(x => x.UserId == Email)
+            .Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Title });
         }
     }
 

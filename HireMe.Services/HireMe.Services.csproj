@@ -5,12 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="C:\Users\iNexus\.nuget\packages\ntoastnotify\8.0.0\contentFiles\any\net6.0\wwwroot\noty.js" />
+    <Content Remove="C:\Users\iNexus\.nuget\packages\ntoastnotify\8.0.0\contentFiles\any\net6.0\wwwroot\toastr.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LazZiya.ImageResize" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="NToastNotify" Version="8.0.0" />
-    <PackageReference Include="sib_api_v3_sdk" Version="3.1.0" />
+    <PackageReference Include="sib_api_v3_sdk" Version="3.3.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
   </ItemGroup>

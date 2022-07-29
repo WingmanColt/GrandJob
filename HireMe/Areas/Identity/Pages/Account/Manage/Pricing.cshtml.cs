@@ -13,16 +13,20 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
     [Authorize]
     public class PricingModel : PageModel
     {
+        private readonly IBaseService _baseService;
         private readonly INotificationService _notificationService;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public PricingModel(UserManager<User> userManager, 
+        public PricingModel(
+            UserManager<User> userManager, 
             SignInManager<User> signInManager,
+            IBaseService baseService,
             INotificationService notificationService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _baseService = baseService;
             _notificationService = notificationService;
         }
 
@@ -54,7 +58,8 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             {
                 user.AccountType = AccountType.Free;
 
-                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user.Id, null).ConfigureAwait(false);
+                _baseService.ToastNotify(ToastMessageState.Alert, "Детайли", "Моля попълнете личните си данни.", 10000);
+                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, null, user.Id, null).ConfigureAwait(false);
                 await _userManager.UpdateAsync(user);
                 await _signInManager.RefreshSignInAsync(user);
                 return RedirectToPage("Index");
@@ -75,7 +80,9 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             if (user.AccountType != AccountType.Pro)
             {
                 user.AccountType = AccountType.Pro;
-                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user.Id, null).ConfigureAwait(false);
+                _baseService.ToastNotify(ToastMessageState.Alert, "Детайли", "Моля попълнете личните си данни.", 10000);
+
+                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, null, user.Id, null).ConfigureAwait(false);
 
                 await _userManager.UpdateAsync(user);
                 await _signInManager.RefreshSignInAsync(user);
@@ -97,7 +104,9 @@ namespace HireMe.Areas.Identity.Pages.Account.Manage
             if (user.AccountType != AccountType.Test)
             {
                 user.AccountType = AccountType.Test;
-                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Success, "fas fa-check-double", user.Id, null).ConfigureAwait(false);
+                _baseService.ToastNotify(ToastMessageState.Alert, "Детайли", "Моля попълнете личните си данни.", 10000);
+
+                await _notificationService.Create("Успешно активирахте избрания от вас пакет.", "#", DateTime.Now, NotifyType.Activated, null, user.Id, null).ConfigureAwait(false);
 
                 await _userManager.UpdateAsync(user);
                 await _signInManager.RefreshSignInAsync(user);

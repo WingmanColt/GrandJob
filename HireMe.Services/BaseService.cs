@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
 using System.Collections.Generic;
 using HireMe.Services.Utilities;
@@ -27,16 +26,17 @@ namespace HireMe.Services
 
         private readonly ILogService _logService;
         private readonly IToastNotification _toastNotification;
-
-        private readonly IResumeService _resumeService;
-        private readonly int _resumeSizeLimit;
+        private readonly IFilesService _filesService;
 
         private readonly string[] _permittedFiles = { ".pdf" };
+        private readonly string _AppliedCVPath;
+        private readonly string _myFilesCVPath;
+
+        private readonly int _FileSizeLimit;
+        private readonly int _FilesUploadLimit;
+        
 
         private readonly string _ImageUsersPath;
-        private readonly string _ResumeUsersPath;
-        private readonly string _ResumeGuestsPath;
-
         private readonly string _ImageCompaniesPath;
         private readonly string _GalleryPath;
 
@@ -48,22 +48,23 @@ namespace HireMe.Services
               IRepository<Company> companiesRepository,
               IToastNotification toastNotification,
               ILogService logService,
-              IResumeService resumeService)
+              IFilesService filesService)
         {
             _jobsRepository = jobsRepository;
             _contestantRepository = contestantRepository;
             _companiesRepository = companiesRepository;
 
             _toastNotification = toastNotification;
-            _resumeService = resumeService;
+            _filesService = filesService;
             _logService = logService;
 
-            _resumeSizeLimit = config.GetValue<int>("MySettings:ResumeUploadLimit");
+            _AppliedCVPath = config.GetValue<string>("CVPaths:AppliedCVPath");
+            _myFilesCVPath = config.GetValue<string>("CVPaths:myFilesCVPath");
+
+            _FileSizeLimit = config.GetValue<int>("CVPaths:FileSizeLimit");
+            _FilesUploadLimit = config.GetValue<int>("CVPaths:FileSizeLimit");
 
             _ImageUsersPath = config.GetValue<string>("MySettings:ImageUsersPathHosting");
-            _ResumeUsersPath = config.GetValue<string>("MySettings:FilePathHosting");
-            _ResumeGuestsPath = config.GetValue<string>("MySettings:ResumeGuestsPath");
-
             _ImageCompaniesPath = config.GetValue<string>("MySettings:ImageCompaniesPathHosting");
             _GalleryPath = config.GetValue<string>("MySettings:GalleryPathHosting");
 
@@ -234,30 +235,59 @@ namespace HireMe.Services
             return null;
         }
 
-       // [RequestSizeLimit(5000000)]
-        public async Task<string> UploadFileAsync(IFormFile file, string oldFile, User user)
+        public async Task<string> UploadFileAsync(IFormFile file, string oldFile, string jobTitle, FileType fileType, User user)
         {
-            if (await _resumeService.GetFilesByUserCount(user.Id) >= _resumeSizeLimit)
-                return null;
-
-
             if (file.Length < 0)
             {
                 await ToastNotifyLogAsync(user, ToastMessageState.Error, "Грешка", "Моля опитайте с друг файл.", $"{user?.UserName}, {user?.Role}, {user?.Email} - Файлът не е намерен", 5000).ConfigureAwait(false);
                 return null;
             }
 
+            if (file.Length > _FileSizeLimit)
+            {
+                await ToastNotifyLogAsync(user, ToastMessageState.Error, "Грешка", "Допустимият размер е до 3MB.", $"{user?.UserName}, {user?.Role}, {user?.Email} - Файлът не е намерен", 5000).ConfigureAwait(false);
+                return null;
+            }
+
+            string folderClearedName = null;
+            string folderJobName;
+
+            switch (fileType)
+            {
+                case FileType.AppliedCV:
+                    {
+                        if (!Directory.Exists(_AppliedCVPath))
+                            Directory.CreateDirectory(_AppliedCVPath);
+
+                        folderJobName = Path.Combine(_AppliedCVPath, StringHelper.FilterTrimSplit(jobTitle));
+                        if (!Directory.Exists(folderJobName))
+                            Directory.CreateDirectory(folderJobName);
+
+                        folderClearedName = Path.Combine(folderJobName, StringHelper.Filter(user?.Email));
+                    }
+                    break;
+                case FileType.MyFilesCV:
+                    {
+                     if (await _filesService.GetFilesByUserCount(user.Id) >= _FilesUploadLimit)
+                            return null;
+
+                        if (!Directory.Exists(_myFilesCVPath))
+                            Directory.CreateDirectory(_myFilesCVPath);
+
+
+                        folderClearedName = Path.Combine(_myFilesCVPath, StringHelper.Filter(user?.Email));      
+                    }
+                    break;
+
+            }
+
+            if (!Directory.Exists(folderClearedName))
+            {
+                Directory.CreateDirectory(folderClearedName);
+            }
+
             try
             {
-                string folderClearedName = Path.Combine(_ResumeUsersPath, StringHelper.Filter(user?.Email));
-                if (!Directory.Exists(_ResumeUsersPath))
-                {
-                    Directory.CreateDirectory(_ResumeUsersPath);
-                }
-                if (!Directory.Exists(folderClearedName))
-                {
-                    Directory.CreateDirectory(folderClearedName);
-                }
 
                 string extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
                 string fileName = DateTime.Now.Ticks + extension; //Create a new Name for the file due to security reasons.
@@ -271,7 +301,7 @@ namespace HireMe.Services
 
                 if (oldFile is not null)
                 {
-                    Delete(Path.Combine(folderClearedName, oldFile));
+                    DeleteFile(Path.Combine(folderClearedName, oldFile));
                 }
 
                 var path = Path.Combine(folderClearedName, fileName);
@@ -296,7 +326,7 @@ namespace HireMe.Services
         }
 
         //[RequestSizeLimit(5000000)]
-        public async Task<string> UploadFileAsGuestAsync(IFormFile file, string jobTitle, string email)
+        public async Task<string> UploadFileAsync(IFormFile file, FileType fileType, string jobTitle, string email)
         {
 
             if (file?.Length < 0)
@@ -305,19 +335,36 @@ namespace HireMe.Services
                 return null;
             }
 
-            
+            if (file.Length > _FileSizeLimit)
+            {
+                ToastNotify(ToastMessageState.Error, "Грешка", "Допустимият размер е 3MB.", 5000);
+                return null;
+            }
+
+            if (!Directory.Exists(_AppliedCVPath))
+                Directory.CreateDirectory(_AppliedCVPath);
+
+            string folderClearedName = null;
+            string folderJobName;
+
+            switch (fileType)
+            {
+                case FileType.GuestsCV:
+                    folderJobName = Path.Combine(_AppliedCVPath, StringHelper.FilterTrimSplit(jobTitle));
+                    if (!Directory.Exists(folderJobName))
+                        Directory.CreateDirectory(folderJobName);
+
+                    folderClearedName = Path.Combine(folderJobName, StringHelper.Filter(email));
+                    break;
+            }
+
+            if (!Directory.Exists(folderClearedName))
+            {
+                Directory.CreateDirectory(folderClearedName);
+            }
 
             try
             {
-                string _ResumeUsersPathExtended = Path.Combine(_ResumeGuestsPath, StringHelper.Filter(jobTitle));
-                if (!Directory.Exists(_ResumeGuestsPath))
-                {
-                    Directory.CreateDirectory(_ResumeGuestsPath);
-                }
-                if (!Directory.Exists(_ResumeUsersPathExtended))
-                {
-                    Directory.CreateDirectory(_ResumeUsersPathExtended);
-                }
 
                 string extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
                 string fileName = StringHelper.Filter(email) + extension; 
@@ -329,7 +376,7 @@ namespace HireMe.Services
                 }
 
 
-                var path = Path.Combine(_ResumeUsersPathExtended, fileName);
+                var path = Path.Combine(folderClearedName, fileName);
 
                 using (var stream = new FileStream(path, FileMode.Create,
                     FileAccess.ReadWrite,
@@ -349,9 +396,26 @@ namespace HireMe.Services
 
             return null;
         }
+        public async Task<bool> CloneFileAsync(string File, string jobTitle, User user)
+        {
+            string folderJobName = Path.Combine(_AppliedCVPath, StringHelper.FilterTrimSplit(jobTitle));
+            string folderUserName = Path.Combine(_myFilesCVPath, StringHelper.Filter(user?.Email));
+            string full = Path.Combine(folderJobName, StringHelper.Filter(user?.Email));
+            if (Directory.Exists(folderUserName))
+            {
+                if (!Directory.Exists(full))
+                {
+                    Directory.CreateDirectory(full);
+                }
 
-       // [RequestSizeLimit(2000000)]
-        public async Task<string> UploadImageAsync(IFormFile file, string oldFile, bool isCompany, User user)
+                CopyFilesRecursively(folderUserName, Path.Combine(full, File));
+                return true;
+            }
+
+            return false;
+        }
+
+            public async Task<string> UploadImageAsync(IFormFile file, string oldFile, bool isCompany, User user)
         {
             if (file.Length < 0)
             {
@@ -383,7 +447,7 @@ namespace HireMe.Services
 
                 if (oldFile != null)
                 {
-                    Delete(url + oldFile);
+                    DeleteFile(Path.Combine(url, oldFile));
                 }
 
                 var path = Path.Combine(url, fileName);
@@ -494,7 +558,7 @@ namespace HireMe.Services
                 {
                     File.Delete(folderLogo);
                 }
-                return OperationResult.SuccessResult(null);
+                return OperationResult.SuccessResult("");
             }
             catch (Exception)
             {
@@ -506,7 +570,7 @@ namespace HireMe.Services
         {
             try
             {
-                string folderClearedName = Path.Combine(_ResumeUsersPath, StringHelper.Filter(user?.Email));
+                string folderClearedName = Path.Combine(_myFilesCVPath, StringHelper.Filter(user?.Email));
 
                 if (Directory.Exists(folderClearedName))
                 {
@@ -533,7 +597,7 @@ namespace HireMe.Services
                         File.Delete(folderLogo);
                     }
                 }
-                return OperationResult.SuccessResult(null);
+                return OperationResult.SuccessResult("");
             }
             catch (Exception)
             {
@@ -544,6 +608,27 @@ namespace HireMe.Services
 
 
         public bool Delete(string fullpath)
+        {
+            if (Directory.Exists(fullpath))
+            {
+                try
+                {
+                    DirectoryInfo di = new DirectoryInfo(fullpath);
+                    FileInfo[] fileInfo = di.GetFiles();
+                    foreach (var item in fileInfo)
+                    {
+                        item.Delete();
+                    }
+                }
+                finally
+                {
+                    Directory.Delete(fullpath);
+                }
+                return true;
+            }
+            return false;
+        }
+        private bool DeleteFile(string fullpath)
         {
             if (!File.Exists(fullpath))
             {
@@ -561,6 +646,27 @@ namespace HireMe.Services
 
 
             return false;
+        }
+
+        private static void CopyFilesRecursively(string sourcePath, string targetPath)
+        {
+            var dir = new DirectoryInfo(sourcePath);
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                //string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetPath);
+            }
+            //Now Create all of the directories
+            /* foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+            }
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+            }*/
         }
 
     }

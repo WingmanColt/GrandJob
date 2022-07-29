@@ -2,10 +2,25 @@
 @model LockoutModel
 @{
     ViewData["Title"] = "Заключен акаунт";
+    Layout = "/Areas/Identity/Pages/_LayoutLogin.cshtml";
 }
 
-<header>
-    <h1 class="text-danger">@ViewData["Title"]</h1>
-    <b class="text-danger">Този профил е заключен за 24 часа.</b>
-    <p class="text-danger">Моля опитайте по-късно.</p>
-</header>
+    <!-- Info Section -->
+    <div class="login-section">
+      <div class="image-layer" style="background-image: url(/theme_superio/images/background/12.webp);"></div>
+      <div class="outer-box">
+        <!-- Login Form -->
+        <div class="login-form default-form">
+          <div class="form-inner">
+            <h3>@ViewData["Title"]</h3>
+             <b class="text-danger">Този профил е заключен за 24 часа.</b>
+             <p class="text-danger">Моля опитайте по-късно.</p>
+
+
+          </div>
+        </div>
+        <!--End Login Form -->
+      </div>
+    </div>
+    <!-- End Info Section -->
+

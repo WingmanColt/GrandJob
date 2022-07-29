@@ -193,34 +193,39 @@
             {
                 case PostType.Company:
                     {
-                        var items = user?.FavouriteCompanies?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1);
+                        var items = user?.FavouriteCompanies?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).ToAsyncEnumerable(); 
 
-                        int? count = items.Count();
+                        int? count = await items.CountAsync();
                         return count;                            
                     }
 
                 case PostType.Contestant:
                     {
-                        var items = user?.FavouriteContestants?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1);
+                        var items = user?.FavouriteContestants?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).ToAsyncEnumerable();
 
-                        int? count = items.Count();
+                        int? count = await items.CountAsync();
                         return count;
                     }              
                 case PostType.Job:
                     {
-                        var items = user?.FavouriteJobs?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1);
+                        var items = user?.FavouriteJobs?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).ToAsyncEnumerable();
 
-                        int? count = items.Count();
+                        int? count = await items.CountAsync();
                         return count;
                     }
 
                 case PostType.All:
                     {
-                        var itemsCompany = user?.FavouriteCompanies?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).Count();
-                        var itemsContestant = user?.FavouriteContestants?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).Count();
-                        var itemsJob = user?.FavouriteJobs?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).Count();
+                        var itemsCompany = user?.FavouriteCompanies?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).ToAsyncEnumerable();
+                        var itemsContestant = user?.FavouriteContestants?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).ToAsyncEnumerable();
+                        var itemsJob = user?.FavouriteJobs?.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).Skip(1).ToAsyncEnumerable();
 
-                        int? count = itemsCompany + itemsContestant + itemsJob;
+                        int? itemsCompanyCounted = await itemsCompany.CountAsync().ConfigureAwait(false) ;
+                        int? itemsContestantCounted = await itemsContestant.CountAsync().ConfigureAwait(false);
+                        int? itemsJobsCounted = await itemsJob.CountAsync().ConfigureAwait(false);
+
+
+                        int? count = itemsCompanyCounted + itemsContestantCounted + itemsJobsCounted;
                         return count;
                     }
 

@@ -14,7 +14,8 @@ using System.Linq;
 
 namespace HireMe.Web.Controllers
 {
-    public class AccountController : Controller
+   // [Route("[controller]/[action]")]
+    public class AccountController : BaseController
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
@@ -52,8 +53,12 @@ namespace HireMe.Web.Controllers
             _senderService = senderService;
             _notifyService = notifyService;
         }
+
+
+        // route is like that cuz we are using ajax url in script.js !
         [HttpPost]
-        public async Task<ActionResult> Login(AccountViewModel viewModel)
+        [Route("account/login")]
+        public async Task<IActionResult> Login(AccountViewModel viewModel)
         {
             if (_signInManager.IsSignedIn(User))
             {
@@ -90,7 +95,6 @@ namespace HireMe.Web.Controllers
                 }
                 if (result.IsLockedOut)
                 {
-
                     await _baseService.ToastNotifyLogAsync(user, ToastMessageState.Error, "Проблем", "Профилът е заключен за 24 часа.", "login", 4000);
                     return RedirectToPage("./Lockout");
                 }
@@ -112,7 +116,10 @@ namespace HireMe.Web.Controllers
             viewModel.ErrorMessage = "Възникна грешка, грешна парола или емайл адрес.";
             return NotFound(viewModel);
         }
+
+
         [HttpPost]
+        [Route("/Account/Register")]
         public async Task<IActionResult> Register(AccountViewModel viewModel)
         {
             if (_signInManager.IsSignedIn(User))
@@ -175,7 +182,7 @@ namespace HireMe.Web.Controllers
                     }
 
 
-                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/editprofile", DateTime.Now, NotifyType.Information, "fas fa-edit", user.Id, null).ConfigureAwait(false);
+                    await _notifyService.Create("Моля попълнете личните си данни.", "identity/account/manage/editprofile", DateTime.Now, NotifyType.Information, null, user.Id, null).ConfigureAwait(false);
 
                     _baseService.ToastNotify(ToastMessageState.Alert, "Детайли", "Моля попълнете личните си данни.", 9000);
                     _baseService.ToastNotify(ToastMessageState.Success, "Успешно", "се регистрирахте. Благодарим ви за отделеното време !", 5000);
@@ -187,7 +194,7 @@ namespace HireMe.Web.Controllers
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction(nameof(HomeController.Index), "Home");
+                        return RedirectToPage("/Account/Manage", new { Area = "Identity" });
                     }
 
                 }
@@ -200,7 +207,8 @@ namespace HireMe.Web.Controllers
         }
 
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public async Task<IActionResult> Logout(string returnUrl = "")
+        [Route("/logout")]
+        public async Task<IActionResult> Logout()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -215,12 +223,11 @@ namespace HireMe.Web.Controllers
                 HttpContext.Response.Cookies.Delete("GrandCookie");
             }
 
-            if (!String.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-            else
-                return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
 
+
+        [Route("/social-switch")]
         public async Task<IActionResult> SignInSocialEnabling(string returnUrl = "")
         {
             var user = await _userManager.GetUserAsync(User);
@@ -242,6 +249,8 @@ namespace HireMe.Web.Controllers
             else
                 return RedirectToAction("Index", "Home");
         }
+
+        [Route("/email-switch")]
         public async Task<IActionResult> EmailNotifyEnabling(string returnUrl = "")
         {
             var user = await _userManager.GetUserAsync(User);
@@ -267,18 +276,19 @@ namespace HireMe.Web.Controllers
 
         // User Modifications
         [Authorize(Roles = "Admin")]
+        [Route("/exchange-role")]
         public async Task<ActionResult> ExchangeRole(string id, Roles T, string returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
+                return Redirect("Identity/Account/Errors/AccessDenied");
             }
 
             var user_2 = await _userManager.FindByIdAsync(id);
             if (user_2 == null)
             {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
+                return Redirect("Identity/Account/Errors/AccessDenied");
             }
 
             string roleName = user_2.Role.GetShortName();
@@ -329,24 +339,23 @@ namespace HireMe.Web.Controllers
             if (!String.IsNullOrEmpty(returnUrl))
                 return Redirect(returnUrl);
             else
-                RedirectToPage("/Identity/Account/Manage/Users", new { Area = "Identity" });
-
-
-            return View();
+                return RedirectToPage("/Account/Manage/Users", new { Area = "Identity" });
         }
+
+        [Route("/remove-usr")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteUser(string id, string returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
+                return Redirect("Identity/Account/Errors/AccessDenied");
             }
 
             var user_2 = await _userManager.FindByIdAsync(id);
             if (user_2 == null)
             {
-                return Redirect("/Identity/Account/Errors/AccessDenied");
+                return Redirect("Identity/Account/Errors/AccessDenied");
             }
 
             _baseService.DeleteUserResources(user_2, true);
@@ -366,10 +375,8 @@ namespace HireMe.Web.Controllers
             if (!String.IsNullOrEmpty(returnUrl))
                     return Redirect(returnUrl);
                 else
-                    RedirectToPage("/Identity/Account/Manage/Users", new { Area = "Identity" });
-            
+                return RedirectToPage("/Account/Manage/Users", new { Area = "Identity" });
 
-            return View();
         }
 
         private async Task CreateRole()

@@ -199,7 +199,7 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<bool>("isArchived")
                         .HasColumnType("bit");
 
-                    b.Property<int>("payRate")
+                    b.Property<int?>("payRate")
                         .HasColumnType("int");
 
                     b.Property<long>("profileViews")
@@ -257,11 +257,11 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<string>("LocationId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("MaxSalary")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("MaxSalary")
+                        .HasColumnType("int");
 
-                    b.Property<long>("MinSalary")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("MinSalary")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -315,11 +315,14 @@ namespace HireMe.Data.Migrations.FeaturesDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CandidatesCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("Icon")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("JobsCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title_BG")
                         .HasColumnType("nvarchar(max)");
@@ -327,6 +330,64 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.HasKey("Id");
 
                     b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("HireMe.Entities.Models.Chart.CompanyStats", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("April")
+                        .HasColumnType("int");
+
+                    b.Property<int>("August")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("December")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("February")
+                        .HasColumnType("int");
+
+                    b.Property<int>("January")
+                        .HasColumnType("int");
+
+                    b.Property<int>("July")
+                        .HasColumnType("int");
+
+                    b.Property<int>("June")
+                        .HasColumnType("int");
+
+                    b.Property<int>("March")
+                        .HasColumnType("int");
+
+                    b.Property<int>("May")
+                        .HasColumnType("int");
+
+                    b.Property<int>("November")
+                        .HasColumnType("int");
+
+                    b.Property<int>("October")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PosterId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("September")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanyStats");
                 });
 
             modelBuilder.Entity("HireMe.Entities.Models.Chart.JobStats", b =>
@@ -343,29 +404,11 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<int>("EntityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Friday")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Monday")
-                        .HasColumnType("int");
-
                     b.Property<string>("PosterId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Saturday")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Sunday")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Thursday")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Wednesday")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Тuesday")
-                        .HasColumnType("int");
+                    b.Property<string>("ViewsPerDay")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -400,7 +443,7 @@ namespace HireMe.Data.Migrations.FeaturesDb
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stats");
+                    b.ToTable("ContestantStats");
                 });
 
             modelBuilder.Entity("HireMe.Entities.Models.Company", b =>
@@ -473,6 +516,9 @@ namespace HireMe.Data.Migrations.FeaturesDb
 
                     b.Property<string>("Twitter")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
 
                     b.Property<int>("VotedUsers")
                         .HasColumnType("int");
@@ -553,6 +599,9 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<string>("PosterID")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PremiumPackage")
+                        .HasColumnType("int");
+
                     b.Property<int>("Promotion")
                         .HasColumnType("int");
 
@@ -592,11 +641,8 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<bool>("isArchived")
                         .HasColumnType("bit");
 
-                    b.Property<int>("payRate")
+                    b.Property<int?>("payRate")
                         .HasColumnType("int");
-
-                    b.Property<long>("profileViews")
-                        .HasColumnType("bigint");
 
                     b.Property<int>("profileVisiblity")
                         .HasColumnType("int");
@@ -605,8 +651,6 @@ namespace HireMe.Data.Migrations.FeaturesDb
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Contestant");
                 });
@@ -717,6 +761,9 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("VotedUsers")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Files");
@@ -733,8 +780,8 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<string>("Adress")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("ApplyCount")
-                        .HasColumnType("bigint");
+                    b.Property<int>("ApplyCount")
+                        .HasColumnType("int");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -769,17 +816,20 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<string>("LocationId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("MaxSalary")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("MaxSalary")
+                        .HasColumnType("int");
 
-                    b.Property<long>("MinSalary")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("MinSalary")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PosterID")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PremiumPackage")
+                        .HasColumnType("int");
 
                     b.Property<int>("Promotion")
                         .HasColumnType("int");
@@ -796,8 +846,8 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<string>("TagsId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Views")
-                        .HasColumnType("bigint");
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
 
                     b.Property<int>("VotedUsers")
                         .HasColumnType("int");
@@ -811,12 +861,7 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<bool>("isArchived")
                         .HasColumnType("bit");
 
-                    b.Property<string>("resumeFilesId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("CompanyTestId");
 
@@ -974,8 +1019,23 @@ namespace HireMe.Data.Migrations.FeaturesDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<bool>("AutoSuggestion")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("BoostedPost")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("BoostedPostInHome")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("PostType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RefreshCount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
@@ -985,6 +1045,12 @@ namespace HireMe.Data.Migrations.FeaturesDb
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("premiumPackage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("productId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1017,11 +1083,17 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.Property<int>("RatingVotes")
                         .HasColumnType("int");
 
+                    b.Property<int>("ResumeType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VotedUsers")
+                        .HasColumnType("int");
 
                     b.Property<bool>("isGuest")
                         .HasColumnType("bit");
@@ -1093,23 +1165,8 @@ namespace HireMe.Data.Migrations.FeaturesDb
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("HireMe.Entities.Models.Contestant", b =>
-                {
-                    b.HasOne("HireMe.Entities.Models.Category", null)
-                        .WithMany("Contestants")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("HireMe.Entities.Models.Jobs", b =>
                 {
-                    b.HasOne("HireMe.Entities.Models.Category", null)
-                        .WithMany("Jobs")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("HireMe.Entities.Models.Benchmark.CompanyTest", null)
                         .WithMany("Jobs")
                         .HasForeignKey("CompanyTestId");
@@ -1117,13 +1174,6 @@ namespace HireMe.Data.Migrations.FeaturesDb
 
             modelBuilder.Entity("HireMe.Entities.Models.Benchmark.CompanyTest", b =>
                 {
-                    b.Navigation("Jobs");
-                });
-
-            modelBuilder.Entity("HireMe.Entities.Models.Category", b =>
-                {
-                    b.Navigation("Contestants");
-
                     b.Navigation("Jobs");
                 });
 #pragma warning restore 612, 618

@@ -28,11 +28,28 @@ namespace HireMe.Services
             _accountsService = accountsService;
         }
 
-        public async Task<OperationResult> Create(string title, string url, DateTime start, NotifyType type, string icon, string receiverId, string senderId)
+    
+        public async Task<OperationResult> Create(string title, string url, DateTime start, NotifyType type, string? icon, string receiverId, string senderId)
         {
             if (receiverId is null)
                 return OperationResult.FailureResult("");
 
+            switch (type)
+            {
+                case NotifyType.Information: icon = "las la-info";
+                    break;
+                case NotifyType.Warning:icon = "las la-exclamation-triangle";
+                    break;
+                case NotifyType.Danger:icon = "las la-ban";
+                    break;
+                case NotifyType.Success:icon = "las la-check";
+                    break;
+                case NotifyType.Tasks:icon = "las la-tasks";
+                    break;
+                case NotifyType.Activated:icon = "las la-check-double";
+                    break;
+                    
+            }
             var notification = new Notification
             {
                 Title = title,

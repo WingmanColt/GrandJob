@@ -2,9 +2,80 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Влез в системата";
-    Layout = "/Areas/Identity/Pages/Account/Layout/_Login.cshtml";
+    ViewData["Title"] = "Влез в профила си";
+    Layout = "/Areas/Identity/Pages/_LayoutLogin.cshtml";
 }
+
+    <!-- Info Section -->
+    <div class="login-section">
+      <div class="image-layer" style="background-image: url(/theme_superio/images/background/12.webp);"></div>
+      <div class="outer-box">
+        <!-- Login Form -->
+        <div class="login-form default-form">
+          <div class="form-inner">
+            <h3>Влез в профила си</h3>
+
+            <!--Login Form-->
+               <form method="post">
+                   <div asp-validation-summary="All" class="text-danger"></div>
+
+              <div class="form-group">
+              <label>Емайл</label>
+               <input asp-for="Input.Email" class="form-control" autocomplete="on" placeholder="Емайл" required/>
+              </div>
+
+              <div class="form-group">
+               <label>Парола</label>
+               <input asp-for="Input.Password" class="form-control" autocomplete="off" placeholder="Парола" required/>
+              </div>
+
+              
+              <div class="form-group">
+                <div class="field-outer">
+    
+             <div class="form-check">
+                  @Html.CheckBoxFor(x => x.Input.RememberMe)                
+                  <label class="form-check-label" for="flexCheckDefault">
+                   Запомни ме
+                </label>
+             </div>
+                  <a asp-area="Identity" asp-page="ForgotPassword" class="pwd">Забравена парола?</a>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <button class="theme-btn btn-style-one" type="submit">Влез</button>
+              </div>
+            </form>
+
+            <div class="bottom-box">
+              <div class="divider"><span>или</span></div>
+              <div class="btn-box row">
+            @if (Model.ExternalLogins?.Count > 0)
+            {
+            <form id="external" asp-area="Identity" asp-page="/Account/ExternalLogin" method="post">
+                <div class="col-lg-12 col-md-12 external-row">
+                    @foreach (var provider in Model.ExternalLogins)
+                        {
+               
+                    <button type="submit" class="theme-btn social-btn-two external-btn @provider.DisplayName.ToLower()-btn" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">
+                        <i class="lab la-@provider.DisplayName.ToLower()" style="font-size:2rem;"></i> @provider.DisplayName
+                    </button>
+                
+                        }
+                           </div>
+            </form>
+            }
+         
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--End Login Form -->
+      </div>
+    </div>
+    <!-- End Info Section -->
+@*
 <div class="wrapper">
     <form method="post" class="login" id="remote-control-form">
         <div asp-validation-summary="All" class="text-danger"></div>
@@ -13,7 +84,7 @@
         <div class="row setup-content" id="step-1">
             <b>Емайл:</b>
             <input asp-for="Input.Email" autocomplete="on" id="txtUsername" onkeyup="ClearMessage()" class="form-control" placeholder="Емайл" />
-           @* <i class="fas fa-user"></i>*@
+          
             <span id="message"></span>
             <br>
             <hr>
@@ -25,7 +96,7 @@
         <div class="row setup-content" id="step-2">
             <b>Парола:</b>
             <input asp-for="Input.Password" autocomplete="off" class="form-control" placeholder="Парола" />
-          @*  <i class="fas fa-key"></i>*@
+          
             <br>
 
 
@@ -77,6 +148,6 @@
         <h3><a asp-area="Identity" asp-page="/Account/RegisterAsEmployer">Регистрация като работодател</a></h3>
     </footer>
     </div>
-
+    *@
 
 

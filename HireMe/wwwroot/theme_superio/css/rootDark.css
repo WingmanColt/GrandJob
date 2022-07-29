@@ -3,4 +3,5 @@
     scrollbar-track-color: transparent; /* Firefox 63 compatibility */
     scrollbar-color: #696969ae;
     scrollbar-width: 6px;
+    --all-notificiations-color: #14a800;
 }

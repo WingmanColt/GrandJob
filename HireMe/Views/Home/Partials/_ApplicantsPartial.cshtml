@@ -1,12 +1,9 @@
-﻿@inject IConfiguration config
-@inject UserManager<User> UserManager
+﻿@inject UserManager<User> UserManager
 
 @model IndexViewModel
 @{
     User userId;
     string FullImage;
-    string SiteImageUrl = config.GetSection("MySettings").GetSection("UserPicturePath").Value;
-    string SiteUrl = config.GetSection("MySettings").GetSection("SiteUrl").Value;
 }   
 
 <!-- About Section -->
@@ -26,14 +23,14 @@
                 <li>Талантливи</li>
                 <li>Потвърдени</li>
               </ul>
-              <a href="#" class="theme-btn btn-style-one">Добави CV</a>
+              <a asp-area="Identity" asp-page="/Contestant/Operations" class="theme-btn btn-style-one">Присъедини се</a>
             </div>
           </div>
 
 
           <!-- Image Column -->
           <div class="image-column col-lg-6 col-md-12 col-sm-12">
-            <figure class="image-box wow fadeInLeft"><img class="lazyload" data-src="https://creativelayers.net/themes/superio/images/resource/image-3.png" alt=""></figure>
+            <figure class="image-box wow fadeInLeft"><img class="lazyload" data-src="https://grandjob.eu/theme_superio/images/background/image-3.webp" width="666" height="540" alt=""></figure>
       @if (Model.LastContestants is not null)
       {
                     <!-- Count Employers -->
@@ -48,26 +45,23 @@
             userId = await UserManager.FindByIdAsync(item.PosterID);
 
             if (!(userId is null))
-                FullImage = (userId?.PictureName is not null && userId.PictureName.Contains("https://")) ? userId?.PictureName : (config.GetSection("MySettings").GetSection("UserPicturePath").Value + userId?.PictureName); //userId.PictureName.Contains("https://") ? userId?.PictureName : SiteImageUrl + userId?.PictureName;
+                FullImage = (userId?.PictureName is not null && userId.PictureName.Contains("https://")) ? userId?.PictureName : Model.UserPicturePath + userId?.PictureName; //userId.PictureName.Contains("https://") ? userId?.PictureName : SiteImageUrl + userId?.PictureName;
             else
                 FullImage = "~/uploads/Images/100x100.jpg";
 
-                <li class="applicant" href="@SiteUrl/candidates/info/@item.Id">
-                  <figure class="image">
+                <li class="applicant" >
+                  <figure class="image" style="border: 1px solid @item.PremiumPackage.GetDescription()">
                 @if (userId?.PictureName is not null)
                 {
-                    <img class="lazyload" data-src="@FullImage" />
+                    <img class="lazyload" data-src="@FullImage" width="100" height="100" />
                 }
                   </figure>
-                  <h4 class="name">
-                      @if(item.FullName?.Length >= 19)
-                      {
-                       item.FullName?.Substring(0, 19);
-                      } else {
-                      @item.FullName;
-                      }     
-                  </h4>
+                  <a asp-controller="Contestants" asp-action="Details" asp-route-id="@item.Id" class="name" style="font-size:1rem;">@item.FullName
+                      <span class="icon @item.PremiumPackage.GetShortName() @item.PremiumPackage.GetPrompt()" style="color:@item.PremiumPackage.GetDescription();"></span>
+                  </a>
+                  <br>
                   <span class="designation">@item.Speciality</span>
+
                 </li>
             }
 

@@ -71,6 +71,16 @@ namespace HireMe.Services
             return entity;
         }
 
+        public async Task<int> GetAllCount(User user)
+        {
+            var userId = user.Id;
+            var entity = await GetAllAsNoTracking()
+                .Where(x => x.ReceiverId == userId || x.SenderId == userId)
+                .CountAsync();
+
+            return entity;
+        }
+
         public async Task<Tasks> GetByLinkAsync(string link)
         {
             var ent = await _tasksRepository.Set().FirstOrDefaultAsync(j => j.GeneratedLink == link);

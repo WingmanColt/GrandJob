@@ -16,13 +16,10 @@
     string SenderImageUrl;
     string notifyIcon = null;
     User sender;
-
-    var user = await UserManager.GetUserAsync(User);
     int appliedCount = 0;
-
    int notify;
-    if (user is not null)
-        notify = user.ActivityReaded ? 0 : 1;
+    if (Model.LoggedUser is not null)
+        notify = Model.LoggedUser.ActivityReaded ? 0 : 1;
     else
         notify = 0;
 }
@@ -31,31 +28,31 @@
     <section class="user-dashboard">
       <div class="dashboard-outer">
         <div class="upper-title-box">
-          <h3>Здравейте, @user.FirstName!</h3>
+          <h3>Здравейте, @Model.LoggedUser.FirstName!</h3>
         </div>
         <div class="row">
           <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
             <div class="ui-item">
               <div class="left">
-                <i class="icon flaticon-briefcase"></i>
+                <i class="icon las la-briefcase"></i>
               </div>
               <div class="right">
-               @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
-                  {
-                    <h4>@appliedCount</h4>
-                    <p>Пуснати кандидатури</p>
-                  }
-                  @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-                  {
-                    <h4>@appliedCount</h4>
-                    <p>Моите фирми</p>         
-                  }
-                  @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                  {
-                    <h4>@appliedCount</h4>
-                    <p>Чакащи фирми</p>         
-                  }
-                    </div>
+              
+            @switch (Model.LoggedUser.Role)
+            {
+                case Roles.User: case Roles.Contestant:
+                <h4>@Model.MyContestant</h4>
+                <p>Пуснати кандидатури</p>
+                    break;
+                case Roles.Recruiter: case Roles.Employer:
+                <h4>@Model.MyCompanies</h4>
+                <p>Моите фирми</p>    
+                    break;
+                case Roles.Moderator: case Roles.Admin:
+                 <p>Чакащи фирми</p>   
+                    break;
+            }
+              </div>
             </div>
           </div>
           <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
@@ -64,21 +61,20 @@
                 <i class="icon la la-file-invoice"></i>
               </div>
               <div class="right">
-               @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
-                  {
-                    <h4>22</h4>
-                    <p>Пуснати кандидатури</p>
-                  }
-                  @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-                  {
-                    <h4>22</h4>
-                    <p>Моите обяви</p>         
-                  }
-                  @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                  {
-                    <h4>22</h4>
-                    <p>Чакащи обяви</p>         
-                  }
+            @switch (Model.LoggedUser.Role)
+            {
+                case Roles.User: case Roles.Contestant:
+                <h4>@appliedCount</h4>
+                <p>Кандидатствани обяви</p>
+                    break;
+                case Roles.Recruiter: case Roles.Employer:
+                <h4>@Model.MyJobs</h4>
+                <p>Моите обяви</p>    
+                    break;
+                case Roles.Moderator: case Roles.Admin:
+                 <p>Чакащи обяви</p>   
+                    break;
+            }
               </div>
             </div>
           </div>
@@ -88,7 +84,7 @@
                 <i class="icon la la-comment-o"></i>
               </div>
               <div class="right">
-                <h4>74</h4>
+                <h4>@Model.MyMessages</h4>
                 <p>Съобщения</p>
               </div>
             </div>
@@ -99,256 +95,386 @@
                 <i class="icon la la-bookmark-o"></i>
               </div>
               <div class="right">
-               @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User))
-                  {
-                    <h4>22</h4>
-                    <p>Приложения</p>
-                  }
-                  @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter))
-                  {
-                    <h4>22</h4>
-                    <p>Приложения</p>         
-                  }
-                  @if (user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
-                  {
-                    <h4>22</h4>
-                    <p>Чакащи кандидати</p>         
-                  }
+            
+            @switch (Model.LoggedUser.Role)
+            {
+                case Roles.User: case Roles.Contestant:
+                <h4>@Model.MyAppsCount</h4>
+                 <p>Приложения</p>  
+                    break;
+                case Roles.Recruiter: case Roles.Employer:
+                <h4>@Model.MyAppsCount</h4>
+                 <p>Приложения</p>  
+                    break;
+                case Roles.Moderator: case Roles.Admin:
+                <h4>@Model.MyAppsCount</h4>
+                  <p>Чакащи кандидати</p>   
+                    break;
+            }
+
               </div>
             </div>
           </div>
         </div>
 
-        <div class="row">
 
+          <div class="row">
+            @if (Model.SelectCompanyChart is not null)
+            {
+                <div class="col-lg-8">
+                    <!-- Graph widget -->
+                    <div class="graph-widget ls-widget">
+                        <div class="tabs-box">
+                            <div class="widget-title">
+                                <h4>Фирми</h4>    
+                                <div class="chosen-outer">
 
-          <div class="col-lg-7">
-            <!-- Graph widget -->
-            <div class="graph-widget ls-widget">
-              <div class="tabs-box">
-                <div class="widget-title">
-                  <h4>Your Profile Views</h4>
-                  <div class="chosen-outer">
-                    <!--Tabs Box-->
-                    <select class="chosen-select">
-                      <option>Last 6 Months</option>
-                      <option>Last 12 Months</option>
-                      <option>Last 16 Months</option>
-                      <option>Last 24 Months</option>
-                      <option>Last 5 year</option>
-                    </select>
-                  </div>
+                                    <select class="form-select form-select-sm" asp-for="SelectCompanyChart" id="SelectCompanies">  
+                                        <option selected value="0">Избери фирма</option>    
+                                        @await foreach (var item in Model.SelectCompanyChart)
+                                        {
+                                            <option value="@item?.Value">@item?.Text</option>
+                                        }                   
+                                    </select>
+                                </div>
+                                <p>Брой преглеждания за цяла година</p>
+                            </div>
+
+                            <div class="widget-content">
+                                <canvas id="chart" width="100" height="45"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            }
+
+            <div class="col-lg-4">
+                    <!-- Notification Widget -->
+                    <div class="notification-widget ls-widget">
+                        <div class="widget-title">
+                            <h4>Известия</h4>
+                        </div>
+                        <div class="widget-content">
+                            @if (Model.isNotiftEmpty && Model.Notifications is not null)
+                            {
+                                <ul class="notification-list">
+                                    @await foreach (var entity in Model.Notifications)
+                                    {
+                                        sender = await UserManager.FindByIdAsync(entity.SenderId);
+
+                                        switch (entity.Type)
+                                        {
+                                            case NotifyType.Information:
+                                                notifyIcon = "notif-primary";
+                                                break;
+                                            case NotifyType.Warning:
+                                                notifyIcon = "notif-warning";
+                                                break;
+                                            case NotifyType.Danger:
+                                                notifyIcon = "notif-danger";
+                                                break;
+                                            case NotifyType.Success:
+                                                notifyIcon = "notif-success";
+                                                break;
+                                            case NotifyType.Image:
+                                                notifyIcon = "notif-img";
+                                                break;
+                                        }
+
+                                        <li>
+                                            <a href="@Url/@entity.Url">
+                                                <span class="icon @notifyIcon @entity.Icon"></span> <strong>@entity.Title</strong> 
+                                                <br>
+                                                <span class="colored">@entity.Date.ToString("MM MMMM")</span>
+                                            </a>
+                                            <hr>
+                                        </li>
+
+
+                                    }
+                                </ul>
+                            }
+                        </div>
+            </div>
+          </div>
+          
+          </div>
+          
+          <div class="row">
+           @if (Model.SelectJobChart is not null)
+            {
+                <div class="col-lg-8">
+                    <!-- Graph widget -->
+                    <div class="graph-widget ls-widget">
+                        <div class="tabs-box">
+                            <div class="widget-title">
+                                <h4>Обяви за работа</h4>    
+                                <div class="chosen-outer">
+
+                                    <select asp-for="SelectJobChart" id="SelectJobs" class="form-select form-select-md"> 
+                                      <option selected value="0">Избери обява</option>      
+                                    @await foreach (var item in Model.SelectJobChart)
+                                        {
+                                            <option value="@item?.Value">@item?.Text</option>
+                                        }
+
+                    </select>
+                </div>
+             <p>Брой преглеждания за месец</p>
+            </div>
 
                 <div class="widget-content">
-                  <canvas id="chart" width="100" height="45"></canvas>
+                  <canvas id="chart-job" width="100" height="45"></canvas>
                 </div>
               </div>
             </div>
           </div>
+          }
 
-          <div class="col-lg-5">
-            <!-- Notification Widget -->
-            <div class="notification-widget ls-widget">
-              <div class="widget-title">
-                <h4>Известия</h4>
+          @if (Model.TasksCount > 0)
+            {
+             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+            <div class="ui-item ui-purple">
+              <div class="left">
+                <i class="icon las la-tasks"></i>
               </div>
-              <div class="widget-content">
-                @if (Model.isNotiftEmpty && Model.Notifications is not null)
-                        {
-                            <ul class="notification-list">
-                                 @await foreach (var entity in Model.Notifications)
-                                        {
-                                            sender = await UserManager.FindByIdAsync(entity.SenderId);
+              <div class="right">
+                <h4>@Model.TasksCount</h4>
+                <p>Задачи свързани с мен</p>
 
-                                            switch (entity.Type)
-                                            {
-                                                case NotifyType.Information:
-                                                    notifyIcon = "notif-primary";
-                                                    break;
-                                                case NotifyType.Warning:
-                                                    notifyIcon = "notif-warning";
-                                                    break;
-                                                case NotifyType.Danger:
-                                                    notifyIcon = "notif-danger";
-                                                    break;
-                                                case NotifyType.Success:
-                                                    notifyIcon = "notif-success";
-                                                    break;
-                                                case NotifyType.Image:
-                                                    notifyIcon = "notif-img";
-                                                    break;
-                                            }
-
-                                <li>
-                                    <a href="@Url/@entity.Url">
-                                    <span class="icon @notifyIcon @entity.Icon"></span> <strong>@entity.Title</strong> 
-                                    <br>
-                                    <span class="colored">@entity.Date.ToString("MM MMMM")</span>
-                                    </a>
-                                    <hr>
-                                </li>
-                                
-                               
-                            }
-                            </ul>
-                        }
-                    </div>
+              </div>
             </div>
           </div>
-
+            }
           
+
+           <div class="row">
+     
           @{
-           @if (user.Role.Equals(Roles.Contestant) || user.Role.Equals(Roles.User) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+          if (Model.LoggedUser.Role.Equals(Roles.Contestant) || Model.LoggedUser.Role.Equals(Roles.User) || Model.LoggedUser.Role.Equals(Roles.Admin) || Model.LoggedUser.Role.Equals(Roles.Moderator))
            {
            if (Model.MyAppliedJobs is not null && await Model.MyAppliedJobs.AnyAsync())
             {   
-                <div class="col-lg-12">           
-             <!-- applicants Widget -->
-            <div class="applicants-widget ls-widget">
-              <div class="widget-title">
-                <h4>Последно кандидатствани обяви</h4>
-              </div>
-              <div class="widget-content">
-                <div class="row">
+                            <div class="col-lg-12">           
+                         <!-- applicants Widget -->
+                        <div class="applicants-widget ls-widget">
+                          <div class="widget-title">
+                            <h4>Последно кандидатствани обяви</h4>
+                          </div>
+                          <div class="widget-content">
+                            <div class="row">
 
-                  @await foreach (var item in Model.MyAppliedJobs)
+                              @await foreach (var item in Model.MyAppliedJobs)
                   {
                     appliedCount++;
 
-                     <!-- Job Block -->
-                     <div class="job-block col-lg-6 col-md-12 col-sm-12">
-                     <div class="inner-box">
-                    <div class="content">
-                      <span class="company-logo">
-                      <img class="rounded-full" src="@SiteImageUrl@item.CompanyLogo" alt="">
-                      </span>
-                      <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
-                      <ul class="job-info">
-                        <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
-                        @if (item.MaxSalary > 0)
+                                 <!-- Job Block -->
+                                 <div class="job-block col-lg-6 col-md-12 col-sm-12">
+                                 <div class="inner-box">
+                                <div class="content">
+                                  <span class="company-logo">
+                                  <img class="rounded-full" src="@SiteImageUrl@item.CompanyLogo" alt="">
+                                  </span>
+                                  <h4><a asp-controller="Jobs" asp-action="Details" asp-route-id="@item.Id">@item.Name</a></h4>
+                                  <ul class="job-info">
+                                    <li><span class="icon flaticon-map-locator"></span>@item.LocationId</li>                       
+                                    @if (item.MaxSalary > 0)
                          {
-                          <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
+                                      <li><span class="icon flaticon-money-bag"></span>@item.MinSalary - @item.MaxSalary / @item.SalaryType.GetDisplayName()</li>
                          }
 
                          else
                          {
-                          <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
+                                      <li><span class="icon flaticon-money-bag"></span>Не е посочено</li>
                          }
-                        
-                      </ul>
-                      <ul class="job-other-info">
-                        <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
-                        <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
-                      </ul>
-                      <button class="bookmark-btn"><span class="flaticon-heart"></span></button>
-                    </div>
-                  </div>
-                </div>
+                                    
+                                  </ul>
+                                  <ul class="job-other-info">
+                                    <li class="time">@item.ExprienceLevels.GetDisplayName()</li>
+                                    <li class="required">@item.CreatedOn.ToString("dd/MM/yyyy")</li>
+                                  </ul>
+                                  <button class="bookmark-btn"><span class="flaticon-heart"></span></button>
+                                </div>
+                              </div>
+                            </div>
                   }
 
-                </div>
-              </div>
-            </div>
-           </div>
+                            </div>
+                          </div>
+                        </div>
+                       </div>
           }
         } 
-        @if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+                    @if (Model.LoggedUser.Role.Equals(Roles.Employer) || Model.LoggedUser.Role.Equals(Roles.Recruiter) || Model.LoggedUser.Role.Equals(Roles.Admin) || Model.LoggedUser.Role.Equals(Roles.Moderator))
                 {
-                        @if (!(Model.ReceivedResumes is null))
+                                    @if (!(Model.ReceivedResumes is null))
                         {
-                            <div class="col-lg-12">
-                            <!-- applicants Widget -->
-                            <div class="applicants-widget ls-widget">
-                                <div class="widget-title">
-                                    <h4>Получени кандидатури</h4>
-                                </div>
-                                <div class="widget-content">
-                                    <div class="row">
+                                        <div class="col-lg-12">
+                                        <!-- applicants Widget -->
+                                        <div class="applicants-widget ls-widget">
+                                            <div class="widget-title">
+                                                <h4>Получени кандидатури</h4>
+                                            </div>
+                                            <div class="widget-content">
+                                                <div class="row">
 
                                         @await foreach (var item in Model.ReceivedResumes)
                                         {
                                             sender = await UserManager.FindByEmailAsync(@item.UserId);
                                             SenderImageUrl = sender?.PictureName is not null && sender.PictureName.Contains("https://") ? sender?.PictureName : (_ImagePath + sender?.PictureName);
 
-                                            <!-- Candidate block three -->
-                                            <div class="candidate-block-three col-lg-6 col-md-12 col-sm-12">
-                                                <div class="inner-box">
-                                                    <div class="content">
-                                                        
-                                                            @if (sender is not null && sender?.PictureName is not null)
+                                                        <!-- Candidate block three -->
+                                                        <div class="candidate-block-three col-lg-6 col-md-12 col-sm-12">
+                                                            <div class="inner-box">
+                                                                <div class="content">
+                                                                    
+                                                                        @if (sender is not null && sender?.PictureName is not null)
                                                             {
-                                                                <figure class="image">
-                                                                <img class="lazyload" data-src="@SenderImageUrl" alt="">
-                                                                 </figure>
+                                                                            <figure class="image">
+                                                                            <img class="lazyload" data-src="@SenderImageUrl" alt="">
+                                                                             </figure>
                                                             } 
                                                             else
                                                             {
-                                                                <figure class="image-icon">
-                                                                <i class="flaticon-user"></i>
-                                                                </figure>
+                                                                            <figure class="image-icon">
+                                                                            <i class="las la-user"></i>
+                                                                            </figure>
                                                             }
-                                                       
+                                                                   
 
-                                                        @if (sender is not null)
+                                                                    @if (sender is not null)
                                                         {
-                                                            <h4 class="name"><a href="#">@sender?.FirstName @sender?.LastName</a></h4>
+                                                                        <h4 class="name"><a href="#">@sender?.FirstName @sender?.LastName</a></h4>
                                                         } 
                                                         else
                                                         {
-                                                        <h4 class="name"><a href="#"> @StringHelper.Filter(item.UserId)</a></h4>
+                                                                    <h4 class="name"><a href="#"> @StringHelper.Filter(item.UserId)</a></h4>
                                                         }
-                                                        <ul class="candidate-info">
-                                                            <li class="designation">@sender?.Email</li>
-                                                            <li><span class="icon flaticon-briefcase"></span> @item.LastAppliedJob</li>
+                                                                    <ul class="candidate-info">
+                                                                        <li class="designation">@sender?.Email</li>
+                                                                        <li><span class="icon las la-briefcase"></span> @item.LastAppliedJob</li>
                                                             @if (item.isGuest)
                                                             {
-                                                                <li><span class="icon flaticon-user-1"></span>Гост</li>
+                                                                            <li><span class="icon las la-user"></span>Гост</li>
                                                             } 
                                                             else
                                                             {
-                                                                <li><span class="icon flaticon-user-1"></span>Потребител</li>
+                                                                            <li><span class="icon las la-user-tie"></span>Потребител</li>
                                                             }
-                                                        </ul>
+                                                                    </ul>
 
-                                                    </div>
-                                                    <div class="option-box">
-                                                        <ul class="option-list">
-                                                            <li><a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Прегледай резюме">
-                                                            <span class="la la-eye"></span>
-                                                            </a>
-                                                            </li>
+                                                                </div>
+                                                                <div class="option-box">
+                                                                    <ul class="option-list">
+                                                                        <li><a asp-controller="Resume" asp-action="GetResume" asp-route-id="@item.Id" data-text="Прегледай резюме">
+                                                                        <span class="la la-eye"></span>
+                                                                        </a>
+                                                                        </li>
+                                                                @if (!item.isGuest)
+                                                                {
+                                                                    <li><a class="call-modal" data-user="@item.UserId" data-modal="#apply-modal" data-text="Добави в задачи">
+                                                                            <span class="la la-check"></span>                                                            
+                                                                        </a>
+                                                                        </li>
+                                                                }
+                                                                        <li><a class="call-modal" data-id="@item.Id" data-modal="#raport-modal" data-text="Архивирай">
+                                                                        <span class="la la-trash"></span>
+                                                                        </a>
+                                                                        </li>
 
-                                                            <li><a class="call-modal" data-user="@item.UserId" data-modal="#apply-modal" data-text="Добави в задачи">
-                                                            <span class="la la-check"></span>                                                            
-                                                            </a>
-                                                            </li>
-
-                                                            <li><a class="call-modal" data-id="@item.Id" data-modal="#raport-modal" data-text="Изтрий заявката">
-                                                            <span class="la la-trash"></span>
-                                                            </a>
-                                                            </li>
-
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                         }
 
-                </div>
-              </div>
-            </div>
-             </div>
+                            </div>
+                          </div>
+                        </div>
+                         </div>
                    }
                 }
             }
         </div>
     </div>
-
+    </div>
 </section>
 
+    <!-- Subscribe Section -->
+    <section class="subscribe-section-two -type-5">
+      <div class="auto-container wow fadeInUp">
+        <div class="carousel-outer">
 
-@if (user.Role.Equals(Roles.Employer) || user.Role.Equals(Roles.Recruiter) || user.Role.Equals(Roles.Admin) || user.Role.Equals(Roles.Moderator))
+          <div class="testimonial-carousel owl-carousel owl-theme">
+
+           <div class="testimonial-block first">
+        <div class="row align-items-center justify-content-between">
+          <div class="col-lg-12 offset-lg-1">
+            <div class="sec-title pb-16">
+              <h2 class="">Рейтинг</h2>
+              <div class="text">Вече можеш да разбереш, какво мислят работодателите <br> за твоето CV.</div>
+
+              <div class="mt-20">
+                <a asp-area="Identity" asp-page="/Resume/Index"  class="theme-btn btn-style-one">Разбери</a>
+              </div>
+            </div>
+          </div>
+        </div>
+          </div>
+          @*
+                    <div class="testimonial-block second">
+        <div class="row align-items-center justify-content-between">
+          <div class="col-lg-4 offset-lg-1">
+            <div class="sec-title pb-16">
+              <h2 class="">Looking To Post a Jo2b2</h2>
+              <div class="text">Advertise your jobs to millions of monthly<br> users and search 15.8 million CVs in our<br> database.</div>
+
+              <div class="mt-20">
+                <a href="#" class="theme-btn">Post a Job</a>
+              </div>
+            </div>
+          </div>
+        </div>
+          </div>
+
+         <div class="testimonial-block third">
+        <div class="row align-items-center justify-content-between">
+          <div class="col-lg-4 offset-lg-1">
+            <div class="sec-title pb-16">
+              <h2 class="">Looking To Post a Jo2b23</h2>
+              <div class="text">Advertise your jobs to millions of monthly<br> users and search 15.8 million CVs in our<br> database.</div>
+
+              <div class="mt-20">
+                <a href="#" class="theme-btn">Post a Job</a>
+              </div>
+            </div>
+          </div>
+        </div>
+          </div>
+
+          *@
+        </div>
+    </div>
+        @*<div class="background-image" style="background-image: url(https://www.maxpixel.net/static/photo/1x/Triangles-Polygon-Violet-Purple-Brown-Background-1409025.png);"></div>
+
+        <div class="row align-items-center justify-content-between">
+          <div class="col-lg-4 offset-lg-1">
+            <div class="sec-title pb-16">
+              <h2 class="">Looking To Post a Job</h2>
+              <div class="text">Advertise your jobs to millions of monthly<br> users and search 15.8 million CVs in our<br> database.</div>
+
+              <div class="mt-20">
+                <a href="#" class="theme-btn">Post a Job</a>
+              </div>
+            </div>
+          </div>
+        </div>*@
+
+      </div>
+    </section>
+    <!-- End Subscribe Section -->
+
+@if (Model.LoggedUser.Role.Equals(Roles.Employer) || Model.LoggedUser.Role.Equals(Roles.Recruiter) || Model.LoggedUser.Role.Equals(Roles.Admin) || Model.LoggedUser.Role.Equals(Roles.Moderator))
 {
     <!-- Add to Task modal -->
     <div class="modal" id="apply-modal">
@@ -407,16 +533,16 @@
                     </div>
 
                     <div class="bottom-box">
-                        <small><i class="fa fa-info-circle"></i> Можете да уведомите потребителя за онлайн интервю или друго събитие. Моля бъдете описателни!</small>
+                        <small><i class="las la-info-circle"></i> Можете да уведомите потребителя за онлайн интервю или друго събитие. Моля бъдете описателни!</small>
                         <hr>
                         <div class="btn-box row">
                             <div class="col-lg-6 col-md-12">
                                 <a href="#" class="theme-btn btn-style-default" rel="modal:close">
-                                    <i class="fa fa-times"></i> Отказ</a>
+                                    <i class="las la-times"></i> Отказ</a>
                             </div>
                             <div class="col-lg-6 col-md-12">
                                 <button class="theme-btn btn-style-four" type="submit"> 
-                                    <i class="fas fa-check"></i> Добави
+                                    <i class="las la-check"></i> Добави
                                 </button>
                             </div>
                         </div>
@@ -445,11 +571,11 @@
                             <div class="form-group text-center">
 
                                 <div class="star-rating">
-                                    <span class="fa fa-star" data-rating="1"></span>
-                                    <span class="fa fa-star" data-rating="2"></span>
-                                    <span class="fa fa-star" data-rating="3"></span>
-                                    <span class="fa fa-star" data-rating="4"></span>
-                                    <span class="fa fa-star" data-rating="5"></span>
+                                    <span class="las la-star" data-rating="1"></span>
+                                    <span class="las la-star" data-rating="2"></span>
+                                    <span class="las la-star" data-rating="3"></span>
+                                    <span class="las la-star" data-rating="4"></span>
+                                    <span class="las la-star" data-rating="5"></span>
                                     <input type="hidden" asp-for="RInput.Rating" class="rating-value" value="@Model.RInput?.Rating">
                                 </div>
 
@@ -459,16 +585,16 @@
 
 
                     <div class="bottom-box">
-                        <small><i class="fa fa-info-circle"></i> Оцени cv-то на потребителя.</small>
+                        <small><i class="las la-info-circle"></i> Оцени cv-то на потребителя.</small>
                         <hr>
                         <div class="btn-box row">
                             <div class="col-lg-6 col-md-12">
                                 <a href="#" class="theme-btn btn-style-default" rel="modal:close">
-                                    <i class="fa fa-times"></i> Отказ</a>
+                                    <i class="las la-times"></i> Отказ</a>
                             </div>
                             <div class="col-lg-6 col-md-12">
                                 <button class="theme-btn btn-style-four" type="submit"> 
-                                    <i class="fas fa-check"></i>Оцени и изтрий
+                                    <i class="las la-check"></i>Оцени и архивирай
                                 </button>
                             </div>
                         </div>
@@ -480,88 +606,9 @@
 </div>
 }
 
+
     <!-- End Dashboard -->
 
     @section Scripts {
-   
-         <script src="~/theme_superio/js/knob.js"></script>
-         <script src="~/theme_superio/js/chart.min.js"></script>
-  <script>
-    Chart.defaults.global.defaultFontFamily = "Sofia Pro";
-    Chart.defaults.global.defaultFontColor = '#888';
-    Chart.defaults.global.defaultFontSize = '14';
-
-    var ctx = document.getElementById('chart').getContext('2d');
-
-    var chart = new Chart(ctx, {
-
-      type: 'line',
-      // The data for our dataset
-      data: {
-        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"],
-        // Information about the dataset
-        datasets: [{
-          label: "Views",
-          backgroundColor: 'transparent',
-          borderColor: '#1967D2',
-          borderWidth: "1",
-          data: [196, 132, 215, 362, 210, 252, 1233, 2222, 5555, 12131, 213413, 555555],
-          pointRadius: 3,
-          pointHoverRadius: 3,
-          pointHitRadius: 10,
-          pointBackgroundColor: "#1967D2",
-          pointHoverBackgroundColor: "#1967D2",
-          pointBorderWidth: "2",
-        }]
-      },
-
-      // Configuration options
-      options: {
-
-        layout: {
-          padding: 10,
-        },
-
-        legend: {
-          display: false
-        },
-        title: {
-          display: false
-        },
-
-        scales: {
-          yAxes: [{
-            scaleLabel: {
-              display: false
-            },
-            gridLines: {
-              borderDash: [6, 10],
-              color: "#d8d8d8",
-              lineWidth: 1,
-            },
-          }],
-          xAxes: [{
-            scaleLabel: {
-              display: false
-            },
-            gridLines: {
-              display: false
-            },
-          }],
-        },
-
-        tooltips: {
-          backgroundColor: '#333',
-          titleFontSize: 13,
-          titleFontColor: '#fff',
-          bodyFontColor: '#fff',
-          bodyFontSize: 13,
-          displayColors: false,
-          xPadding: 10,
-          yPadding: 10,
-          intersect: false
-        }
-      },
-    });
-  </script>
+         <script defer src="~/theme_superio/js/script-panel.min.js"></script>
 }
